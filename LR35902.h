@@ -3,6 +3,8 @@
 
 #include <cinttypes>
 
+#include "Bus.h"
+
 namespace gbtest
 {
 
@@ -65,7 +67,7 @@ public:
     };
 
 public:
-    LR35902();
+    LR35902(Bus &bus);
 
     const LR35902Registers &getRegisters() const;
 
@@ -73,6 +75,8 @@ public:
 
 private:
     void resetRegisters();
+
+    Bus &m_bus;
 
     uint8_t m_cyclesToWaste;
     LR35902Registers m_registers;

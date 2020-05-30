@@ -36,7 +36,8 @@ int main()
 {
     sf::RenderWindow window(sf::VideoMode(500, 500), "gbtest");
 
-    gbtest::LR35902 cpu;
+    gbtest::Bus bus;
+    gbtest::LR35902 cpu(bus);
 
     while (window.isOpen())
     {

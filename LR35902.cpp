@@ -1,7 +1,8 @@
 #include "LR35902.h"
 
-gbtest::LR35902::LR35902()
-: m_cyclesToWaste(0)
+gbtest::LR35902::LR35902(Bus &bus)
+: m_bus(bus)
+, m_cyclesToWaste(0)
 , m_registers({})
 {
     resetRegisters();
@@ -27,9 +28,10 @@ void gbtest::LR35902::resetRegisters()
     m_registers.pc = 0;
 }
 
+// NOP
 void gbtest::LR35902::opcode00h()
 {
-
+    m_cyclesToWaste = 4;
 }
 
 void gbtest::LR35902::opcode01h()

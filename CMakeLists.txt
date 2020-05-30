@@ -8,5 +8,5 @@ add_subdirectory(SFML)
 
 include_directories(SFML/include)
 
-add_executable(gbtest main.cpp LR35902.cpp LR35902.h)
+add_executable(gbtest main.cpp LR35902.cpp LR35902.h Bus.cpp Bus.h)
 target_link_libraries(gbtest sfml-window sfml-network sfml-graphics sfml-audio sfml-system)
