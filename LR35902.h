@@ -75,6 +75,7 @@ public:
 
 private:
     void resetRegisters();
+    uint8_t fetch();
 
     Bus &m_bus;
 
@@ -92,12 +93,12 @@ private:
     void opcode07h();
     void opcode08h();
     void opcode09h();
-    void opcodeAh();
-    void opcodeBh();
-    void opcodeCh();
-    void opcodeDh();
-    void opcodeEh();
-    void opcodeFh();
+    void opcode0Ah();
+    void opcode0Bh();
+    void opcode0Ch();
+    void opcode0Dh();
+    void opcode0Eh();
+    void opcode0Fh();
     void opcode10h();
     void opcode11h();
     void opcode12h();
