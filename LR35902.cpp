@@ -31,10 +31,11 @@ const gbtest::LR35902::LR35902Registers &gbtest::LR35902::getRegisters() const
 
 void gbtest::LR35902::tick()
 {
+    // Decrement cycles to waste if needed
     if (m_cyclesToWaste > 0)
-    {
         --m_cyclesToWaste;
-    } else
+
+    if (m_cyclesToWaste == 0)
     {
         // Execute current instruction
         m_opcodeLookup[fetch()]();
@@ -62,9 +63,12 @@ void gbtest::LR35902::opcode00h()
     m_cyclesToWaste = 4;
 }
 
+// LD BC, d16
 void gbtest::LR35902::opcode01h()
 {
-
+    m_registers.c = fetch();
+    m_registers.b = fetch();
+    m_cyclesToWaste = 12;
 }
 
 // LD (BC), A
@@ -101,9 +105,14 @@ void gbtest::LR35902::opcode07h()
 
 }
 
+// LD (a16), SP
 void gbtest::LR35902::opcode08h()
 {
+    uint16_t addr = fetch() | (fetch() << 8);
+    m_bus.write(addr, m_registers.sp);
+    m_bus.write(addr + 1, m_registers.sp >> 8);
 
+    m_cyclesToWaste = 20;
 }
 
 void gbtest::LR35902::opcode09h()
@@ -150,9 +159,12 @@ void gbtest::LR35902::opcode10h()
 
 }
 
+// LD DE, d16
 void gbtest::LR35902::opcode11h()
 {
-
+    m_registers.e = fetch();
+    m_registers.d = fetch();
+    m_cyclesToWaste = 12;
 }
 
 // LD (DE), A
@@ -238,9 +250,12 @@ void gbtest::LR35902::opcode20h()
 
 }
 
+// LD HL, d16
 void gbtest::LR35902::opcode21h()
 {
-
+    m_registers.l = fetch();
+    m_registers.h = fetch();
+    m_cyclesToWaste = 12;
 }
 
 // LD (HL+), A
@@ -326,9 +341,11 @@ void gbtest::LR35902::opcode30h()
 
 }
 
+// LD SP, d16
 void gbtest::LR35902::opcode31h()
 {
-
+    m_registers.sp = fetch() | (fetch() << 8);
+    m_cyclesToWaste = 12;
 }
 
 // LD (HL-), A
@@ -1180,9 +1197,11 @@ void gbtest::LR35902::opcodeC0h()
 
 }
 
+// POP BC
 void gbtest::LR35902::opcodeC1h()
 {
-
+    m_registers.bc = m_bus.read(m_registers.sp++) | (m_bus.read(m_registers.sp++) << 8);
+    m_cyclesToWaste = 12;
 }
 
 void gbtest::LR35902::opcodeC2h()
@@ -1200,9 +1219,13 @@ void gbtest::LR35902::opcodeC4h()
 
 }
 
+// PUSH BC
 void gbtest::LR35902::opcodeC5h()
 {
+    m_bus.write(--m_registers.sp, m_registers.b);
+    m_bus.write(--m_registers.sp, m_registers.c);
 
+    m_cyclesToWaste = 16;
 }
 
 void gbtest::LR35902::opcodeC6h()
@@ -1260,9 +1283,11 @@ void gbtest::LR35902::opcodeD0h()
 
 }
 
+// POP DE
 void gbtest::LR35902::opcodeD1h()
 {
-
+    m_registers.de = m_bus.read(m_registers.sp++) | (m_bus.read(m_registers.sp++) << 8);
+    m_cyclesToWaste = 12;
 }
 
 void gbtest::LR35902::opcodeD2h()
@@ -1280,9 +1305,13 @@ void gbtest::LR35902::opcodeD4h()
 
 }
 
+// PUSH DE
 void gbtest::LR35902::opcodeD5h()
 {
+    m_bus.write(--m_registers.sp, m_registers.d);
+    m_bus.write(--m_registers.sp, m_registers.e);
 
+    m_cyclesToWaste = 16;
 }
 
 void gbtest::LR35902::opcodeD6h()
@@ -1342,9 +1371,11 @@ void gbtest::LR35902::opcodeE0h()
     m_cyclesToWaste = 12;
 }
 
+// POP HL
 void gbtest::LR35902::opcodeE1h()
 {
-
+    m_registers.hl = m_bus.read(m_registers.sp++) | (m_bus.read(m_registers.sp++) << 8);
+    m_cyclesToWaste = 12;
 }
 
 // LD (C), A
@@ -1364,9 +1395,13 @@ void gbtest::LR35902::opcodeE4h()
 
 }
 
+// PUSH HL
 void gbtest::LR35902::opcodeE5h()
 {
+    m_bus.write(--m_registers.sp, m_registers.h);
+    m_bus.write(--m_registers.sp, m_registers.l);
 
+    m_cyclesToWaste = 16;
 }
 
 void gbtest::LR35902::opcodeE6h()
@@ -1428,9 +1463,11 @@ void gbtest::LR35902::opcodeF0h()
     m_cyclesToWaste = 12;
 }
 
+// POP AF
 void gbtest::LR35902::opcodeF1h()
 {
-
+    m_registers.af = m_bus.read(m_registers.sp++) | (m_bus.read(m_registers.sp++) << 8);
+    m_cyclesToWaste = 12;
 }
 
 // LD A, (C)
@@ -1450,9 +1487,13 @@ void gbtest::LR35902::opcodeF4h()
 
 }
 
+// PUSH AF
 void gbtest::LR35902::opcodeF5h()
 {
+    m_bus.write(--m_registers.sp, m_registers.af >> 8);
+    m_bus.write(--m_registers.sp, m_registers.af);
 
+    m_cyclesToWaste = 16;
 }
 
 void gbtest::LR35902::opcodeF6h()
@@ -1465,14 +1506,25 @@ void gbtest::LR35902::opcodeF7h()
 
 }
 
+// LD HL, SP + r8
 void gbtest::LR35902::opcodeF8h()
 {
+    auto a = (int8_t)fetch();
+    m_registers.hl = m_registers.sp + a;
 
+    m_registers.f.z = 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.sp & 0xF) + (a & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.sp & 0xFF) + (a & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 12;
 }
 
+// LD SP, HL
 void gbtest::LR35902::opcodeF9h()
 {
-
+    m_registers.sp = m_registers.hl;
+    m_cyclesToWaste = 8;
 }
 
 // LD A, (a16)

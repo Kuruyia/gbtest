@@ -26,7 +26,9 @@ void printRegisters(sf::RenderTarget &renderTarget, const gbtest::LR35902 &cpu, 
             << "DE: " << std::setw(4) << std::setfill('0') << cpu.getRegisters().de << "h" << std::endl
             << "HL: " << std::setw(4) << std::setfill('0') << cpu.getRegisters().hl << "h" << std::endl
             << "SP: " << std::setw(4) << std::setfill('0') << cpu.getRegisters().sp << "h" << std::endl
-            << "PC: " << std::setw(4) << std::setfill('0') << cpu.getRegisters().pc << "h" << std::endl;
+            << "PC: " << std::setw(4) << std::setfill('0') << cpu.getRegisters().pc << "h" << std::endl
+            << "F:  " << (cpu.getRegisters().f.z ? 'Z' : '-') << ' ' << (cpu.getRegisters().f.n ? 'N' : '-') << ' '
+            << (cpu.getRegisters().f.h ? 'H' : '-') << ' ' << (cpu.getRegisters().f.c ? 'C' : '-') << ' ';
 
     text.setString(sstr.str());
     renderTarget.draw(text);
@@ -70,6 +72,28 @@ int main()
     gbtest::Bus bus;
     gbtest::LR35902 cpu(bus);
 
+    bus.write(0, 0x06); // LD B, 0x69
+    bus.write(1, 0x69);
+    bus.write(2, 0x2E); // LD L, 0xF
+    bus.write(3, 0xF);
+    bus.write(4, 0x70); // LD (HL), B
+
+    bus.write(6, 0x31); // LD SP, 0x0040
+    bus.write(7, 0x40);
+    bus.write(8, 0x00);
+
+    bus.write(0x10, 0x08); // LD 0x20, SP
+    bus.write(0x11, 0x20);
+    bus.write(0x12, 0x00);
+
+    bus.write(0x14, 0x0E); // LD C, 0x42
+    bus.write(0x15, 0x42);
+    bus.write(0x16, 0xC5); // PUSH BC
+    bus.write(0x17, 0xD1); // POP DE
+
+    bus.write(0x19, 0xF8); // LD HL, SP + (-1)
+    bus.write(0x1A, -1);
+
     while (window.isOpen())
     {
         cpu.tick();
@@ -78,7 +102,16 @@ int main()
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
+            {
                 window.close();
+            }
+            else if (event.type == sf::Event::KeyPressed)
+            {
+                if (event.key.code == sf::Keyboard::Key::Space)
+                {
+//                    cpu.tick();
+                }
+            }
         }
 
         window.clear();
