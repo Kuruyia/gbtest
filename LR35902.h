@@ -2,6 +2,8 @@
 #define GBTEST_LR35902_H
 
 #include <cinttypes>
+#include <functional>
+#include <vector>
 
 #include "Bus.h"
 
@@ -66,18 +68,22 @@ public:
         uint16_t pc; // Program Counter
     };
 
+    typedef void (LR35902::*fnOpcode)();
+
 public:
     LR35902(Bus &bus);
 
     const LR35902Registers &getRegisters() const;
 
-    void processOpcode(const uint16_t &opcode);
+    void tick();
 
 private:
     void resetRegisters();
     uint8_t fetch();
 
     Bus &m_bus;
+
+    const std::array<std::function<void()>, 0x100> m_opcodeLookup;
 
     uint8_t m_cyclesToWaste;
     LR35902Registers m_registers;

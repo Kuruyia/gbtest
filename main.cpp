@@ -72,6 +72,8 @@ int main()
 
     while (window.isOpen())
     {
+        cpu.tick();
+
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -86,7 +88,7 @@ int main()
 
         window.display();
 
-        sf::sleep(sf::microseconds(13));
+        sf::sleep(sf::milliseconds(13));
     }
 
     return 0;

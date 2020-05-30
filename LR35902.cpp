@@ -2,6 +2,22 @@
 
 gbtest::LR35902::LR35902(Bus &bus)
 : m_bus(bus)
+, m_opcodeLookup({[this] { opcode00h(); }, [this] { opcode01h(); }, [this] { opcode02h(); }, [this] { opcode03h(); }, [this] { opcode04h(); }, [this] { opcode05h(); }, [this] { opcode06h(); }, [this] { opcode07h(); }, [this] { opcode08h(); }, [this] { opcode09h(); }, [this] { opcode0Ah(); }, [this] { opcode0Bh(); }, [this] { opcode0Ch(); }, [this] { opcode0Dh(); }, [this] { opcode0Eh(); }, [this] { opcode0Fh(); },
+                  [this] { opcode10h(); }, [this] { opcode11h(); }, [this] { opcode12h(); }, [this] { opcode13h(); }, [this] { opcode14h(); }, [this] { opcode15h(); }, [this] { opcode16h(); }, [this] { opcode17h(); }, [this] { opcode18h(); }, [this] { opcode19h(); }, [this] { opcode1Ah(); }, [this] { opcode1Bh(); }, [this] { opcode1Ch(); }, [this] { opcode1Dh(); }, [this] { opcode1Eh(); }, [this] { opcode1Fh(); },
+                  [this] { opcode20h(); }, [this] { opcode21h(); }, [this] { opcode22h(); }, [this] { opcode23h(); }, [this] { opcode24h(); }, [this] { opcode25h(); }, [this] { opcode26h(); }, [this] { opcode27h(); }, [this] { opcode28h(); }, [this] { opcode29h(); }, [this] { opcode2Ah(); }, [this] { opcode2Bh(); }, [this] { opcode2Ch(); }, [this] { opcode2Dh(); }, [this] { opcode2Eh(); }, [this] { opcode2Fh(); },
+                  [this] { opcode30h(); }, [this] { opcode31h(); }, [this] { opcode32h(); }, [this] { opcode33h(); }, [this] { opcode34h(); }, [this] { opcode35h(); }, [this] { opcode36h(); }, [this] { opcode37h(); }, [this] { opcode38h(); }, [this] { opcode39h(); }, [this] { opcode3Ah(); }, [this] { opcode3Bh(); }, [this] { opcode3Ch(); }, [this] { opcode3Dh(); }, [this] { opcode3Eh(); }, [this] { opcode3Fh(); },
+                  [this] { opcode40h(); }, [this] { opcode41h(); }, [this] { opcode42h(); }, [this] { opcode43h(); }, [this] { opcode44h(); }, [this] { opcode45h(); }, [this] { opcode46h(); }, [this] { opcode47h(); }, [this] { opcode48h(); }, [this] { opcode49h(); }, [this] { opcode4Ah(); }, [this] { opcode4Bh(); }, [this] { opcode4Ch(); }, [this] { opcode4Dh(); }, [this] { opcode4Eh(); }, [this] { opcode4Fh(); },
+                  [this] { opcode50h(); }, [this] { opcode51h(); }, [this] { opcode52h(); }, [this] { opcode53h(); }, [this] { opcode54h(); }, [this] { opcode55h(); }, [this] { opcode56h(); }, [this] { opcode57h(); }, [this] { opcode58h(); }, [this] { opcode59h(); }, [this] { opcode5Ah(); }, [this] { opcode5Bh(); }, [this] { opcode5Ch(); }, [this] { opcode5Dh(); }, [this] { opcode5Eh(); }, [this] { opcode5Fh(); },
+                  [this] { opcode60h(); }, [this] { opcode61h(); }, [this] { opcode62h(); }, [this] { opcode63h(); }, [this] { opcode64h(); }, [this] { opcode65h(); }, [this] { opcode66h(); }, [this] { opcode67h(); }, [this] { opcode68h(); }, [this] { opcode69h(); }, [this] { opcode6Ah(); }, [this] { opcode6Bh(); }, [this] { opcode6Ch(); }, [this] { opcode6Dh(); }, [this] { opcode6Eh(); }, [this] { opcode6Fh(); },
+                  [this] { opcode70h(); }, [this] { opcode71h(); }, [this] { opcode72h(); }, [this] { opcode73h(); }, [this] { opcode74h(); }, [this] { opcode75h(); }, [this] { opcode76h(); }, [this] { opcode77h(); }, [this] { opcode78h(); }, [this] { opcode79h(); }, [this] { opcode7Ah(); }, [this] { opcode7Bh(); }, [this] { opcode7Ch(); }, [this] { opcode7Dh(); }, [this] { opcode7Eh(); }, [this] { opcode7Fh(); },
+                  [this] { opcode80h(); }, [this] { opcode81h(); }, [this] { opcode82h(); }, [this] { opcode83h(); }, [this] { opcode84h(); }, [this] { opcode85h(); }, [this] { opcode86h(); }, [this] { opcode87h(); }, [this] { opcode88h(); }, [this] { opcode89h(); }, [this] { opcode8Ah(); }, [this] { opcode8Bh(); }, [this] { opcode8Ch(); }, [this] { opcode8Dh(); }, [this] { opcode8Eh(); }, [this] { opcode8Fh(); },
+                  [this] { opcode90h(); }, [this] { opcode91h(); }, [this] { opcode92h(); }, [this] { opcode93h(); }, [this] { opcode94h(); }, [this] { opcode95h(); }, [this] { opcode96h(); }, [this] { opcode97h(); }, [this] { opcode98h(); }, [this] { opcode99h(); }, [this] { opcode9Ah(); }, [this] { opcode9Bh(); }, [this] { opcode9Ch(); }, [this] { opcode9Dh(); }, [this] { opcode9Eh(); }, [this] { opcode9Fh(); },
+                  [this] { opcodeA0h(); }, [this] { opcodeA1h(); }, [this] { opcodeA2h(); }, [this] { opcodeA3h(); }, [this] { opcodeA4h(); }, [this] { opcodeA5h(); }, [this] { opcodeA6h(); }, [this] { opcodeA7h(); }, [this] { opcodeA8h(); }, [this] { opcodeA9h(); }, [this] { opcodeAAh(); }, [this] { opcodeABh(); }, [this] { opcodeACh(); }, [this] { opcodeADh(); }, [this] { opcodeAEh(); }, [this] { opcodeAFh(); },
+                  [this] { opcodeB0h(); }, [this] { opcodeB1h(); }, [this] { opcodeB2h(); }, [this] { opcodeB3h(); }, [this] { opcodeB4h(); }, [this] { opcodeB5h(); }, [this] { opcodeB6h(); }, [this] { opcodeB7h(); }, [this] { opcodeB8h(); }, [this] { opcodeB9h(); }, [this] { opcodeBAh(); }, [this] { opcodeBBh(); }, [this] { opcodeBCh(); }, [this] { opcodeBDh(); }, [this] { opcodeBEh(); }, [this] { opcodeBFh(); },
+                  [this] { opcodeC0h(); }, [this] { opcodeC1h(); }, [this] { opcodeC2h(); }, [this] { opcodeC3h(); }, [this] { opcodeC4h(); }, [this] { opcodeC5h(); }, [this] { opcodeC6h(); }, [this] { opcodeC7h(); }, [this] { opcodeC8h(); }, [this] { opcodeC9h(); }, [this] { opcodeCAh(); }, [this] { opcodeCBh(); }, [this] { opcodeCCh(); }, [this] { opcodeCDh(); }, [this] { opcodeCEh(); }, [this] { opcodeCFh(); },
+                  [this] { opcodeD0h(); }, [this] { opcodeD1h(); }, [this] { opcodeD2h(); }, [this] { opcodeD3h(); }, [this] { opcodeD4h(); }, [this] { opcodeD5h(); }, [this] { opcodeD6h(); }, [this] { opcodeD7h(); }, [this] { opcodeD8h(); }, [this] { opcodeD9h(); }, [this] { opcodeDAh(); }, [this] { opcodeDBh(); }, [this] { opcodeDCh(); }, [this] { opcodeDDh(); }, [this] { opcodeDEh(); }, [this] { opcodeDFh(); },
+                  [this] { opcodeE0h(); }, [this] { opcodeE1h(); }, [this] { opcodeE2h(); }, [this] { opcodeE3h(); }, [this] { opcodeE4h(); }, [this] { opcodeE5h(); }, [this] { opcodeE6h(); }, [this] { opcodeE7h(); }, [this] { opcodeE8h(); }, [this] { opcodeE9h(); }, [this] { opcodeEAh(); }, [this] { opcodeEBh(); }, [this] { opcodeECh(); }, [this] { opcodeEDh(); }, [this] { opcodeEEh(); }, [this] { opcodeEFh(); },
+                  [this] { opcodeF0h(); }, [this] { opcodeF1h(); }, [this] { opcodeF2h(); }, [this] { opcodeF3h(); }, [this] { opcodeF4h(); }, [this] { opcodeF5h(); }, [this] { opcodeF6h(); }, [this] { opcodeF7h(); }, [this] { opcodeF8h(); }, [this] { opcodeF9h(); }, [this] { opcodeFAh(); }, [this] { opcodeFBh(); }, [this] { opcodeFCh(); }, [this] { opcodeFDh(); }, [this] { opcodeFEh(); }, [this] { opcodeFFh(); }})
 , m_cyclesToWaste(0)
 , m_registers({})
 {
@@ -13,9 +29,16 @@ const gbtest::LR35902::LR35902Registers &gbtest::LR35902::getRegisters() const
     return m_registers;
 }
 
-void gbtest::LR35902::processOpcode(const uint16_t &opcode)
+void gbtest::LR35902::tick()
 {
-
+    if (m_cyclesToWaste > 0)
+    {
+        --m_cyclesToWaste;
+    } else
+    {
+        // Execute current instruction
+        m_opcodeLookup[fetch()]();
+    }
 }
 
 void gbtest::LR35902::resetRegisters()
