@@ -1,3 +1,4 @@
+#include <iostream>
 #include <stdexcept>
 
 #include "LR35902.h"
@@ -40,7 +41,15 @@ void gbtest::LR35902::tick()
     if (m_cyclesToWaste == 0)
     {
         // Execute current instruction
-        m_opcodeLookup[fetch()]();
+        const uint8_t opcode = fetch();
+        try
+        {
+            m_opcodeLookup[opcode]();
+        } catch (const std::runtime_error &e)
+        {
+            std::cerr << std::hex << "PC = 0x" << m_registers.pc << "; Opcode = 0x" << (int)opcode << std::endl
+                << "Caught exception: " << e.what() << std::endl;
+        }
     }
 }
 
@@ -82,7 +91,7 @@ void gbtest::LR35902::opcode02h()
 
 void gbtest::LR35902::opcode03h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // INC B
@@ -118,7 +127,7 @@ void gbtest::LR35902::opcode06h()
 
 void gbtest::LR35902::opcode07h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD (a16), SP
@@ -133,7 +142,7 @@ void gbtest::LR35902::opcode08h()
 
 void gbtest::LR35902::opcode09h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD A, (BC)
@@ -145,17 +154,17 @@ void gbtest::LR35902::opcode0Ah()
 
 void gbtest::LR35902::opcode0Bh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode0Ch()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode0Dh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD C, d8
@@ -167,12 +176,12 @@ void gbtest::LR35902::opcode0Eh()
 
 void gbtest::LR35902::opcode0Fh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode10h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD DE, d16
@@ -192,7 +201,7 @@ void gbtest::LR35902::opcode12h()
 
 void gbtest::LR35902::opcode13h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // INC D
@@ -228,17 +237,17 @@ void gbtest::LR35902::opcode16h()
 
 void gbtest::LR35902::opcode17h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode18h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode19h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD A, (DE)
@@ -250,17 +259,17 @@ void gbtest::LR35902::opcode1Ah()
 
 void gbtest::LR35902::opcode1Bh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode1Ch()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode1Dh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD E, d8
@@ -272,12 +281,12 @@ void gbtest::LR35902::opcode1Eh()
 
 void gbtest::LR35902::opcode1Fh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode20h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD HL, d16
@@ -297,7 +306,7 @@ void gbtest::LR35902::opcode22h()
 
 void gbtest::LR35902::opcode23h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // INC H
@@ -333,17 +342,17 @@ void gbtest::LR35902::opcode26h()
 
 void gbtest::LR35902::opcode27h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode28h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode29h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD A, (HL+)
@@ -355,17 +364,17 @@ void gbtest::LR35902::opcode2Ah()
 
 void gbtest::LR35902::opcode2Bh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode2Ch()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode2Dh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD L, d8
@@ -377,12 +386,12 @@ void gbtest::LR35902::opcode2Eh()
 
 void gbtest::LR35902::opcode2Fh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode30h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD SP, d16
@@ -401,7 +410,7 @@ void gbtest::LR35902::opcode32h()
 
 void gbtest::LR35902::opcode33h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // INC (HL)
@@ -439,17 +448,17 @@ void gbtest::LR35902::opcode36h()
 
 void gbtest::LR35902::opcode37h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode38h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode39h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD A, (HL-)
@@ -461,17 +470,17 @@ void gbtest::LR35902::opcode3Ah()
 
 void gbtest::LR35902::opcode3Bh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode3Ch()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode3Dh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD A, d8
@@ -483,7 +492,7 @@ void gbtest::LR35902::opcode3Eh()
 
 void gbtest::LR35902::opcode3Fh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD B, B
@@ -866,7 +875,7 @@ void gbtest::LR35902::opcode75h()
 
 void gbtest::LR35902::opcode76h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD (HL), A
@@ -934,327 +943,327 @@ void gbtest::LR35902::opcode7Fh()
 
 void gbtest::LR35902::opcode80h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode81h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode82h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode83h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode84h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode85h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode86h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode87h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode88h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode89h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode8Ah()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode8Bh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode8Ch()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode8Dh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode8Eh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode8Fh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode90h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode91h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode92h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode93h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode94h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode95h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode96h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode97h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode98h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode99h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode9Ah()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode9Bh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode9Ch()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode9Dh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode9Eh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcode9Fh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeA0h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeA1h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeA2h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeA3h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeA4h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeA5h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeA6h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeA7h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeA8h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeA9h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeAAh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeABh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeACh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeADh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeAEh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeAFh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeB0h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeB1h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeB2h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeB3h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeB4h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeB5h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeB6h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeB7h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeB8h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeB9h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeBAh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeBBh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeBCh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeBDh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeBEh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeBFh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeC0h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // POP BC
@@ -1266,17 +1275,17 @@ void gbtest::LR35902::opcodeC1h()
 
 void gbtest::LR35902::opcodeC2h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeC3h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeC4h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // PUSH BC
@@ -1290,57 +1299,57 @@ void gbtest::LR35902::opcodeC5h()
 
 void gbtest::LR35902::opcodeC6h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeC7h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeC8h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeC9h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeCAh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeCBh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeCCh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeCDh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeCEh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeCFh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeD0h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // POP DE
@@ -1352,17 +1361,17 @@ void gbtest::LR35902::opcodeD1h()
 
 void gbtest::LR35902::opcodeD2h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeD3h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeD4h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // PUSH DE
@@ -1376,52 +1385,52 @@ void gbtest::LR35902::opcodeD5h()
 
 void gbtest::LR35902::opcodeD6h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeD7h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeD8h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeD9h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeDAh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeDBh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeDCh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeDDh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeDEh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeDFh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LDH (a8), A
@@ -1447,12 +1456,12 @@ void gbtest::LR35902::opcodeE2h()
 
 void gbtest::LR35902::opcodeE3h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeE4h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // PUSH HL
@@ -1466,22 +1475,22 @@ void gbtest::LR35902::opcodeE5h()
 
 void gbtest::LR35902::opcodeE6h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeE7h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeE8h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeE9h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD (a16), A
@@ -1493,27 +1502,27 @@ void gbtest::LR35902::opcodeEAh()
 
 void gbtest::LR35902::opcodeEBh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeECh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeEDh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeEEh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeEFh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LDH A, (a8)
@@ -1539,12 +1548,12 @@ void gbtest::LR35902::opcodeF2h()
 
 void gbtest::LR35902::opcodeF3h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeF4h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // PUSH AF
@@ -1558,12 +1567,12 @@ void gbtest::LR35902::opcodeF5h()
 
 void gbtest::LR35902::opcodeF6h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeF7h()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 // LD HL, SP + r8
@@ -1596,25 +1605,25 @@ void gbtest::LR35902::opcodeFAh()
 
 void gbtest::LR35902::opcodeFBh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeFCh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeFDh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeFEh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }
 
 void gbtest::LR35902::opcodeFFh()
 {
-
+    throw std::runtime_error("Opcode not implemented!");
 }

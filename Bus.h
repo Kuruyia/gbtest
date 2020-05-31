@@ -11,6 +11,8 @@ class Bus
 {
 
 public:
+    Bus();
+
     const uint8_t &read(const uint16_t &addr) const;
     void write(const uint16_t &addr, const uint8_t &data);
 
