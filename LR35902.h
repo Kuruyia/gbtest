@@ -80,6 +80,8 @@ public:
     const bool &isHalted() const;
     const bool &isStopped() const;
 
+    const unsigned &getTickCounter() const;
+
     void tick();
 
 private:
@@ -96,6 +98,8 @@ private:
     bool m_ime; // Interrupt Master Enable Flag
     bool m_halted; // CPU halted state
     bool m_stopped; // CPU stopped state
+
+    unsigned m_tickCounter;
 
     // Opcodes
     void opcode00h();

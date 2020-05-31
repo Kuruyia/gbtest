@@ -26,6 +26,7 @@ gbtest::LR35902::LR35902(Bus &bus)
 , m_ime(true)
 , m_halted(false)
 , m_stopped(false)
+, m_tickCounter(0)
 {
     resetRegisters();
 }
@@ -55,6 +56,11 @@ const bool &gbtest::LR35902::isStopped() const
     return m_stopped;
 }
 
+const unsigned &gbtest::LR35902::getTickCounter() const
+{
+    return m_tickCounter;
+}
+
 void gbtest::LR35902::tick()
 {
     // Decrement cycles to waste if needed
@@ -74,6 +80,8 @@ void gbtest::LR35902::tick()
                 << "Caught exception: " << e.what() << std::endl;
         }
     }
+
+    ++m_tickCounter;
 }
 
 void gbtest::LR35902::resetRegisters()

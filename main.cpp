@@ -78,6 +78,7 @@ void printCpuState(sf::RenderTarget &renderTarget, const gbtest::LR35902 &cpu, c
     std::stringstream sstr;
     sstr << std::boolalpha
          << "Cycles:  " << (int)cpu.getCyclesToWaste() << std::endl
+         << "TickCnt: " << cpu.getTickCounter() << std::endl
          << "IME:     " << cpu.isInterruptMasterEnabled() << std::endl
          << "Halted:  " << cpu.isHalted() << std::endl
          << "Stopped: " << cpu.isStopped() << std::endl;
