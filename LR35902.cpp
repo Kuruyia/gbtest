@@ -86,12 +86,12 @@ void gbtest::LR35902::tick()
 
 void gbtest::LR35902::resetRegisters()
 {
-    m_registers.af = 0;
-    m_registers.bc = 0;
-    m_registers.de = 0;
-    m_registers.hl = 0;
-    m_registers.sp = 0;
-    m_registers.pc = 0;
+    m_registers.af = 0x00;
+    m_registers.bc = 0x00;
+    m_registers.de = 0x00;
+    m_registers.hl = 0x00;
+    m_registers.sp = 0x00;
+    m_registers.pc = 0x100;
 }
 
 uint8_t gbtest::LR35902::fetch()

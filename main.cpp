@@ -94,27 +94,39 @@ int main()
     gbtest::Bus bus;
     gbtest::LR35902 cpu(bus);
 
-    bus.write(0, 0x06); // LD B, 0x69
-    bus.write(1, 0x69);
-    bus.write(2, 0x2E); // LD L, 0xF
-    bus.write(3, 0xF);
-    bus.write(4, 0x70); // LD (HL), B
+    FILE *gbRom;
+    if (fopen_s(&gbRom, "boot.bin", "rb") == 0)
+    {
+        uint8_t currByte;
+        unsigned offset = 0;
+        while (fread(&currByte, sizeof(currByte), 0x1, gbRom) > 0)
+            bus.write(0x100 + (offset++), currByte);
 
-    bus.write(6, 0x31); // LD SP, 0x0040
-    bus.write(7, 0x40);
-    bus.write(8, 0x00);
+        fclose(gbRom);
+    } else
+    {
+        bus.write(0x100, 0x06); // LD B, 0x69
+        bus.write(0x101, 0x69);
+        bus.write(0x102, 0x2E); // LD L, 0xF
+        bus.write(0x103, 0xF);
+        bus.write(0x104, 0x70); // LD (HL), B
 
-    bus.write(0x10, 0x08); // LD 0x20, SP
-    bus.write(0x11, 0x20);
-    bus.write(0x12, 0x00);
+        bus.write(0x106, 0x31); // LD SP, 0x0040
+        bus.write(0x107, 0x40);
+        bus.write(0x108, 0x00);
 
-    bus.write(0x14, 0x0E); // LD C, 0x42
-    bus.write(0x15, 0x42);
-    bus.write(0x16, 0xC5); // PUSH BC
-    bus.write(0x17, 0xD1); // POP DE
+        bus.write(0x110, 0x08); // LD 0x20, SP
+        bus.write(0x111, 0x20);
+        bus.write(0x112, 0x00);
 
-    bus.write(0x19, 0xF8); // LD HL, SP + (-1)
-    bus.write(0x1A, -1);
+        bus.write(0x114, 0x0E); // LD C, 0x42
+        bus.write(0x115, 0x42);
+        bus.write(0x116, 0xC5); // PUSH BC
+        bus.write(0x117, 0xD1); // POP DE
+
+        bus.write(0x119, 0xF8); // LD HL, SP + (-1)
+        bus.write(0x11A, -1);
+    }
 
     while (window.isOpen())
     {
@@ -140,7 +152,7 @@ int main()
 
         printRegisters(window, cpu, {0, 0});
         printCpuState(window, cpu, {125, 0});
-        printMemory(window, bus, 0, 0xF, {0, 150});
+        printMemory(window, bus, 0x100, 0xF, {0, 150});
 
         window.display();
 
