@@ -89,9 +89,12 @@ void gbtest::LR35902::opcode02h()
     m_cyclesToWaste = 8;
 }
 
+// INC BC
 void gbtest::LR35902::opcode03h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    ++m_registers.bc;
+
+    m_cyclesToWaste = 8;
 }
 
 // INC B
@@ -140,9 +143,16 @@ void gbtest::LR35902::opcode08h()
     m_cyclesToWaste = 20;
 }
 
+// ADD HL, BC
 void gbtest::LR35902::opcode09h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.hl += m_registers.bc;
+
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.hl & 0xFFF) + (m_registers.bc & 0xFFF)) & 0x1000) == 0x1000;
+    m_registers.f.c = (((m_registers.hl & 0xFFFF) + (m_registers.bc & 0xFFFF)) & 0x10000) == 0x10000;
+
+    m_cyclesToWaste = 8;
 }
 
 // LD A, (BC)
@@ -152,9 +162,12 @@ void gbtest::LR35902::opcode0Ah()
     m_cyclesToWaste = 8;
 }
 
+// DEC BC
 void gbtest::LR35902::opcode0Bh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    --m_registers.bc;
+
+    m_cyclesToWaste = 8;
 }
 
 // INC C
@@ -213,9 +226,12 @@ void gbtest::LR35902::opcode12h()
     m_cyclesToWaste = 8;
 }
 
+// INC DE
 void gbtest::LR35902::opcode13h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    ++m_registers.de;
+
+    m_cyclesToWaste = 8;
 }
 
 // INC D
@@ -259,9 +275,16 @@ void gbtest::LR35902::opcode18h()
     throw std::runtime_error("Opcode not implemented!");
 }
 
+// ADD HL, DE
 void gbtest::LR35902::opcode19h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.hl += m_registers.de;
+
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.hl & 0xFFF) + (m_registers.de & 0xFFF)) & 0x1000) == 0x1000;
+    m_registers.f.c = (((m_registers.hl & 0xFFFF) + (m_registers.de & 0xFFFF)) & 0x10000) == 0x10000;
+
+    m_cyclesToWaste = 8;
 }
 
 // LD A, (DE)
@@ -271,9 +294,12 @@ void gbtest::LR35902::opcode1Ah()
     m_cyclesToWaste = 8;
 }
 
+// DEC DE
 void gbtest::LR35902::opcode1Bh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    --m_registers.de;
+
+    m_cyclesToWaste = 8;
 }
 
 // INC E
@@ -332,9 +358,12 @@ void gbtest::LR35902::opcode22h()
     m_cyclesToWaste = 8;
 }
 
+// INC HL
 void gbtest::LR35902::opcode23h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    ++m_registers.hl;
+
+    m_cyclesToWaste = 8;
 }
 
 // INC H
@@ -378,9 +407,16 @@ void gbtest::LR35902::opcode28h()
     throw std::runtime_error("Opcode not implemented!");
 }
 
+// ADD HL, HL
 void gbtest::LR35902::opcode29h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.hl += m_registers.hl;
+
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.hl & 0xFFF) + (m_registers.hl & 0xFFF)) & 0x1000) == 0x1000;
+    m_registers.f.c = (((m_registers.hl & 0xFFFF) + (m_registers.hl & 0xFFFF)) & 0x10000) == 0x10000;
+
+    m_cyclesToWaste = 8;
 }
 
 // LD A, (HL+)
@@ -390,9 +426,12 @@ void gbtest::LR35902::opcode2Ah()
     m_cyclesToWaste = 8;
 }
 
+// DEC HL
 void gbtest::LR35902::opcode2Bh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    --m_registers.hl;
+
+    m_cyclesToWaste = 8;
 }
 
 // INC L
@@ -456,9 +495,12 @@ void gbtest::LR35902::opcode32h()
     m_cyclesToWaste = 8;
 }
 
+// INC SP
 void gbtest::LR35902::opcode33h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    ++m_registers.sp;
+
+    m_cyclesToWaste = 8;
 }
 
 // INC (HL)
@@ -509,9 +551,16 @@ void gbtest::LR35902::opcode38h()
     throw std::runtime_error("Opcode not implemented!");
 }
 
+// ADD HL, SP
 void gbtest::LR35902::opcode39h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.hl += m_registers.sp;
+
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.hl & 0xFFF) + (m_registers.sp & 0xFFF)) & 0x1000) == 0x1000;
+    m_registers.f.c = (((m_registers.hl & 0xFFFF) + (m_registers.sp & 0xFFFF)) & 0x10000) == 0x10000;
+
+    m_cyclesToWaste = 8;
 }
 
 // LD A, (HL-)
@@ -521,9 +570,12 @@ void gbtest::LR35902::opcode3Ah()
     m_cyclesToWaste = 8;
 }
 
+// DEC SP
 void gbtest::LR35902::opcode3Bh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    --m_registers.sp;
+
+    m_cyclesToWaste = 8;
 }
 
 // INC A
@@ -2095,9 +2147,18 @@ void gbtest::LR35902::opcodeE7h()
     throw std::runtime_error("Opcode not implemented!");
 }
 
+// ADD SP, r8
 void gbtest::LR35902::opcodeE8h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const auto val = (int8_t)fetch();
+    m_registers.sp += val;
+
+    m_registers.f.z = 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.sp & 0xF) + (val & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.sp & 0xFF) + (val & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 16;
 }
 
 void gbtest::LR35902::opcodeE9h()
