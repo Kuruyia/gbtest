@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "LR35902.h"
 
 gbtest::LR35902::LR35902(Bus &bus)
@@ -83,14 +85,28 @@ void gbtest::LR35902::opcode03h()
 
 }
 
+// INC B
 void gbtest::LR35902::opcode04h()
 {
+    ++m_registers.b;
 
+    m_registers.f.z = m_registers.b == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = m_registers.b == 0x10;
+
+    m_cyclesToWaste = 4;
 }
 
+// DEC B
 void gbtest::LR35902::opcode05h()
 {
+    --m_registers.b;
 
+    m_registers.f.z = m_registers.b == 0;
+    m_registers.f.n = 1;
+    m_registers.f.h = m_registers.b == 0xF;
+
+    m_cyclesToWaste = 4;
 }
 
 // LD B, d8
@@ -179,14 +195,28 @@ void gbtest::LR35902::opcode13h()
 
 }
 
+// INC D
 void gbtest::LR35902::opcode14h()
 {
+    ++m_registers.d;
 
+    m_registers.f.z = m_registers.d == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = m_registers.d == 0x10;
+
+    m_cyclesToWaste = 4;
 }
 
+// DEC D
 void gbtest::LR35902::opcode15h()
 {
+    --m_registers.d;
 
+    m_registers.f.z = m_registers.d == 0;
+    m_registers.f.n = 1;
+    m_registers.f.h = m_registers.d == 0xF;
+
+    m_cyclesToWaste = 4;
 }
 
 // LD D, d8
@@ -270,14 +300,28 @@ void gbtest::LR35902::opcode23h()
 
 }
 
+// INC H
 void gbtest::LR35902::opcode24h()
 {
+    ++m_registers.h;
 
+    m_registers.f.z = m_registers.h == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = m_registers.h == 0x10;
+
+    m_cyclesToWaste = 4;
 }
 
+// DEC H
 void gbtest::LR35902::opcode25h()
 {
+    --m_registers.h;
 
+    m_registers.f.z = m_registers.h == 0;
+    m_registers.f.n = 1;
+    m_registers.f.h = m_registers.h == 0xF;
+
+    m_cyclesToWaste = 4;
 }
 
 // LD H, d8
@@ -360,14 +404,30 @@ void gbtest::LR35902::opcode33h()
 
 }
 
+// INC (HL)
 void gbtest::LR35902::opcode34h()
 {
+    const uint8_t val = m_bus.read(m_registers.hl) + 1;
+    m_bus.write(m_registers.hl, val);
 
+    m_registers.f.z = val == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = val == 0x10;
+
+    m_cyclesToWaste = 12;
 }
 
+// DEC (HL)
 void gbtest::LR35902::opcode35h()
 {
+    const uint8_t val = m_bus.read(m_registers.hl) - 1;
+    m_bus.write(m_registers.hl, val);
 
+    m_registers.f.z = val == 0;
+    m_registers.f.n = 1;
+    m_registers.f.h = val == 0xF;
+
+    m_cyclesToWaste = 12;
 }
 
 // LD (HL), d8
