@@ -87,6 +87,7 @@ private:
 
     uint8_t m_cyclesToWaste;
     LR35902Registers m_registers;
+    bool m_ime; // Interrupt Master Enable Flag
 
     // Opcodes
     void opcode00h();
