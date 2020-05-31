@@ -157,14 +157,28 @@ void gbtest::LR35902::opcode0Bh()
     throw std::runtime_error("Opcode not implemented!");
 }
 
+// INC C
 void gbtest::LR35902::opcode0Ch()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    ++m_registers.c;
+
+    m_registers.f.z = m_registers.c == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = m_registers.c == 0x10;
+
+    m_cyclesToWaste = 4;
 }
 
+// DEC C
 void gbtest::LR35902::opcode0Dh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    --m_registers.c;
+
+    m_registers.f.z = m_registers.c == 0;
+    m_registers.f.n = 1;
+    m_registers.f.h = m_registers.c == 0xF;
+
+    m_cyclesToWaste = 4;
 }
 
 // LD C, d8
@@ -262,14 +276,28 @@ void gbtest::LR35902::opcode1Bh()
     throw std::runtime_error("Opcode not implemented!");
 }
 
+// INC E
 void gbtest::LR35902::opcode1Ch()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    ++m_registers.e;
+
+    m_registers.f.z = m_registers.e == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = m_registers.e == 0x10;
+
+    m_cyclesToWaste = 4;
 }
 
+// DEC E
 void gbtest::LR35902::opcode1Dh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    --m_registers.e;
+
+    m_registers.f.z = m_registers.e == 0;
+    m_registers.f.n = 1;
+    m_registers.f.h = m_registers.e == 0xF;
+
+    m_cyclesToWaste = 4;
 }
 
 // LD E, d8
@@ -367,14 +395,28 @@ void gbtest::LR35902::opcode2Bh()
     throw std::runtime_error("Opcode not implemented!");
 }
 
+// INC L
 void gbtest::LR35902::opcode2Ch()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    ++m_registers.l;
+
+    m_registers.f.z = m_registers.l == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = m_registers.l == 0x10;
+
+    m_cyclesToWaste = 4;
 }
 
+// DEC L
 void gbtest::LR35902::opcode2Dh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    --m_registers.l;
+
+    m_registers.f.z = m_registers.l == 0;
+    m_registers.f.n = 1;
+    m_registers.f.h = m_registers.l == 0xF;
+
+    m_cyclesToWaste = 4;
 }
 
 // LD L, d8
@@ -384,9 +426,15 @@ void gbtest::LR35902::opcode2Eh()
     m_cyclesToWaste = 8;
 }
 
+// CPL
 void gbtest::LR35902::opcode2Fh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a = ~m_registers.a;
+
+    m_registers.f.n = 1;
+    m_registers.f.h = 1;
+
+    m_cyclesToWaste = 4;
 }
 
 void gbtest::LR35902::opcode30h()
@@ -446,9 +494,14 @@ void gbtest::LR35902::opcode36h()
     m_cyclesToWaste = 12;
 }
 
+// SCF
 void gbtest::LR35902::opcode37h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 1;
+
+    m_cyclesToWaste = 4;
 }
 
 void gbtest::LR35902::opcode38h()
@@ -473,14 +526,28 @@ void gbtest::LR35902::opcode3Bh()
     throw std::runtime_error("Opcode not implemented!");
 }
 
+// INC A
 void gbtest::LR35902::opcode3Ch()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    ++m_registers.a;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = m_registers.a == 0x10;
+
+    m_cyclesToWaste = 4;
 }
 
+// DEC A
 void gbtest::LR35902::opcode3Dh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    --m_registers.a;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+    m_registers.f.h = m_registers.a == 0xF;
+
+    m_cyclesToWaste = 4;
 }
 
 // LD A, d8
@@ -490,9 +557,14 @@ void gbtest::LR35902::opcode3Eh()
     m_cyclesToWaste = 8;
 }
 
+// CCF
 void gbtest::LR35902::opcode3Fh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = ~m_registers.f.c;
+
+    m_cyclesToWaste = 4;
 }
 
 // LD B, B
@@ -941,324 +1013,819 @@ void gbtest::LR35902::opcode7Fh()
     m_cyclesToWaste = 4;
 }
 
+// ADD A, B
 void gbtest::LR35902::opcode80h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a += m_registers.b;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.b & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.b & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 4;
 }
 
+// ADD A, C
 void gbtest::LR35902::opcode81h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a += m_registers.c;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.c & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.c & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 4;
 }
 
+// ADD A, D
 void gbtest::LR35902::opcode82h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a += m_registers.d;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.d & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.d & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 4;
 }
 
+// ADD A, E
 void gbtest::LR35902::opcode83h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a += m_registers.e;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.e & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.e & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 4;
 }
 
+// ADD A, H
 void gbtest::LR35902::opcode84h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a += m_registers.h;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.h & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.h & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 4;
 }
 
+// ADD A, L
 void gbtest::LR35902::opcode85h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a += m_registers.l;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.l & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.l & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 4;
 }
 
+// ADD A, (HL)
 void gbtest::LR35902::opcode86h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t val = m_bus.read(m_registers.hl);
+    m_registers.a += val;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (val & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (val & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 8;
 }
 
+// ADD A, A
 void gbtest::LR35902::opcode87h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a += m_registers.a;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.a & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.a & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 4;
 }
 
+// ADC A, B
 void gbtest::LR35902::opcode88h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a += m_registers.b + m_registers.f.c;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.b & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.b & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 4;
 }
 
+// ADC A, C
 void gbtest::LR35902::opcode89h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a += m_registers.c + m_registers.f.c;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.c & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.c & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 4;
 }
 
+// ADC A, D
 void gbtest::LR35902::opcode8Ah()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a += m_registers.d + m_registers.f.c;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.d & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.d & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 4;
 }
 
+// ADC A, E
 void gbtest::LR35902::opcode8Bh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a += m_registers.e + m_registers.f.c;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.e & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.e & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 4;
 }
 
+// ADC A, H
 void gbtest::LR35902::opcode8Ch()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a += m_registers.h + m_registers.f.c;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.h & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.h & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 4;
 }
 
+// ADC A, L
 void gbtest::LR35902::opcode8Dh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a += m_registers.l + m_registers.f.c;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.l & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.l & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 4;
 }
 
+// ADC A, (HL)
 void gbtest::LR35902::opcode8Eh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t val = m_bus.read(m_registers.hl);
+    m_registers.a += val + m_registers.f.c;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (val & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (val & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 8;
 }
 
+// ADC A, A
 void gbtest::LR35902::opcode8Fh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a += m_registers.a + m_registers.f.c;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.a & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.a & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 4;
 }
 
+// SUB A, B
 void gbtest::LR35902::opcode90h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.c = m_registers.b > m_registers.a;
+    m_registers.a -= m_registers.b;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
 }
 
+// SUB A, C
 void gbtest::LR35902::opcode91h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.c = m_registers.c > m_registers.a;
+    m_registers.a -= m_registers.c;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
 }
 
+// SUB A, D
 void gbtest::LR35902::opcode92h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.c = m_registers.d > m_registers.a;
+    m_registers.a -= m_registers.d;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
 }
 
+// SUB A, E
 void gbtest::LR35902::opcode93h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.c = m_registers.e > m_registers.a;
+    m_registers.a -= m_registers.e;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
 }
 
+// SUB A, H
 void gbtest::LR35902::opcode94h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.c = m_registers.h > m_registers.a;
+    m_registers.a -= m_registers.h;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
 }
 
+// SUB A, L
 void gbtest::LR35902::opcode95h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.c = m_registers.l > m_registers.a;
+    m_registers.a -= m_registers.l;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
 }
 
+// SUB A, (HL)
 void gbtest::LR35902::opcode96h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t val = m_bus.read(m_registers.hl);
+
+    m_registers.f.c = val > m_registers.a;
+    m_registers.a -= val;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 8;
 }
 
+// SUB A, A
 void gbtest::LR35902::opcode97h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a = 0;
+
+    m_registers.f.z = 1;
+    m_registers.f.n = 1;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// SBC A, B
 void gbtest::LR35902::opcode98h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t oldCarry = m_registers.f.c;
+    m_registers.f.c = (m_registers.b + oldCarry) > m_registers.a;
+
+    m_registers.a -= m_registers.b + oldCarry;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
 }
 
+// SBC A, C
 void gbtest::LR35902::opcode99h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t oldCarry = m_registers.f.c;
+    m_registers.f.c = (m_registers.c + oldCarry) > m_registers.a;
+
+    m_registers.a -= m_registers.c + oldCarry;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
 }
 
+// SBC A, D
 void gbtest::LR35902::opcode9Ah()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t oldCarry = m_registers.f.c;
+    m_registers.f.c = (m_registers.d + oldCarry) > m_registers.a;
+
+    m_registers.a -= m_registers.d + oldCarry;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
 }
 
+// SBC A, E
 void gbtest::LR35902::opcode9Bh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t oldCarry = m_registers.f.c;
+    m_registers.f.c = (m_registers.e + oldCarry) > m_registers.a;
+
+    m_registers.a -= m_registers.e + oldCarry;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
 }
 
+// SBC A, H
 void gbtest::LR35902::opcode9Ch()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t oldCarry = m_registers.f.c;
+    m_registers.f.c = (m_registers.h + oldCarry) > m_registers.a;
+
+    m_registers.a -= m_registers.h + oldCarry;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
 }
 
+// SBC A, L
 void gbtest::LR35902::opcode9Dh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t oldCarry = m_registers.f.c;
+    m_registers.f.c = (m_registers.l + oldCarry) > m_registers.a;
+
+    m_registers.a -= m_registers.l + oldCarry;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
 }
 
+// SBC A, (HL)
 void gbtest::LR35902::opcode9Eh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t oldCarry = m_registers.f.c;
+    const uint8_t val = m_bus.read(m_registers.hl);
+
+    m_registers.f.c = (val + oldCarry) > m_registers.a;
+    m_registers.a -= val + oldCarry;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 8;
 }
 
+// SBC A, A
 void gbtest::LR35902::opcode9Fh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t oldCarry = m_registers.f.c;
+    m_registers.f.c = (m_registers.a + oldCarry) > m_registers.a;
+
+    m_registers.a -= m_registers.a + oldCarry;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
 }
 
+// AND A, B
 void gbtest::LR35902::opcodeA0h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a &= m_registers.b;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 1;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// AND A, C
 void gbtest::LR35902::opcodeA1h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a &= m_registers.c;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 1;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// AND A, D
 void gbtest::LR35902::opcodeA2h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a &= m_registers.d;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 1;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// AND A, E
 void gbtest::LR35902::opcodeA3h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a &= m_registers.e;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 1;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// AND A, H
 void gbtest::LR35902::opcodeA4h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a &= m_registers.h;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 1;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// AND A, L
 void gbtest::LR35902::opcodeA5h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a &= m_registers.l;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 1;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// AND A, (HL)
 void gbtest::LR35902::opcodeA6h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a &= m_bus.read(m_registers.hl);
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 1;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 8;
 }
 
+// AND A, A
 void gbtest::LR35902::opcodeA7h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a &= m_registers.a;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 1;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// XOR A, B
 void gbtest::LR35902::opcodeA8h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a ^= m_registers.b;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// XOR A, C
 void gbtest::LR35902::opcodeA9h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a ^= m_registers.c;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// XOR A, D
 void gbtest::LR35902::opcodeAAh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a ^= m_registers.d;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// XOR A, E
 void gbtest::LR35902::opcodeABh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a ^= m_registers.e;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// XOR A, H
 void gbtest::LR35902::opcodeACh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a ^= m_registers.h;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// XOR A, L
 void gbtest::LR35902::opcodeADh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a ^= m_registers.l;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// XOR A, (HL)
 void gbtest::LR35902::opcodeAEh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a ^= m_bus.read(m_registers.hl);
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 8;
 }
 
+// XOR A, A
 void gbtest::LR35902::opcodeAFh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a ^= m_registers.a;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// OR A, B
 void gbtest::LR35902::opcodeB0h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a |= m_registers.b;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// OR A, C
 void gbtest::LR35902::opcodeB1h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a |= m_registers.c;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// OR A, D
 void gbtest::LR35902::opcodeB2h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a |= m_registers.d;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// OR A, E
 void gbtest::LR35902::opcodeB3h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a |= m_registers.e;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// OR A, H
 void gbtest::LR35902::opcodeB4h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a |= m_registers.h;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// OR A, L
 void gbtest::LR35902::opcodeB5h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a |= m_registers.l;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// OR A, (HL)
 void gbtest::LR35902::opcodeB6h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a |= m_bus.read(m_registers.hl);
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 8;
 }
 
+// OR A, A
 void gbtest::LR35902::opcodeB7h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a |= m_registers.a;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
+// CP A, B
 void gbtest::LR35902::opcodeB8h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.z = m_registers.a == m_registers.b;
+    m_registers.f.n = 1;
+    m_registers.f.c = m_registers.b > m_registers.a;
+
+    m_cyclesToWaste = 4;
 }
 
+// CP A, C
 void gbtest::LR35902::opcodeB9h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.z = m_registers.a == m_registers.c;
+    m_registers.f.n = 1;
+    m_registers.f.c = m_registers.c > m_registers.a;
+
+    m_cyclesToWaste = 4;
 }
 
+// CP A, D
 void gbtest::LR35902::opcodeBAh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.z = m_registers.a == m_registers.d;
+    m_registers.f.n = 1;
+    m_registers.f.c = m_registers.d > m_registers.a;
+
+    m_cyclesToWaste = 4;
 }
 
+// CP A, E
 void gbtest::LR35902::opcodeBBh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.z = m_registers.a == m_registers.e;
+    m_registers.f.n = 1;
+    m_registers.f.c = m_registers.e > m_registers.a;
+
+    m_cyclesToWaste = 4;
 }
 
+// CP A, H
 void gbtest::LR35902::opcodeBCh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.z = m_registers.a == m_registers.h;
+    m_registers.f.n = 1;
+    m_registers.f.c = m_registers.h > m_registers.a;
+
+    m_cyclesToWaste = 4;
 }
 
+// CP A, L
 void gbtest::LR35902::opcodeBDh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.z = m_registers.a == m_registers.l;
+    m_registers.f.n = 1;
+    m_registers.f.c = m_registers.l > m_registers.a;
+
+    m_cyclesToWaste = 4;
 }
 
+// CP A, (HL)
 void gbtest::LR35902::opcodeBEh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t val = m_bus.read(m_registers.hl);
+
+    m_registers.f.z = m_registers.a == val;
+    m_registers.f.n = 1;
+    m_registers.f.c = val > m_registers.a;
+
+    m_cyclesToWaste = 8;
 }
 
+// CP A, A
 void gbtest::LR35902::opcodeBFh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.z = 1;
+    m_registers.f.n = 1;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
 }
 
 void gbtest::LR35902::opcodeC0h()
@@ -1297,9 +1864,18 @@ void gbtest::LR35902::opcodeC5h()
     m_cyclesToWaste = 16;
 }
 
+// ADD A, d8
 void gbtest::LR35902::opcodeC6h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t val = fetch();
+    m_registers.a += val;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (val & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (val & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 8;
 }
 
 void gbtest::LR35902::opcodeC7h()
@@ -1337,9 +1913,18 @@ void gbtest::LR35902::opcodeCDh()
     throw std::runtime_error("Opcode not implemented!");
 }
 
+// ADC A, d8
 void gbtest::LR35902::opcodeCEh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t val = fetch();
+    m_registers.a += val + m_registers.f.c;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = (((m_registers.a & 0xF) + (val & 0xF)) & 0x10) == 0x10;
+    m_registers.f.c = (((m_registers.a & 0xFF) + (val & 0xFF)) & 0x100) == 0x100;
+
+    m_cyclesToWaste = 8;
 }
 
 void gbtest::LR35902::opcodeCFh()
@@ -1383,9 +1968,18 @@ void gbtest::LR35902::opcodeD5h()
     m_cyclesToWaste = 16;
 }
 
+// SUB A, d8
 void gbtest::LR35902::opcodeD6h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t val = fetch();
+
+    m_registers.f.c = val > m_registers.a;
+    m_registers.a -= val;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 8;
 }
 
 void gbtest::LR35902::opcodeD7h()
@@ -1423,9 +2017,19 @@ void gbtest::LR35902::opcodeDDh()
     throw std::runtime_error("Opcode not implemented!");
 }
 
+// SBC A, d8
 void gbtest::LR35902::opcodeDEh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t oldCarry = m_registers.f.c;
+    const uint8_t val = fetch();
+
+    m_registers.f.c = (val + oldCarry) > m_registers.a;
+    m_registers.a -= val + oldCarry;
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 8;
 }
 
 void gbtest::LR35902::opcodeDFh()
@@ -1473,9 +2077,17 @@ void gbtest::LR35902::opcodeE5h()
     m_cyclesToWaste = 16;
 }
 
+// AND A, d8
 void gbtest::LR35902::opcodeE6h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a &= fetch();
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 1;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 8;
 }
 
 void gbtest::LR35902::opcodeE7h()
@@ -1515,9 +2127,17 @@ void gbtest::LR35902::opcodeEDh()
     throw std::runtime_error("Opcode not implemented!");
 }
 
+// XOR A, d8
 void gbtest::LR35902::opcodeEEh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a ^= fetch();
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 8;
 }
 
 void gbtest::LR35902::opcodeEFh()
@@ -1565,9 +2185,17 @@ void gbtest::LR35902::opcodeF5h()
     m_cyclesToWaste = 16;
 }
 
+// OR A, d8
 void gbtest::LR35902::opcodeF6h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.a |= fetch();
+
+    m_registers.f.z = m_registers.a == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 8;
 }
 
 void gbtest::LR35902::opcodeF7h()
@@ -1618,9 +2246,16 @@ void gbtest::LR35902::opcodeFDh()
     throw std::runtime_error("Opcode not implemented!");
 }
 
+// CP A, d8
 void gbtest::LR35902::opcodeFEh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t val = fetch();
+
+    m_registers.f.z = m_registers.a == val;
+    m_registers.f.n = 1;
+    m_registers.f.c = val > m_registers.a;
+
+    m_cyclesToWaste = 8;
 }
 
 void gbtest::LR35902::opcodeFFh()
