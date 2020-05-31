@@ -129,9 +129,18 @@ void gbtest::LR35902::opcode06h()
     m_cyclesToWaste = 8;
 }
 
+// RLCA
 void gbtest::LR35902::opcode07h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.c = (m_registers.a >> 7) & 0x1;
+
+    m_registers.a = (m_registers.a << 1) | m_registers.f.c;
+
+    m_registers.f.z = 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+
+    m_cyclesToWaste = 4;
 }
 
 // LD (a16), SP
@@ -202,9 +211,18 @@ void gbtest::LR35902::opcode0Eh()
     m_cyclesToWaste = 8;
 }
 
+// RRCA
 void gbtest::LR35902::opcode0Fh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_registers.f.c = m_registers.a & 0x1;
+
+    m_registers.a = (m_registers.a >> 1) | (m_registers.f.c << 7);
+
+    m_registers.f.z = 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+
+    m_cyclesToWaste = 4;
 }
 
 void gbtest::LR35902::opcode10h()
@@ -266,9 +284,19 @@ void gbtest::LR35902::opcode16h()
     m_cyclesToWaste = 8;
 }
 
+// RLA
 void gbtest::LR35902::opcode17h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t newCarry = (m_registers.a >> 7) & 0x1;
+
+    m_registers.a = (m_registers.a << 1) | m_registers.f.c;
+
+    m_registers.f.z = 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = newCarry;
+
+    m_cyclesToWaste = 4;
 }
 
 // JR r8
@@ -336,9 +364,19 @@ void gbtest::LR35902::opcode1Eh()
     m_cyclesToWaste = 8;
 }
 
+// RRA
 void gbtest::LR35902::opcode1Fh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    const uint8_t newCarry = m_registers.a & 0x1;
+
+    m_registers.a = (m_registers.a >> 1) | (m_registers.f.c << 7);
+
+    m_registers.f.z = 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = newCarry;
+
+    m_cyclesToWaste = 4;
 }
 
 // JR NZ, r8
