@@ -21,9 +21,11 @@ gbtest::LR35902::LR35902(Bus &bus)
                   [this] { opcodeD0h(); }, [this] { opcodeD1h(); }, [this] { opcodeD2h(); }, [this] { opcodeD3h(); }, [this] { opcodeD4h(); }, [this] { opcodeD5h(); }, [this] { opcodeD6h(); }, [this] { opcodeD7h(); }, [this] { opcodeD8h(); }, [this] { opcodeD9h(); }, [this] { opcodeDAh(); }, [this] { opcodeDBh(); }, [this] { opcodeDCh(); }, [this] { opcodeDDh(); }, [this] { opcodeDEh(); }, [this] { opcodeDFh(); },
                   [this] { opcodeE0h(); }, [this] { opcodeE1h(); }, [this] { opcodeE2h(); }, [this] { opcodeE3h(); }, [this] { opcodeE4h(); }, [this] { opcodeE5h(); }, [this] { opcodeE6h(); }, [this] { opcodeE7h(); }, [this] { opcodeE8h(); }, [this] { opcodeE9h(); }, [this] { opcodeEAh(); }, [this] { opcodeEBh(); }, [this] { opcodeECh(); }, [this] { opcodeEDh(); }, [this] { opcodeEEh(); }, [this] { opcodeEFh(); },
                   [this] { opcodeF0h(); }, [this] { opcodeF1h(); }, [this] { opcodeF2h(); }, [this] { opcodeF3h(); }, [this] { opcodeF4h(); }, [this] { opcodeF5h(); }, [this] { opcodeF6h(); }, [this] { opcodeF7h(); }, [this] { opcodeF8h(); }, [this] { opcodeF9h(); }, [this] { opcodeFAh(); }, [this] { opcodeFBh(); }, [this] { opcodeFCh(); }, [this] { opcodeFDh(); }, [this] { opcodeFEh(); }, [this] { opcodeFFh(); }})
-, m_cyclesToWaste(0)
 , m_registers({})
+, m_cyclesToWaste(0)
 , m_ime(true)
+, m_halted(false)
+, m_stopped(false)
 {
     resetRegisters();
 }
@@ -31,6 +33,26 @@ gbtest::LR35902::LR35902(Bus &bus)
 const gbtest::LR35902::LR35902Registers &gbtest::LR35902::getRegisters() const
 {
     return m_registers;
+}
+
+const uint8_t &gbtest::LR35902::getCyclesToWaste() const
+{
+    return m_cyclesToWaste;
+}
+
+const bool &gbtest::LR35902::isInterruptMasterEnabled() const
+{
+    return m_ime;
+}
+
+const bool &gbtest::LR35902::isHalted() const
+{
+    return m_halted;
+}
+
+const bool &gbtest::LR35902::isStopped() const
+{
+    return m_stopped;
 }
 
 void gbtest::LR35902::tick()
@@ -225,9 +247,11 @@ void gbtest::LR35902::opcode0Fh()
     m_cyclesToWaste = 4;
 }
 
+// STOP
 void gbtest::LR35902::opcode10h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_stopped = true;
+    m_cyclesToWaste = 4;
 }
 
 // LD DE, d16
@@ -1070,9 +1094,11 @@ void gbtest::LR35902::opcode75h()
     m_cyclesToWaste = 8;
 }
 
+// HALT
 void gbtest::LR35902::opcode76h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_halted = true;
+    m_cyclesToWaste = 4;
 }
 
 // LD (HL), A
@@ -2474,9 +2500,11 @@ void gbtest::LR35902::opcodeF2h()
     m_cyclesToWaste = 8;
 }
 
+// DI
 void gbtest::LR35902::opcodeF3h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_ime = false;
+    m_cyclesToWaste = 4;
 }
 
 void gbtest::LR35902::opcodeF4h()
@@ -2545,9 +2573,11 @@ void gbtest::LR35902::opcodeFAh()
     m_cyclesToWaste = 16;
 }
 
+// EI
 void gbtest::LR35902::opcodeFBh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    m_ime = true;
+    m_cyclesToWaste = 4;
 }
 
 void gbtest::LR35902::opcodeFCh()

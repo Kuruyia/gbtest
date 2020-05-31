@@ -65,6 +65,27 @@ void printMemory(sf::RenderTarget &renderTarget, const gbtest::Bus &bus, const u
     renderTarget.draw(text);
 }
 
+void printCpuState(sf::RenderTarget &renderTarget, const gbtest::LR35902 &cpu, const sf::Vector2f &pos)
+{
+    sf::Font font;
+    font.loadFromFile("UbuntuMono-Regular.ttf");
+
+    sf::Text text;
+    text.setFont(font);
+    text.setCharacterSize(16);
+    text.setPosition(pos);
+
+    std::stringstream sstr;
+    sstr << std::boolalpha
+         << "Cycles:  " << (int)cpu.getCyclesToWaste() << std::endl
+         << "IME:     " << cpu.isInterruptMasterEnabled() << std::endl
+         << "Halted:  " << cpu.isHalted() << std::endl
+         << "Stopped: " << cpu.isStopped() << std::endl;
+
+    text.setString(sstr.str());
+    renderTarget.draw(text);
+}
+
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(500, 500), "gbtest");
@@ -117,6 +138,7 @@ int main()
         window.clear();
 
         printRegisters(window, cpu, {0, 0});
+        printCpuState(window, cpu, {125, 0});
         printMemory(window, bus, 0, 0xF, {0, 150});
 
         window.display();

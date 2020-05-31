@@ -75,6 +75,11 @@ public:
 
     const LR35902Registers &getRegisters() const;
 
+    const uint8_t &getCyclesToWaste() const;
+    const bool &isInterruptMasterEnabled() const;
+    const bool &isHalted() const;
+    const bool &isStopped() const;
+
     void tick();
 
 private:
@@ -85,9 +90,12 @@ private:
 
     const std::array<std::function<void()>, 0x100> m_opcodeLookup;
 
-    uint8_t m_cyclesToWaste;
     LR35902Registers m_registers;
+
+    uint8_t m_cyclesToWaste;
     bool m_ime; // Interrupt Master Enable Flag
+    bool m_halted; // CPU halted state
+    bool m_stopped; // CPU stopped state
 
     // Opcodes
     void opcode00h();
