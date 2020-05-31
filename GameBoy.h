@@ -13,6 +13,7 @@ class GameBoy
 public:
     GameBoy();
 
+    void update(int64_t delta);
     void tick();
 
     Bus &getBus();

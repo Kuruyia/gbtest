@@ -1,7 +1,3 @@
-#include <iomanip>
-#include <iostream>
-#include <sstream>
-
 #include <SFML/Window.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
@@ -13,10 +9,11 @@
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(500, 500), "gbtest");
-    sf::Clock clock;
+    sf::Clock fpsClock;
 
     gbtest::GameBoy gameboy;
     gbtest::DebugScreen debugScreen(gameboy);
+    bool tickEnabled = true;
 
     FILE *gbRom;
     if (fopen_s(&gbRom, "boot.bin", "rb") == 0)
@@ -52,9 +49,14 @@ int main()
         gameboy.getBus().write(0x11A, -1);
     }
 
+    sf::Clock busTick;
+
     while (window.isOpen())
     {
-        gameboy.tick();
+        if (tickEnabled)
+            gameboy.update(busTick.getElapsedTime().asMicroseconds());
+
+        busTick.restart();
 
         sf::Event event;
         while (window.pollEvent(event))
@@ -67,7 +69,10 @@ int main()
             {
                 if (event.key.code == sf::Keyboard::Key::Space)
                 {
-//                    gameboy.tick();
+                    gameboy.tick();
+                } else if (event.key.code == sf::Keyboard::P)
+                {
+                    tickEnabled = !tickEnabled;
                 }
             }
         }
@@ -78,11 +83,8 @@ int main()
 
         window.display();
 
-        window.setTitle("gbtest - " + std::to_string(1.f / clock.getElapsedTime().asSeconds()) + " FPS");
-        clock.restart();
-
-        if (gameboy.getCpu().getTickCounter() % 10000 == 0)
-            std::cout << gameboy.getCpu().getTickCounter() << std::endl;
+        window.setTitle("gbtest - " + std::to_string(1.f / fpsClock.getElapsedTime().asSeconds()) + " FPS");
+        fpsClock.restart();
     }
 
     return 0;

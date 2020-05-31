@@ -31,13 +31,13 @@ void gbtest::DebugScreen::render(sf::RenderTarget &renderTarget)
 void gbtest::DebugScreen::printRegisters(sf::RenderTarget &renderTarget)
 {
     std::stringstream sstr;
-    sstr << std::hex
-         << "A:  " << std::setw(2) << std::setfill('0') << (int)m_gb.getCpu().getRegisters().a << "h" << std::endl
-         << "BC: " << std::setw(4) << std::setfill('0') << m_gb.getCpu().getRegisters().bc << "h" << std::endl
-         << "DE: " << std::setw(4) << std::setfill('0') << m_gb.getCpu().getRegisters().de << "h" << std::endl
-         << "HL: " << std::setw(4) << std::setfill('0') << m_gb.getCpu().getRegisters().hl << "h" << std::endl
-         << "SP: " << std::setw(4) << std::setfill('0') << m_gb.getCpu().getRegisters().sp << "h" << std::endl
-         << "PC: " << std::setw(4) << std::setfill('0') << m_gb.getCpu().getRegisters().pc << "h" << std::endl
+    sstr << std::uppercase << std::hex
+         << "AF: " << std::setw(2) << std::setfill('0') << m_gb.getCpu().getRegisters().af << std::endl
+         << "BC: " << std::setw(4) << std::setfill('0') << m_gb.getCpu().getRegisters().bc << std::endl
+         << "DE: " << std::setw(4) << std::setfill('0') << m_gb.getCpu().getRegisters().de << std::endl
+         << "HL: " << std::setw(4) << std::setfill('0') << m_gb.getCpu().getRegisters().hl << std::endl
+         << "SP: " << std::setw(4) << std::setfill('0') << m_gb.getCpu().getRegisters().sp << std::endl
+         << "PC: " << std::setw(4) << std::setfill('0') << m_gb.getCpu().getRegisters().pc << std::endl
          << "F:  " << (m_gb.getCpu().getRegisters().f.z ? 'Z' : '-') << ' ' << (m_gb.getCpu().getRegisters().f.n ? 'N' : '-') << ' '
          << (m_gb.getCpu().getRegisters().f.h ? 'H' : '-') << ' ' << (m_gb.getCpu().getRegisters().f.c ? 'C' : '-') << ' ';
 
@@ -48,7 +48,7 @@ void gbtest::DebugScreen::printRegisters(sf::RenderTarget &renderTarget)
 void gbtest::DebugScreen::printMemory(sf::RenderTarget &renderTarget, const uint16_t &startAddr, const uint16_t &nbLines)
 {
     std::stringstream sstr;
-    sstr << std::hex << "Addr ";
+    sstr << std::hex << "Addr " << std::uppercase;
     for (unsigned i = 0; i <= 0xF; ++i)
         sstr << std::setw(2) << i << ' ';
 
