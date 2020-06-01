@@ -76,7 +76,8 @@ void gbtest::LR35902::tick()
             m_opcodeLookup[opcode]();
         } catch (const std::runtime_error &e)
         {
-            std::cerr << std::hex << "PC = 0x" << m_registers.pc << "; Opcode = 0x" << (int)opcode << std::endl
+            std::cerr << std::uppercase << std::hex
+                << "PC = 0x" << m_registers.pc << "; Opcode = 0x" << (int)opcode << std::endl
                 << "Caught exception: " << e.what() << std::endl;
         }
     }
@@ -2125,9 +2126,60 @@ void gbtest::LR35902::opcodeCAh()
     m_cyclesToWaste = 16;
 }
 
+// Prefixed instructions
 void gbtest::LR35902::opcodeCBh()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    // Get the real opcode and the destination register/memory
+    const uint8_t opcode = fetch();
+    uint8_t lowOpcode = opcode & 0x7;
+
+    auto getRegisterByLowerBits = [&](const uint8_t &lowerBits, uint8_t &defaultDest) -> uint8_t& {
+        switch (lowerBits)
+        {
+            case 0x00: return m_registers.b;
+            case 0x01: return m_registers.c;
+            case 0x02: return m_registers.d;
+            case 0x03: return m_registers.e;
+            case 0x04: return m_registers.h;
+            case 0x05: return m_registers.l;
+            case 0x07: return m_registers.a;
+            default: return defaultDest;
+        }
+    };
+
+    uint8_t memValue = m_bus.read(m_registers.hl);
+    uint8_t &dest = getRegisterByLowerBits(lowOpcode, memValue);
+
+    // Apply the right operation
+    if (opcode >= 0x00 && opcode <= 0x07)
+        RLC(dest);
+    else if (opcode >= 0x08 && opcode <= 0x0F)
+        RRC(dest);
+    else if (opcode >= 0x10 && opcode <= 0x17)
+        RL(dest);
+    else if (opcode >= 0x18 && opcode <= 0x1F)
+        RR(dest);
+    else if (opcode >= 0x20 && opcode <= 0x27)
+        SLA(dest);
+    else if (opcode >= 0x28 && opcode <= 0x2F)
+        SRA(dest);
+    else if (opcode >= 0x30 && opcode <= 0x37)
+        SWAP(dest);
+    else if (opcode >= 0x38 && opcode <= 0x3F)
+        SRL(dest);
+    else if (opcode >= 0x40 && opcode <= 0x7F)
+        BIT((opcode - 0x40) / 0x8, dest);
+    else if (opcode >= 0x80 && opcode <= 0xBF)
+        RES((opcode - 0x80) / 0x8, dest);
+    else if (opcode >= 0xC0 && opcode <= 0xFF)
+        SET((opcode - 0xC0) / 0x8, dest);
+
+    // If the low opcode was equal to 6, then the destination was the memory
+    if (lowOpcode == 0x06)
+    {
+        m_bus.write(m_registers.hl, memValue);
+        m_cyclesToWaste += 8;
+    }
 }
 
 // CALL Z, a16
@@ -2635,4 +2687,131 @@ void gbtest::LR35902::opcodeFFh()
     m_registers.pc = 0x38;
 
     m_cyclesToWaste = 16;
+}
+
+// 0xCB-prefixed instructions
+void gbtest::LR35902::RLC(uint8_t &dest)
+{
+    m_registers.f.c = (dest >> 7) & 0x1;
+
+    dest = (dest << 1) | m_registers.f.c;
+
+    m_registers.f.z = dest == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+
+    m_cyclesToWaste = 8;
+}
+
+void gbtest::LR35902::RRC(uint8_t &dest)
+{
+    m_registers.f.c = dest & 0x1;
+
+    dest = (dest >> 1) | (m_registers.f.c << 7);
+
+    m_registers.f.z = dest == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+
+    m_cyclesToWaste = 8;
+}
+
+void gbtest::LR35902::RL(uint8_t &dest)
+{
+    const uint8_t newCarry = (dest >> 7) & 0x1;
+
+    dest = (dest << 1) | m_registers.f.c;
+
+    m_registers.f.z = 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = newCarry;
+
+    m_cyclesToWaste = 8;
+}
+
+void gbtest::LR35902::RR(uint8_t &dest)
+{
+    const uint8_t newCarry = dest & 0x1;
+
+    dest = (dest >> 1) | (m_registers.f.c << 7);
+
+    m_registers.f.z = 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = newCarry;
+
+    m_cyclesToWaste = 8;
+}
+
+void gbtest::LR35902::SLA(uint8_t &dest)
+{
+    m_registers.f.c = (dest >> 7) & 0x1;
+
+    dest <<= 1;
+
+    m_registers.f.z = dest == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+
+    m_cyclesToWaste = 8;
+}
+
+void gbtest::LR35902::SRA(uint8_t &dest)
+{
+    m_registers.f.c = dest & 0x1;
+
+    dest >>= 1;
+    dest |= (dest & 0x40) << 1;
+
+    m_registers.f.z = dest == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+
+    m_cyclesToWaste = 8;
+}
+
+void gbtest::LR35902::SWAP(uint8_t &dest)
+{
+    const uint8_t newUpper = dest << 4;
+    dest = (dest >> 4) | newUpper;
+
+    m_registers.f.z = dest == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 8;
+}
+
+void gbtest::LR35902::SRL(uint8_t &dest)
+{
+    m_registers.f.c = dest & 0x1;
+
+    dest >>= 1;
+
+    m_registers.f.z = dest == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+
+    m_cyclesToWaste = 8;
+}
+
+void gbtest::LR35902::BIT(const uint8_t &bitToTest, const uint8_t &src)
+{
+    m_registers.f.z = (src & (1 << bitToTest)) == 0;
+    m_registers.f.n = 0;
+    m_registers.f.h = 1;
+
+    m_cyclesToWaste = 8;
+}
+
+void gbtest::LR35902::RES(const uint8_t &bitToClear, uint8_t &dest)
+{
+    dest &= ~(1 << bitToClear);
+}
+
+void gbtest::LR35902::SET(const uint8_t &bitToSet, uint8_t &dest)
+{
+    dest |= 1 << bitToSet;
 }

@@ -359,6 +359,19 @@ private:
     void opcodeFEh();
     void opcodeFFh();
 
+    // For 0xCB-prefixed instructions
+    void RLC(uint8_t &dest);
+    void RRC(uint8_t &dest);
+    void RL(uint8_t &dest);
+    void RR(uint8_t &dest);
+    void SLA(uint8_t &dest);
+    void SRA(uint8_t &dest);
+    void SWAP(uint8_t &dest);
+    void SRL(uint8_t &dest);
+    void BIT(const uint8_t &bitToTest, const uint8_t &src);
+    void RES(const uint8_t &bitToClear, uint8_t &dest);
+    void SET(const uint8_t &bitToSet, uint8_t &dest);
+
 
 }; // class LR35902
 
