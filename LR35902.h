@@ -374,6 +374,12 @@ private:
     void RES(const uint8_t &bitToClear, uint8_t &dest);
     void SET(const uint8_t &bitToSet, uint8_t &dest);
 
+    // Common instructions
+    void ADD_A(const uint8_t &src);
+    void ADC_A(const uint8_t &src);
+    void SUB_A(const uint8_t &src);
+    void SBC_A(const uint8_t &src);
+
 
 }; // class LR35902
 

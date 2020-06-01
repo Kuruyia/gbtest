@@ -1,6 +1,7 @@
 #include <iomanip>
 #include <iostream>
 #include <stdexcept>
+#include <cassert>
 
 #include "LR35902.h"
 
@@ -1191,313 +1192,159 @@ void gbtest::LR35902::opcode7Eh()
 // LD A, A
 void gbtest::LR35902::opcode7Fh()
 {
-    m_registers.a = m_registers.a;
     m_cyclesToWaste = 4;
 }
 
 // ADD A, B
 void gbtest::LR35902::opcode80h()
 {
-    m_registers.a += m_registers.b;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.b & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.b & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 4;
+    ADD_A(m_registers.b);
 }
 
 // ADD A, C
 void gbtest::LR35902::opcode81h()
 {
-    m_registers.a += m_registers.c;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.c & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.c & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 4;
+    ADD_A(m_registers.c);
 }
 
 // ADD A, D
 void gbtest::LR35902::opcode82h()
 {
-    m_registers.a += m_registers.d;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.d & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.d & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 4;
+    ADD_A(m_registers.d);
 }
 
 // ADD A, E
 void gbtest::LR35902::opcode83h()
 {
-    m_registers.a += m_registers.e;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.e & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.e & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 4;
+    ADD_A(m_registers.e);
 }
 
 // ADD A, H
 void gbtest::LR35902::opcode84h()
 {
-    m_registers.a += m_registers.h;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.h & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.h & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 4;
+    ADD_A(m_registers.h);
 }
 
 // ADD A, L
 void gbtest::LR35902::opcode85h()
 {
-    m_registers.a += m_registers.l;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.l & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.l & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 4;
+    ADD_A(m_registers.l);
 }
 
 // ADD A, (HL)
 void gbtest::LR35902::opcode86h()
 {
-    const uint8_t val = m_bus.read(m_registers.hl);
-    m_registers.a += val;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (val & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (val & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 8;
+    ADD_A(m_bus.read(m_registers.hl));
+    m_cyclesToWaste += 4;
 }
 
 // ADD A, A
 void gbtest::LR35902::opcode87h()
 {
-    m_registers.a += m_registers.a;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.a & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.a & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 4;
+    ADD_A(m_registers.a);
 }
 
 // ADC A, B
 void gbtest::LR35902::opcode88h()
 {
-    m_registers.a += m_registers.b + m_registers.f.c;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.b & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.b & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 4;
+    ADC_A(m_registers.b);
 }
 
 // ADC A, C
 void gbtest::LR35902::opcode89h()
 {
-    m_registers.a += m_registers.c + m_registers.f.c;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.c & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.c & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 4;
+    ADC_A(m_registers.c);
 }
 
 // ADC A, D
 void gbtest::LR35902::opcode8Ah()
 {
-    m_registers.a += m_registers.d + m_registers.f.c;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.d & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.d & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 4;
+    ADC_A(m_registers.d);
 }
 
 // ADC A, E
 void gbtest::LR35902::opcode8Bh()
 {
-    m_registers.a += m_registers.e + m_registers.f.c;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.e & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.e & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 4;
+    ADC_A(m_registers.e);
 }
 
 // ADC A, H
 void gbtest::LR35902::opcode8Ch()
 {
-    m_registers.a += m_registers.h + m_registers.f.c;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.h & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.h & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 4;
+    ADC_A(m_registers.h);
 }
 
 // ADC A, L
 void gbtest::LR35902::opcode8Dh()
 {
-    m_registers.a += m_registers.l + m_registers.f.c;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.l & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.l & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 4;
+    ADC_A(m_registers.l);
 }
 
 // ADC A, (HL)
 void gbtest::LR35902::opcode8Eh()
 {
-    const uint8_t val = m_bus.read(m_registers.hl);
-    m_registers.a += val + m_registers.f.c;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (val & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (val & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 8;
+    ADC_A(m_bus.read(m_registers.hl));
+    m_cyclesToWaste += 4;
 }
 
 // ADC A, A
 void gbtest::LR35902::opcode8Fh()
 {
-    m_registers.a += m_registers.a + m_registers.f.c;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (m_registers.a & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (m_registers.a & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 4;
+    ADC_A(m_registers.a);
 }
 
 // SUB A, B
 void gbtest::LR35902::opcode90h()
 {
-    m_registers.f.c = m_registers.b > m_registers.a;
-    m_registers.a -= m_registers.b;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 4;
+    SUB_A(m_registers.b);
 }
 
 // SUB A, C
 void gbtest::LR35902::opcode91h()
 {
-    m_registers.f.c = m_registers.c > m_registers.a;
-    m_registers.a -= m_registers.c;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 4;
+    SUB_A(m_registers.c);
 }
 
 // SUB A, D
 void gbtest::LR35902::opcode92h()
 {
-    m_registers.f.c = m_registers.d > m_registers.a;
-    m_registers.a -= m_registers.d;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 4;
+    SUB_A(m_registers.d);
 }
 
 // SUB A, E
 void gbtest::LR35902::opcode93h()
 {
-    m_registers.f.c = m_registers.e > m_registers.a;
-    m_registers.a -= m_registers.e;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 4;
+    SUB_A(m_registers.e);
 }
 
 // SUB A, H
 void gbtest::LR35902::opcode94h()
 {
-    m_registers.f.c = m_registers.h > m_registers.a;
-    m_registers.a -= m_registers.h;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 4;
+    SUB_A(m_registers.h);
 }
 
 // SUB A, L
 void gbtest::LR35902::opcode95h()
 {
-    m_registers.f.c = m_registers.l > m_registers.a;
-    m_registers.a -= m_registers.l;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 4;
+    SUB_A(m_registers.l);
 }
 
 // SUB A, (HL)
 void gbtest::LR35902::opcode96h()
 {
-    const uint8_t val = m_bus.read(m_registers.hl);
-
-    m_registers.f.c = val > m_registers.a;
-    m_registers.a -= val;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 8;
+    SUB_A(m_bus.read(m_registers.hl));
+    m_cyclesToWaste += 4;
 }
 
 // SUB A, A
 void gbtest::LR35902::opcode97h()
 {
+    // No need to compute the values at runtime here
     m_registers.a = 0;
 
     m_registers.f.z = 1;
     m_registers.f.n = 1;
+    m_registers.f.h = 0;
     m_registers.f.c = 0;
 
     m_cyclesToWaste = 4;
@@ -1506,114 +1353,50 @@ void gbtest::LR35902::opcode97h()
 // SBC A, B
 void gbtest::LR35902::opcode98h()
 {
-    const uint8_t oldCarry = m_registers.f.c;
-    m_registers.f.c = (m_registers.b + oldCarry) > m_registers.a;
-
-    m_registers.a -= m_registers.b + oldCarry;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 4;
+    SBC_A(m_registers.b);
 }
 
 // SBC A, C
 void gbtest::LR35902::opcode99h()
 {
-    const uint8_t oldCarry = m_registers.f.c;
-    m_registers.f.c = (m_registers.c + oldCarry) > m_registers.a;
-
-    m_registers.a -= m_registers.c + oldCarry;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 4;
+    SBC_A(m_registers.c);
 }
 
 // SBC A, D
 void gbtest::LR35902::opcode9Ah()
 {
-    const uint8_t oldCarry = m_registers.f.c;
-    m_registers.f.c = (m_registers.d + oldCarry) > m_registers.a;
-
-    m_registers.a -= m_registers.d + oldCarry;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 4;
+    SBC_A(m_registers.d);
 }
 
 // SBC A, E
 void gbtest::LR35902::opcode9Bh()
 {
-    const uint8_t oldCarry = m_registers.f.c;
-    m_registers.f.c = (m_registers.e + oldCarry) > m_registers.a;
-
-    m_registers.a -= m_registers.e + oldCarry;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 4;
+    SBC_A(m_registers.e);
 }
 
 // SBC A, H
 void gbtest::LR35902::opcode9Ch()
 {
-    const uint8_t oldCarry = m_registers.f.c;
-    m_registers.f.c = (m_registers.h + oldCarry) > m_registers.a;
-
-    m_registers.a -= m_registers.h + oldCarry;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 4;
+    SBC_A(m_registers.h);
 }
 
 // SBC A, L
 void gbtest::LR35902::opcode9Dh()
 {
-    const uint8_t oldCarry = m_registers.f.c;
-    m_registers.f.c = (m_registers.l + oldCarry) > m_registers.a;
-
-    m_registers.a -= m_registers.l + oldCarry;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 4;
+    SBC_A(m_registers.l);
 }
 
 // SBC A, (HL)
 void gbtest::LR35902::opcode9Eh()
 {
-    const uint8_t oldCarry = m_registers.f.c;
-    const uint8_t val = m_bus.read(m_registers.hl);
-
-    m_registers.f.c = (val + oldCarry) > m_registers.a;
-    m_registers.a -= val + oldCarry;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 8;
+    SBC_A(m_bus.read(m_registers.hl));
+    m_cyclesToWaste += 4;
 }
 
 // SBC A, A
 void gbtest::LR35902::opcode9Fh()
 {
-    const uint8_t oldCarry = m_registers.f.c;
-    m_registers.f.c = (m_registers.a + oldCarry) > m_registers.a;
-
-    m_registers.a -= m_registers.a + oldCarry;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 4;
+    SBC_A(m_registers.a);
 }
 
 // AND A, B
@@ -1933,6 +1716,7 @@ void gbtest::LR35902::opcodeB8h()
 {
     m_registers.f.z = m_registers.a == m_registers.b;
     m_registers.f.n = 1;
+    m_registers.f.h = (m_registers.b & 0xF) > (m_registers.a & 0xF);
     m_registers.f.c = m_registers.b > m_registers.a;
 
     m_cyclesToWaste = 4;
@@ -1943,6 +1727,7 @@ void gbtest::LR35902::opcodeB9h()
 {
     m_registers.f.z = m_registers.a == m_registers.c;
     m_registers.f.n = 1;
+    m_registers.f.h = (m_registers.c & 0xF) > (m_registers.a & 0xF);
     m_registers.f.c = m_registers.c > m_registers.a;
 
     m_cyclesToWaste = 4;
@@ -1953,6 +1738,7 @@ void gbtest::LR35902::opcodeBAh()
 {
     m_registers.f.z = m_registers.a == m_registers.d;
     m_registers.f.n = 1;
+    m_registers.f.h = (m_registers.d & 0xF) > (m_registers.a & 0xF);
     m_registers.f.c = m_registers.d > m_registers.a;
 
     m_cyclesToWaste = 4;
@@ -1963,6 +1749,7 @@ void gbtest::LR35902::opcodeBBh()
 {
     m_registers.f.z = m_registers.a == m_registers.e;
     m_registers.f.n = 1;
+    m_registers.f.h = (m_registers.e & 0xF) > (m_registers.a & 0xF);
     m_registers.f.c = m_registers.e > m_registers.a;
 
     m_cyclesToWaste = 4;
@@ -1973,6 +1760,7 @@ void gbtest::LR35902::opcodeBCh()
 {
     m_registers.f.z = m_registers.a == m_registers.h;
     m_registers.f.n = 1;
+    m_registers.f.h = (m_registers.h & 0xF) > (m_registers.a & 0xF);
     m_registers.f.c = m_registers.h > m_registers.a;
 
     m_cyclesToWaste = 4;
@@ -1983,6 +1771,7 @@ void gbtest::LR35902::opcodeBDh()
 {
     m_registers.f.z = m_registers.a == m_registers.l;
     m_registers.f.n = 1;
+    m_registers.f.h = (m_registers.l & 0xF) > (m_registers.a & 0xF);
     m_registers.f.c = m_registers.l > m_registers.a;
 
     m_cyclesToWaste = 4;
@@ -1995,6 +1784,7 @@ void gbtest::LR35902::opcodeBEh()
 
     m_registers.f.z = m_registers.a == val;
     m_registers.f.n = 1;
+    m_registers.f.h = (val & 0xF) > (m_registers.a & 0xF);
     m_registers.f.c = val > m_registers.a;
 
     m_cyclesToWaste = 8;
@@ -2005,6 +1795,7 @@ void gbtest::LR35902::opcodeBFh()
 {
     m_registers.f.z = 1;
     m_registers.f.n = 1;
+    m_registers.f.h = 0;
     m_registers.f.c = 0;
 
     m_cyclesToWaste = 4;
@@ -2455,7 +2246,7 @@ void gbtest::LR35902::opcodeE1h()
 // LD (C), A
 void gbtest::LR35902::opcodeE2h()
 {
-    m_bus.write(m_registers.c, m_registers.a);
+    m_bus.write(0xFF00 + m_registers.c, m_registers.a);
     m_cyclesToWaste = 8;
 }
 
@@ -2586,7 +2377,7 @@ void gbtest::LR35902::opcodeF1h()
 // LD A, (C)
 void gbtest::LR35902::opcodeF2h()
 {
-    m_registers.a = m_bus.read(m_registers.c);
+    m_registers.a = m_bus.read(0xFF00 + m_registers.c);
     m_cyclesToWaste = 8;
 }
 
@@ -2687,6 +2478,7 @@ void gbtest::LR35902::opcodeFEh()
 
     m_registers.f.z = m_registers.a == val;
     m_registers.f.n = 1;
+    m_registers.f.h = (((m_registers.a & 0xF) + (val & 0xF)) & 0x10) == 0x10;
     m_registers.f.c = val > m_registers.a;
 
     m_cyclesToWaste = 8;
@@ -2734,9 +2526,9 @@ void gbtest::LR35902::RL(uint8_t &dest)
 {
     const uint8_t newCarry = (dest >> 7) & 0x1;
 
-    dest = (dest << 1) | m_registers.f.c;
+    dest = (dest << 1) | (m_registers.f.c & 0x1);
 
-    m_registers.f.z = 0;
+    m_registers.f.z = (dest == 0);
     m_registers.f.n = 0;
     m_registers.f.h = 0;
     m_registers.f.c = newCarry;
@@ -2750,7 +2542,7 @@ void gbtest::LR35902::RR(uint8_t &dest)
 
     dest = (dest >> 1) | (m_registers.f.c << 7);
 
-    m_registers.f.z = 0;
+    m_registers.f.z = (dest == 0);
     m_registers.f.n = 0;
     m_registers.f.h = 0;
     m_registers.f.c = newCarry;
@@ -2828,4 +2620,75 @@ void gbtest::LR35902::RES(const uint8_t &bitToClear, uint8_t &dest)
 void gbtest::LR35902::SET(const uint8_t &bitToSet, uint8_t &dest)
 {
     dest |= 1 << bitToSet;
+}
+
+void gbtest::LR35902::ADD_A(const uint8_t &src)
+{
+    // First compute the final result
+    const unsigned res = m_registers.a + src;
+
+    // Set the half-carry before doing anything as we need the current value in register A
+    m_registers.f.h = ((m_registers.a & 0xF) + (src & 0xF) > 0xF);
+
+    // Set the accumulator to the result
+    m_registers.a = res;
+
+    // Set the flags according to the result
+    m_registers.f.z = (m_registers.a == 0);
+    m_registers.f.n = 0;
+    m_registers.f.c = (res > 0xFF);
+
+    m_cyclesToWaste = 4;
+}
+
+void gbtest::LR35902::ADC_A(const uint8_t &src)
+{
+    // First compute the final result
+    const unsigned res = m_registers.a + src + m_registers.f.c;
+
+    // We must compute the operation separately to set the half-carry properly
+    m_registers.f.h = (((m_registers.a & 0xF) + (src & 0xF) + (m_registers.f.c & 0xF)) > 0xF);
+
+    // Set the accumulator to the result
+    m_registers.a = res;
+
+    // Set the flags according to the result
+    m_registers.f.z = (m_registers.a == 0);
+    m_registers.f.n = 0;
+    m_registers.f.c = (res > 0xFF);
+
+    m_cyclesToWaste = 4;
+}
+
+void gbtest::LR35902::SUB_A(const uint8_t &src)
+{
+    // Set (half-)carry flags before the operation takes place
+    m_registers.f.h = (src & 0xF) > (m_registers.a & 0xF);
+    m_registers.f.c = (src > m_registers.a);
+
+    // Set the accumulator to the result
+    m_registers.a -= src;
+
+    // Set the flags according to the result
+    m_registers.f.z = (m_registers.a == 0);
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
+}
+
+void gbtest::LR35902::SBC_A(const uint8_t &src)
+{
+// Set the (half-)carry before doing anything as we need the current value in register A
+    const uint8_t oldCarry = m_registers.f.c;
+    m_registers.f.h = (((src & 0xF) + (oldCarry & 0xF))) > (m_registers.a & 0xF);
+    m_registers.f.c = ((src + oldCarry) > m_registers.a);
+
+    // Set the accumulator to the result
+    m_registers.a -= src + oldCarry;
+
+    // Set the flags according to the result
+    m_registers.f.z = (m_registers.a == 0);
+    m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
 }
