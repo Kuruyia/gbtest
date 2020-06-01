@@ -24,7 +24,7 @@ gbtest::DebugScreen::DebugScreen(gbtest::GameBoy &gb)
 void gbtest::DebugScreen::render(sf::RenderTarget &renderTarget)
 {
     printRegisters(renderTarget);
-    printMemory(renderTarget, 0x9800, 0xF);
+    printMemory(renderTarget, 0x9800, 0x1F);
     printCpuState(renderTarget);
 }
 
@@ -32,7 +32,7 @@ void gbtest::DebugScreen::printRegisters(sf::RenderTarget &renderTarget)
 {
     std::stringstream sstr;
     sstr << std::uppercase << std::hex
-         << "AF: " << std::setw(2) << std::setfill('0') << m_gb.getCpu().getRegisters().af << std::endl
+         << "AF: " << std::setw(4) << std::setfill('0') << m_gb.getCpu().getRegisters().af << std::endl
          << "BC: " << std::setw(4) << std::setfill('0') << m_gb.getCpu().getRegisters().bc << std::endl
          << "DE: " << std::setw(4) << std::setfill('0') << m_gb.getCpu().getRegisters().de << std::endl
          << "HL: " << std::setw(4) << std::setfill('0') << m_gb.getCpu().getRegisters().hl << std::endl

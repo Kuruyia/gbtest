@@ -14,7 +14,7 @@ gbtest::GameBoy::GameBoy()
 void gbtest::GameBoy::update(int64_t delta)
 {
     const int ticksToEmulate = delta * CLOCK_FREQ_MHZ;
-    std::cout << "Emulating " << ticksToEmulate << " ticks" << std::endl;
+//    std::cout << "Emulating " << ticksToEmulate << " ticks" << std::endl;
 
     for (unsigned i = 0; i < ticksToEmulate; ++i)
         tick();

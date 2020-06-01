@@ -8,7 +8,7 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(600, 500), "gbtest");
+    sf::RenderWindow window(sf::VideoMode(600, 700), "gbtest");
     window.setVerticalSyncEnabled(true);
 
     sf::Clock fpsClock;
@@ -51,7 +51,7 @@ int main()
         gameboy.getBus().write(0x11A, -1);
     }
 
-    gameboy.getBus().write(0xFF44, 144);
+//    gameboy.getBus().write(0xFF44, 144);
 
     sf::Clock busTick;
 

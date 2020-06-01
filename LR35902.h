@@ -23,11 +23,11 @@ public:
             {
                 struct // Flags
                 {
-                    uint8_t z      : 1; // Zero Flag
-                    uint8_t n      : 1; // Add-Sub Flag
-                    uint8_t h      : 1; // Half Carry Flag
-                    uint8_t c      : 1; // Carry Flag
                     uint8_t unused : 4; // Unused
+                    uint8_t c      : 1; // Carry Flag
+                    uint8_t h      : 1; // Half Carry Flag
+                    uint8_t n      : 1; // Add-Sub Flag
+                    uint8_t z      : 1; // Zero Flag
                 } f;
 
                 uint8_t a;
@@ -87,6 +87,8 @@ public:
 private:
     void resetRegisters();
     uint8_t fetch();
+
+    void dumpRegisters();
 
     Bus &m_bus;
 
