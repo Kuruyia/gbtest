@@ -2579,7 +2579,7 @@ void gbtest::LR35902::opcodeF0h()
 // POP AF
 void gbtest::LR35902::opcodeF1h()
 {
-    m_registers.af = m_bus.read(m_registers.sp++) | (m_bus.read(m_registers.sp++) << 8);
+    m_registers.af = (m_bus.read(m_registers.sp++) & 0xF0) | (m_bus.read(m_registers.sp++) << 8);
     m_cyclesToWaste = 12;
 }
 

@@ -28,27 +28,23 @@ int main()
         fclose(gbRom);
     } else
     {
-        gameboy.getBus().write(0x100, 0x06); // LD B, 0x69
-        gameboy.getBus().write(0x101, 0x69);
-        gameboy.getBus().write(0x102, 0x2E); // LD L, 0xF
-        gameboy.getBus().write(0x103, 0xF);
-        gameboy.getBus().write(0x104, 0x70); // LD (HL), B
+        gameboy.getBus().write(0x100, 0x37); // SCF
 
-        gameboy.getBus().write(0x106, 0x31); // LD SP, 0x0040
-        gameboy.getBus().write(0x107, 0x40);
-        gameboy.getBus().write(0x108, 0x00);
+        gameboy.getBus().write(0x101, 0x01); // LD BC, 0x1301
+        gameboy.getBus().write(0x102, 0x01);
+        gameboy.getBus().write(0x103, 0x13);
 
-        gameboy.getBus().write(0x110, 0x08); // LD 0x20, SP
-        gameboy.getBus().write(0x111, 0x20);
-        gameboy.getBus().write(0x112, 0x00);
+        gameboy.getBus().write(0x105, 0x31); // LD SP, 0x9810
+        gameboy.getBus().write(0x106, 0x10);
+        gameboy.getBus().write(0x107, 0x98);
 
-        gameboy.getBus().write(0x114, 0x0E); // LD C, 0x42
-        gameboy.getBus().write(0x115, 0x42);
-        gameboy.getBus().write(0x116, 0xC5); // PUSH BC
-        gameboy.getBus().write(0x117, 0xD1); // POP DE
+        gameboy.getBus().write(0x108, 0xC5); // PUSH BC
+        gameboy.getBus().write(0x109, 0xF1); // POP AF
+        gameboy.getBus().write(0x10A, 0xF5); // PUSH AF
+        gameboy.getBus().write(0x10B, 0xD1); // POP DE
 
-        gameboy.getBus().write(0x119, 0xF8); // LD HL, SP + (-1)
-        gameboy.getBus().write(0x11A, -1);
+        gameboy.getBus().write(0x110, 0x18); // JR -2
+        gameboy.getBus().write(0x111, -2);
     }
 
 //    gameboy.getBus().write(0xFF44, 144);
