@@ -414,13 +414,15 @@ void gbtest::LR35902::opcode1Fh()
 // JR NZ, r8
 void gbtest::LR35902::opcode20h()
 {
+    const auto val = (int8_t)fetch();
+
     if (m_registers.f.z)
     {
         m_cyclesToWaste = 8;
         return;
     }
 
-    m_registers.pc += (int8_t)fetch();
+    m_registers.pc += val;
     m_cyclesToWaste = 12;
 }
 
@@ -486,13 +488,15 @@ void gbtest::LR35902::opcode27h()
 // JR Z, r8
 void gbtest::LR35902::opcode28h()
 {
+    const auto val = (int8_t)fetch();
+
     if (!m_registers.f.z)
     {
         m_cyclesToWaste = 8;
         return;
     }
 
-    m_registers.pc += (int8_t)fetch();
+    m_registers.pc += val;
     m_cyclesToWaste = 12;
 }
 
@@ -568,13 +572,15 @@ void gbtest::LR35902::opcode2Fh()
 // JR NC, r8
 void gbtest::LR35902::opcode30h()
 {
+    const auto val = (int8_t)fetch();
+
     if (m_registers.f.c)
     {
         m_cyclesToWaste = 8;
         return;
     }
 
-    m_registers.pc += (int8_t)fetch();
+    m_registers.pc += val;
     m_cyclesToWaste = 12;
 }
 
@@ -646,13 +652,15 @@ void gbtest::LR35902::opcode37h()
 // JR C, r8
 void gbtest::LR35902::opcode38h()
 {
+    const auto val = (int8_t)fetch();
+
     if (!m_registers.f.c)
     {
         m_cyclesToWaste = 8;
         return;
     }
 
-    m_registers.pc += (int8_t)fetch();
+    m_registers.pc += val;
     m_cyclesToWaste = 12;
 }
 
@@ -2010,13 +2018,15 @@ void gbtest::LR35902::opcodeC1h()
 // JP NZ, a16
 void gbtest::LR35902::opcodeC2h()
 {
+    const uint16_t val = fetch() | (fetch() << 8);
+
     if (m_registers.f.z)
     {
         m_cyclesToWaste = 12;
         return;
     }
 
-    m_registers.pc = fetch() | (fetch() << 8);
+    m_registers.pc = val;
     m_cyclesToWaste = 16;
 }
 
@@ -2030,13 +2040,13 @@ void gbtest::LR35902::opcodeC3h()
 // CALL NZ, a16
 void gbtest::LR35902::opcodeC4h()
 {
+    const uint16_t val = fetch() | (fetch() << 8);
+
     if (m_registers.f.z)
     {
         m_cyclesToWaste = 12;
         return;
     }
-
-    const uint16_t val = fetch() | (fetch() << 8);
 
     m_bus.write(--m_registers.sp, m_registers.pc >> 8);
     m_bus.write(--m_registers.sp, m_registers.pc);
@@ -2103,13 +2113,15 @@ void gbtest::LR35902::opcodeC9h()
 // JP Z, a16
 void gbtest::LR35902::opcodeCAh()
 {
+    const uint16_t val = fetch() | (fetch() << 8);
+
     if (!m_registers.f.z)
     {
         m_cyclesToWaste = 12;
         return;
     }
 
-    m_registers.pc = fetch() | (fetch() << 8);
+    m_registers.pc = val;
     m_cyclesToWaste = 16;
 }
 
@@ -2121,13 +2133,13 @@ void gbtest::LR35902::opcodeCBh()
 // CALL Z, a16
 void gbtest::LR35902::opcodeCCh()
 {
+    const uint16_t val = fetch() | (fetch() << 8);
+
     if (!m_registers.f.z)
     {
         m_cyclesToWaste = 12;
         return;
     }
-
-    const uint16_t val = fetch() | (fetch() << 8);
 
     m_bus.write(--m_registers.sp, m_registers.pc >> 8);
     m_bus.write(--m_registers.sp, m_registers.pc);
@@ -2198,13 +2210,15 @@ void gbtest::LR35902::opcodeD1h()
 // JP NC, a16
 void gbtest::LR35902::opcodeD2h()
 {
+    const uint16_t val = fetch() | (fetch() << 8);
+
     if (m_registers.f.c)
     {
         m_cyclesToWaste = 12;
         return;
     }
 
-    m_registers.pc = fetch() | (fetch() << 8);
+    m_registers.pc = val;
     m_cyclesToWaste = 16;
 }
 
@@ -2216,13 +2230,13 @@ void gbtest::LR35902::opcodeD3h()
 // CALL NC, a16
 void gbtest::LR35902::opcodeD4h()
 {
+    const uint16_t val = fetch() | (fetch() << 8);
+
     if (m_registers.f.c)
     {
         m_cyclesToWaste = 12;
         return;
     }
-
-    const uint16_t val = fetch() | (fetch() << 8);
 
     m_bus.write(--m_registers.sp, m_registers.pc >> 8);
     m_bus.write(--m_registers.sp, m_registers.pc);
@@ -2291,13 +2305,15 @@ void gbtest::LR35902::opcodeD9h()
 // JP C, a16
 void gbtest::LR35902::opcodeDAh()
 {
+    const uint16_t val = fetch() | (fetch() << 8);
+
     if (!m_registers.f.c)
     {
         m_cyclesToWaste = 12;
         return;
     }
 
-    m_registers.pc = fetch() | (fetch() << 8);
+    m_registers.pc = val;
     m_cyclesToWaste = 16;
 }
 
@@ -2309,13 +2325,13 @@ void gbtest::LR35902::opcodeDBh()
 // CALL C, a16
 void gbtest::LR35902::opcodeDCh()
 {
+    const uint16_t val = fetch() | (fetch() << 8);
+
     if (!m_registers.f.c)
     {
         m_cyclesToWaste = 12;
         return;
     }
-
-    const uint16_t val = fetch() | (fetch() << 8);
 
     m_bus.write(--m_registers.sp, m_registers.pc >> 8);
     m_bus.write(--m_registers.sp, m_registers.pc);

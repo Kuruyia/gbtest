@@ -9,6 +9,8 @@
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(500, 500), "gbtest");
+    window.setVerticalSyncEnabled(true);
+
     sf::Clock fpsClock;
 
     gbtest::GameBoy gameboy;
@@ -49,14 +51,17 @@ int main()
         gameboy.getBus().write(0x11A, -1);
     }
 
+    gameboy.getBus().write(0xFF44, 144);
+
     sf::Clock busTick;
 
     while (window.isOpen())
     {
-        if (tickEnabled)
-            gameboy.update(busTick.getElapsedTime().asMicroseconds());
-
+        const int64_t delta = busTick.getElapsedTime().asMicroseconds();
         busTick.restart();
+        if (tickEnabled)
+            gameboy.update(delta);
+
 
         sf::Event event;
         while (window.pollEvent(event))
