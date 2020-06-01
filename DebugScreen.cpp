@@ -24,7 +24,7 @@ gbtest::DebugScreen::DebugScreen(gbtest::GameBoy &gb)
 void gbtest::DebugScreen::render(sf::RenderTarget &renderTarget)
 {
     printRegisters(renderTarget);
-    printMemory(renderTarget, 0x8000, 0xF);
+    printMemory(renderTarget, 0x9800, 0xF);
     printCpuState(renderTarget);
 }
 
@@ -48,17 +48,29 @@ void gbtest::DebugScreen::printRegisters(sf::RenderTarget &renderTarget)
 void gbtest::DebugScreen::printMemory(sf::RenderTarget &renderTarget, const uint16_t &startAddr, const uint16_t &nbLines)
 {
     std::stringstream sstr;
+
+    // Print the table header
     sstr << std::hex << "Addr " << std::uppercase;
     for (unsigned i = 0; i <= 0xF; ++i)
         sstr << std::setw(2) << i << ' ';
 
     sstr << std::endl;
+
+    // Print the table content
     for (unsigned i = 0; i <= nbLines; ++i)
     {
+        // Get the current base address
         const uint16_t currBaseAddr = startAddr + (i * 0x10);
         sstr << std::setfill('0') << std::setw(4) << currBaseAddr << ' ';
+
+        // Print memory values as hex from currBaseAddr + 0x0 to currBaseAddr + 0xF
         for (unsigned j = 0; j <= 0xF; ++j)
             sstr << std::setw(2) << (int)m_gb.getBus().read(currBaseAddr + j) << ' ';
+
+        // Print memory values as ascii from from currBaseAddr + 0x0 to currBaseAddr + 0xF
+        sstr << ' ';
+        for (unsigned j = 0; j <= 0xF; ++j)
+            sstr << m_gb.getBus().read(currBaseAddr + j);
 
         sstr << std::endl;
     }
