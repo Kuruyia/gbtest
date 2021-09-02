@@ -17,17 +17,15 @@ int main()
     gbtest::DebugScreen debugScreen(gameboy);
     bool tickEnabled = true;
 
-    FILE *gbRom;
-    if (fopen_s(&gbRom, "boot.bin", "rb") == 0)
-    {
+    FILE *gbRom = fopen("boot.bin", "rb");
+    if (gbRom != nullptr) {
         uint8_t currByte;
         unsigned offset = 0;
         while (fread(&currByte, sizeof(currByte), 0x1, gbRom) > 0)
             gameboy.getBus().write(offset++, currByte);
 
         fclose(gbRom);
-    } else
-    {
+    } else {
         gameboy.getBus().write(0x100, 0x3E); // LD A, 0xFF
         gameboy.getBus().write(0x101, 0xFF);
 
