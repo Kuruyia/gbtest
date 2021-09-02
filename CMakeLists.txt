@@ -7,12 +7,12 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(gbtest
         src/main.cpp
-        src/LR35902.cpp
-        src/LR35902.h
-        src/Bus.cpp
-        src/Bus.h
-        src/GameBoy.cpp
-        src/GameBoy.h
+        src/cpu/LR35902.cpp
+        src/cpu/LR35902.h
+        src/platform/bus/Bus.cpp
+        src/platform/bus/Bus.h
+        src/platform/GameBoy.cpp
+        src/platform/GameBoy.h
         )
 
 target_link_libraries(gbtest raylib)

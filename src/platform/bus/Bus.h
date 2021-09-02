@@ -4,17 +4,15 @@
 #include <array>
 #include <cinttypes>
 
-namespace gbtest
-{
+namespace gbtest {
 
-class Bus
-{
+class Bus {
 
 public:
     Bus();
 
-    const uint8_t &read(const uint16_t &addr) const;
-    void write(const uint16_t &addr, const uint8_t &data);
+    const uint8_t& read(const uint16_t& addr) const;
+    void write(const uint16_t& addr, const uint8_t& data);
 
 private:
     std::array<uint8_t, 0x10000> m_memory;

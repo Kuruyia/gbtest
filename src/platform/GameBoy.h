@@ -1,14 +1,12 @@
 #ifndef GBTEST_GAMEBOY_H
 #define GBTEST_GAMEBOY_H
 
-#include "Bus.h"
-#include "LR35902.h"
+#include "bus/Bus.h"
+#include "../cpu/LR35902.h"
 
-namespace gbtest
-{
+namespace gbtest {
 
-class GameBoy
-{
+class GameBoy {
 
 public:
     GameBoy();
@@ -16,8 +14,8 @@ public:
     void update(int64_t delta);
     void tick();
 
-    Bus &getBus();
-    LR35902 &getCpu();
+    Bus& getBus();
+    LR35902& getCpu();
 
 private:
     Bus m_bus;

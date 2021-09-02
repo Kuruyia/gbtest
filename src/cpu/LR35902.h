@@ -5,82 +5,75 @@
 #include <functional>
 #include <vector>
 
-#include "Bus.h"
+#include "../platform/bus/Bus.h"
 
-namespace gbtest
-{
+namespace gbtest {
 
-class LR35902
-{
+class LR35902 {
 
 public:
-    struct LR35902Registers
-    {
-        union // Accumulator & Flags
-        {
-            uint16_t af;
-            struct
-            {
-                struct // Flags
-                {
-                    uint8_t unused : 4; // Unused
-                    uint8_t c      : 1; // Carry Flag
-                    uint8_t h      : 1; // Half Carry Flag
-                    uint8_t n      : 1; // Add-Sub Flag
-                    uint8_t z      : 1; // Zero Flag
-                } f;
+    struct LR35902Registers {
+      union // Accumulator & Flags
+      {
+        uint16_t af;
+        struct {
+          struct // Flags
+          {
+            uint8_t unused: 4; // Unused
+            uint8_t c: 1; // Carry Flag
+            uint8_t h: 1; // Half Carry Flag
+            uint8_t n: 1; // Add-Sub Flag
+            uint8_t z: 1; // Zero Flag
+          } f;
 
-                uint8_t a;
-            };
+          uint8_t a;
         };
+      };
 
-        union // BC registers
-        {
-            uint16_t bc;
-            struct
-            {
-                uint8_t c;
-                uint8_t b;
-            };
+      union // BC registers
+      {
+        uint16_t bc;
+        struct {
+          uint8_t c;
+          uint8_t b;
         };
+      };
 
-        union // DE registers
-        {
-            uint16_t de;
-            struct
-            {
-                uint8_t e;
-                uint8_t d;
-            };
+      union // DE registers
+      {
+        uint16_t de;
+        struct {
+          uint8_t e;
+          uint8_t d;
         };
+      };
 
-        union // HL registers
-        {
-            uint16_t hl;
-            struct
-            {
-                uint8_t l;
-                uint8_t h;
-            };
+      union // HL registers
+      {
+        uint16_t hl;
+        struct {
+          uint8_t l;
+          uint8_t h;
         };
+      };
 
-        uint16_t sp; // Stack Pointer
-        uint16_t pc; // Program Counter
+      uint16_t sp; // Stack Pointer
+      uint16_t pc; // Program Counter
     };
 
     typedef void (LR35902::*fnOpcode)();
 
 public:
-    LR35902(Bus &bus);
+    LR35902(Bus& bus);
 
-    const LR35902Registers &getRegisters() const;
+    const LR35902Registers& getRegisters() const;
 
-    const uint8_t &getCyclesToWaste() const;
-    const bool &isInterruptMasterEnabled() const;
-    const bool &isHalted() const;
-    const bool &isStopped() const;
+    const uint8_t& getCyclesToWaste() const;
+    const bool& isInterruptMasterEnabled() const;
+    const bool& isHalted() const;
+    const bool& isStopped() const;
 
-    const unsigned &getTickCounter() const;
+    const unsigned& getTickCounter() const;
 
     void tick();
 
@@ -90,7 +83,7 @@ private:
 
     void dumpRegisters();
 
-    Bus &m_bus;
+    Bus& m_bus;
 
     const std::array<std::function<void()>, 0x100> m_opcodeLookup;
 
@@ -362,24 +355,23 @@ private:
     void opcodeFFh();
 
     // For 0xCB-prefixed instructions
-    void RLC(uint8_t &dest);
-    void RRC(uint8_t &dest);
-    void RL(uint8_t &dest);
-    void RR(uint8_t &dest);
-    void SLA(uint8_t &dest);
-    void SRA(uint8_t &dest);
-    void SWAP(uint8_t &dest);
-    void SRL(uint8_t &dest);
-    void BIT(const uint8_t &bitToTest, const uint8_t &src);
-    void RES(const uint8_t &bitToClear, uint8_t &dest);
-    void SET(const uint8_t &bitToSet, uint8_t &dest);
+    void RLC(uint8_t& dest);
+    void RRC(uint8_t& dest);
+    void RL(uint8_t& dest);
+    void RR(uint8_t& dest);
+    void SLA(uint8_t& dest);
+    void SRA(uint8_t& dest);
+    void SWAP(uint8_t& dest);
+    void SRL(uint8_t& dest);
+    void BIT(const uint8_t& bitToTest, const uint8_t& src);
+    void RES(const uint8_t& bitToClear, uint8_t& dest);
+    void SET(const uint8_t& bitToSet, uint8_t& dest);
 
     // Common instructions
-    void ADD_A(const uint8_t &src);
-    void ADC_A(const uint8_t &src);
-    void SUB_A(const uint8_t &src);
-    void SBC_A(const uint8_t &src);
-
+    void ADD_A(const uint8_t& src);
+    void ADC_A(const uint8_t& src);
+    void SUB_A(const uint8_t& src);
+    void SBC_A(const uint8_t& src);
 
 }; // class LR35902
 

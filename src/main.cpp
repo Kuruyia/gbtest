@@ -2,7 +2,7 @@
 
 #include <raylib.h>
 
-#include "GameBoy.h"
+#include "platform/GameBoy.h"
 
 int main()
 {
@@ -44,13 +44,16 @@ int main()
         int keyPressed = 0;
         while ((keyPressed = GetKeyPressed())!=0) {
             switch (keyPressed) {
-            case KEY_SPACE:gameboy.tick();
+            case KEY_SPACE:
+                gameboy.tick();
                 break;
 
-            case KEY_P:tickEnabled = !tickEnabled;
+            case KEY_P:
+                tickEnabled = !tickEnabled;
                 break;
 
-            default: break;
+            default:
+                break;
             }
         }
 

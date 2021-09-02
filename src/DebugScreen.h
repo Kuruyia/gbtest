@@ -5,31 +5,28 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Text.hpp>
 
-#include "GameBoy.h"
+#include "platform/GameBoy.h"
 
-namespace gbtest
-{
+namespace gbtest {
 
-class DebugScreen
-{
+class DebugScreen {
 
 public:
-    DebugScreen(GameBoy &gb);
+    DebugScreen(GameBoy& gb);
 
-    void render(sf::RenderTarget &renderTarget);
+    void render(sf::RenderTarget& renderTarget);
 
 private:
-    void printRegisters(sf::RenderTarget &renderTarget);
-    void printMemory(sf::RenderTarget &renderTarget, const uint16_t &startAddr, const uint16_t &nbLines);
-    void printCpuState(sf::RenderTarget &renderTarget);
+    void printRegisters(sf::RenderTarget& renderTarget);
+    void printMemory(sf::RenderTarget& renderTarget, const uint16_t& startAddr, const uint16_t& nbLines);
+    void printCpuState(sf::RenderTarget& renderTarget);
 
-    GameBoy &m_gb;
+    GameBoy& m_gb;
 
     sf::Font m_font;
     sf::Text m_registerText;
     sf::Text m_stateText;
     sf::Text m_memText;
-
 
 }; // class DebugScreen
 
