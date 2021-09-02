@@ -1,31 +1,28 @@
-#include <SFML/Window.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/Text.hpp>
+#include <iostream>
 
-#include "DebugScreen.h"
+#include <raylib.h>
+
 #include "GameBoy.h"
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(600, 700), "gbtest");
-    window.setVerticalSyncEnabled(true);
-
-    sf::Clock fpsClock;
+    InitWindow(600, 700, "gbtest");
+    SetTargetFPS(60);
 
     gbtest::GameBoy gameboy;
-    gbtest::DebugScreen debugScreen(gameboy);
     bool tickEnabled = true;
 
-    FILE *gbRom = fopen("boot.bin", "rb");
-    if (gbRom != nullptr) {
+    // Try to open a ROM file
+    if (FILE* gbRom = fopen("boot.bin", "rb"); gbRom!=nullptr) {
         uint8_t currByte;
         unsigned offset = 0;
-        while (fread(&currByte, sizeof(currByte), 0x1, gbRom) > 0)
+        while (fread(&currByte, sizeof(currByte), 0x1, gbRom)>0) {
             gameboy.getBus().write(offset++, currByte);
+        }
 
         fclose(gbRom);
-    } else {
+    }
+    else {
         gameboy.getBus().write(0x100, 0x3E); // LD A, 0xFF
         gameboy.getBus().write(0x101, 0xFF);
 
@@ -36,46 +33,37 @@ int main()
         gameboy.getBus().write(0x111, -2);
     }
 
-//    gameboy.getBus().write(0xFF44, 144);
+    while (!WindowShouldClose()) {
+        // Tick the CPU (if enabled)
+        if (tickEnabled) {
+            // TODO: De-hardcode that
+            gameboy.update(1000);
+        }
 
-    sf::Clock busTick;
+        // Check if keys were pressed
+        int keyPressed = 0;
+        while ((keyPressed = GetKeyPressed())!=0) {
+            switch (keyPressed) {
+            case KEY_SPACE:gameboy.tick();
+                break;
 
-    while (window.isOpen())
-    {
-        const int64_t delta = busTick.getElapsedTime().asMicroseconds();
-        busTick.restart();
-        if (tickEnabled)
-            gameboy.update(delta);
+            case KEY_P:tickEnabled = !tickEnabled;
+                break;
 
-
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-            {
-                window.close();
-            }
-            else if (event.type == sf::Event::KeyPressed)
-            {
-                if (event.key.code == sf::Keyboard::Key::Space)
-                {
-                    gameboy.tick();
-                } else if (event.key.code == sf::Keyboard::P)
-                {
-                    tickEnabled = !tickEnabled;
-                }
+            default: break;
             }
         }
 
-        window.clear();
+        // Draw the window
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
 
-        debugScreen.render(window);
+        DrawFPS(0, 0);
 
-        window.display();
-
-        window.setTitle("gbtest - " + std::to_string(1.f / fpsClock.getElapsedTime().asSeconds()) + " FPS");
-        fpsClock.restart();
+        EndDrawing();
     }
+
+    CloseWindow();
 
     return 0;
 }

@@ -1,12 +1,24 @@
 cmake_minimum_required(VERSION 3.16)
 project(gbtest)
 
-set(CMAKE_CXX_STANDARD 14)
-set(BUILD_SHARED_LIBS FALSE)
+find_package(raylib 3.0 REQUIRED)
 
-add_subdirectory(SFML)
+set(CMAKE_CXX_STANDARD 17)
 
-include_directories(SFML/include)
+add_executable(gbtest
+        src/main.cpp
+        src/LR35902.cpp
+        src/LR35902.h
+        src/Bus.cpp
+        src/Bus.h
+        src/GameBoy.cpp
+        src/GameBoy.h
+        )
 
-add_executable(gbtest src/main.cpp src/LR35902.cpp src/LR35902.h src/Bus.cpp src/Bus.h src/GameBoy.cpp src/GameBoy.h src/DebugScreen.cpp src/DebugScreen.h)
-target_link_libraries(gbtest sfml-window sfml-network sfml-graphics sfml-audio sfml-system)
+target_link_libraries(gbtest raylib)
+
+if (APPLE)
+    target_link_libraries(${PROJECT_NAME} "-framework IOKit")
+    target_link_libraries(${PROJECT_NAME} "-framework Cocoa")
+    target_link_libraries(${PROJECT_NAME} "-framework OpenGL")
+endif ()
