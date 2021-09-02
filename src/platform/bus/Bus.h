@@ -1,21 +1,26 @@
 #ifndef GBTEST_BUS_H
 #define GBTEST_BUS_H
 
-#include <array>
 #include <cinttypes>
+#include <vector>
+
+#include "BusProvider.h"
 
 namespace gbtest {
 
 class Bus {
 
 public:
-    Bus();
+    Bus() = default;
 
-    const uint8_t& read(const uint16_t& addr) const;
-    void write(const uint16_t& addr, const uint8_t& data);
+    uint8_t read(uint16_t addr) const;
+    void write(uint16_t addr, uint8_t val);
+
+    void registerBusProvider(BusProvider* busProvider);
+    void unregisterBusProvider(BusProvider* busProvider);
 
 private:
-    std::array<uint8_t, 0x10000> m_memory;
+    std::vector<BusProvider*> m_busProviders;
 
 }; // class Bus
 

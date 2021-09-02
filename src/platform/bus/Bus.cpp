@@ -1,14 +1,31 @@
 #include "Bus.h"
 
-gbtest::Bus::Bus()
-        :m_memory({}) { }
-
-const uint8_t& gbtest::Bus::read(const uint16_t& addr) const
+uint8_t gbtest::Bus::read(uint16_t addr) const
 {
-    return m_memory[addr];
+    // TODO: Throw an exception if no bus provider could satisfy the request
+    uint8_t val = 0;
+
+    for (BusProvider* const busProvider: m_busProviders) {
+        if (busProvider->read(addr, val)) { break; }
+    }
+
+    return val;
 }
 
-void gbtest::Bus::write(const uint16_t& addr, const uint8_t& data)
+void gbtest::Bus::write(uint16_t addr, uint8_t val)
 {
-    m_memory[addr] = data;
+    // TODO: Throw an exception if no bus provider could satisfy the request
+    for (BusProvider* const busProvider: m_busProviders) {
+        if (busProvider->write(addr, val)) { return; }
+    }
+}
+
+void gbtest::Bus::registerBusProvider(BusProvider* busProvider)
+{
+    m_busProviders.push_back(busProvider);
+}
+
+void gbtest::Bus::unregisterBusProvider(BusProvider* busProvider)
+{
+    m_busProviders.erase(std::remove(m_busProviders.begin(), m_busProviders.end(), busProvider), m_busProviders.end());
 }

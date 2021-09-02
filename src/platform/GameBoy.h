@@ -3,6 +3,7 @@
 
 #include "bus/Bus.h"
 #include "../cpu/LR35902.h"
+#include "../memory/Memory.h"
 
 namespace gbtest {
 
@@ -20,6 +21,7 @@ public:
 private:
     Bus m_bus;
     LR35902 m_cpu;
+    Memory m_wholeMemory;
 
 }; // class GameBoy
 

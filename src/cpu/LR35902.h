@@ -1,6 +1,7 @@
 #ifndef GBTEST_LR35902_H
 #define GBTEST_LR35902_H
 
+#include <array>
 #include <cinttypes>
 #include <functional>
 #include <vector>
