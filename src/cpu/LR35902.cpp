@@ -227,25 +227,13 @@ void gbtest::LR35902::opcode03h()
 // INC B
 void gbtest::LR35902::opcode04h()
 {
-    ++m_registers.b;
-
-    m_registers.f.z = m_registers.b == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = m_registers.b == 0x10;
-
-    m_cyclesToWaste = 4;
+    INC_r8(m_registers.b);
 }
 
 // DEC B
 void gbtest::LR35902::opcode05h()
 {
-    --m_registers.b;
-
-    m_registers.f.z = m_registers.b == 0;
-    m_registers.f.n = 1;
-    m_registers.f.h = m_registers.b == 0xF;
-
-    m_cyclesToWaste = 4;
+    DEC_r8(m_registers.b);
 }
 
 // LD B, d8
@@ -309,25 +297,13 @@ void gbtest::LR35902::opcode0Bh()
 // INC C
 void gbtest::LR35902::opcode0Ch()
 {
-    ++m_registers.c;
-
-    m_registers.f.z = m_registers.c == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = m_registers.c == 0x10;
-
-    m_cyclesToWaste = 4;
+    INC_r8(m_registers.c);
 }
 
 // DEC C
 void gbtest::LR35902::opcode0Dh()
 {
-    --m_registers.c;
-
-    m_registers.f.z = m_registers.c == 0;
-    m_registers.f.n = 1;
-    m_registers.f.h = m_registers.c == 0xF;
-
-    m_cyclesToWaste = 4;
+    DEC_r8(m_registers.c);
 }
 
 // LD C, d8
@@ -384,25 +360,13 @@ void gbtest::LR35902::opcode13h()
 // INC D
 void gbtest::LR35902::opcode14h()
 {
-    ++m_registers.d;
-
-    m_registers.f.z = m_registers.d == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = m_registers.d == 0x10;
-
-    m_cyclesToWaste = 4;
+    INC_r8(m_registers.d);
 }
 
 // DEC D
 void gbtest::LR35902::opcode15h()
 {
-    --m_registers.d;
-
-    m_registers.f.z = m_registers.d == 0;
-    m_registers.f.n = 1;
-    m_registers.f.h = m_registers.d == 0xF;
-
-    m_cyclesToWaste = 4;
+    DEC_r8(m_registers.d);
 }
 
 // LD D, d8
@@ -464,25 +428,13 @@ void gbtest::LR35902::opcode1Bh()
 // INC E
 void gbtest::LR35902::opcode1Ch()
 {
-    ++m_registers.e;
-
-    m_registers.f.z = m_registers.e == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = m_registers.e == 0x10;
-
-    m_cyclesToWaste = 4;
+    INC_r8(m_registers.e);
 }
 
 // DEC E
 void gbtest::LR35902::opcode1Dh()
 {
-    --m_registers.e;
-
-    m_registers.f.z = m_registers.e == 0;
-    m_registers.f.n = 1;
-    m_registers.f.h = m_registers.e == 0xF;
-
-    m_cyclesToWaste = 4;
+    DEC_r8(m_registers.e);
 }
 
 // LD E, d8
@@ -547,25 +499,13 @@ void gbtest::LR35902::opcode23h()
 // INC H
 void gbtest::LR35902::opcode24h()
 {
-    ++m_registers.h;
-
-    m_registers.f.z = m_registers.h == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = m_registers.h == 0x10;
-
-    m_cyclesToWaste = 4;
+    INC_r8(m_registers.h);
 }
 
 // DEC H
 void gbtest::LR35902::opcode25h()
 {
-    --m_registers.h;
-
-    m_registers.f.z = m_registers.h == 0;
-    m_registers.f.n = 1;
-    m_registers.f.h = m_registers.h == 0xF;
-
-    m_cyclesToWaste = 4;
+    DEC_r8(m_registers.h);
 }
 
 // LD H, d8
@@ -624,25 +564,13 @@ void gbtest::LR35902::opcode2Bh()
 // INC L
 void gbtest::LR35902::opcode2Ch()
 {
-    ++m_registers.l;
-
-    m_registers.f.z = m_registers.l == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = m_registers.l == 0x10;
-
-    m_cyclesToWaste = 4;
+    INC_r8(m_registers.l);
 }
 
 // DEC L
 void gbtest::LR35902::opcode2Dh()
 {
-    --m_registers.l;
-
-    m_registers.f.z = m_registers.l == 0;
-    m_registers.f.n = 1;
-    m_registers.f.h = m_registers.l == 0xF;
-
-    m_cyclesToWaste = 4;
+    DEC_r8(m_registers.l);
 }
 
 // LD L, d8
@@ -707,7 +635,7 @@ void gbtest::LR35902::opcode34h()
 
     m_registers.f.z = val == 0;
     m_registers.f.n = 0;
-    m_registers.f.h = val == 0x10;
+    m_registers.f.h = (val == 0x00 || val == 0x10);
 
     m_cyclesToWaste = 12;
 }
@@ -786,25 +714,13 @@ void gbtest::LR35902::opcode3Bh()
 // INC A
 void gbtest::LR35902::opcode3Ch()
 {
-    ++m_registers.a;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = m_registers.a == 0x10;
-
-    m_cyclesToWaste = 4;
+    INC_r8(m_registers.a);
 }
 
 // DEC A
 void gbtest::LR35902::opcode3Dh()
 {
-    --m_registers.a;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-    m_registers.f.h = m_registers.a == 0xF;
-
-    m_cyclesToWaste = 4;
+    DEC_r8(m_registers.a);
 }
 
 // LD A, d8
@@ -2759,7 +2675,7 @@ void gbtest::LR35902::SUB_A(const uint8_t& src)
 
 void gbtest::LR35902::SBC_A(const uint8_t& src)
 {
-// Set the (half-)carry before doing anything as we need the current value in register A
+    // Set the (half-)carry before doing anything as we need the current value in register A
     const uint8_t oldCarry = m_registers.f.c;
     m_registers.f.h = (((src & 0xF) + (oldCarry & 0xF))) > (m_registers.a & 0xF);
     m_registers.f.c = ((src + oldCarry) > m_registers.a);
@@ -2770,6 +2686,32 @@ void gbtest::LR35902::SBC_A(const uint8_t& src)
     // Set the flags according to the result
     m_registers.f.z = (m_registers.a == 0);
     m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
+}
+
+void gbtest::LR35902::INC_r8(uint8_t& reg)
+{
+    // Increment the register
+    uint8_t oldVal = reg++;
+
+    // Set the flags according to the result
+    m_registers.f.z = (reg == 0);
+    m_registers.f.n = 0;
+    m_registers.f.h = ((oldVal & 0x08) && !(reg & 0x08));
+
+    m_cyclesToWaste = 4;
+}
+
+void gbtest::LR35902::DEC_r8(uint8_t& reg)
+{
+    // Decrement the register
+    uint8_t oldVal = reg--;
+
+    // Set the flags according to the result
+    m_registers.f.z = (reg == 0);
+    m_registers.f.n = 1;
+    m_registers.f.h = ((oldVal & 0x10) != (reg & 0x10));
 
     m_cyclesToWaste = 4;
 }
