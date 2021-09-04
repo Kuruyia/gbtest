@@ -332,8 +332,11 @@ private:
     void ADC_A(const uint8_t& src);
     void SUB_A(const uint8_t& src);
     void SBC_A(const uint8_t& src);
+
     void INC_r8(uint8_t& reg);
     void DEC_r8(uint8_t& reg);
+
+    void ADD_HL_r16(uint16_t& reg);
 
 }; // class LR35902
 
