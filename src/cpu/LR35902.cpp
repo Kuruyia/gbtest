@@ -155,6 +155,18 @@ void gbtest::LR35902::tick()
     ++m_tickCounter;
 }
 
+void gbtest::LR35902::step()
+{
+    if (m_cyclesToWaste > 0) {
+        // Simulate the waste of all cycles
+        m_tickCounter += m_cyclesToWaste - 1;
+        m_cyclesToWaste = 0;
+    }
+
+    // Execute the instruction
+    tick();
+}
+
 void gbtest::LR35902::resetRegisters()
 {
     m_registers.af = 0x00;

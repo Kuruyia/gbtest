@@ -35,6 +35,7 @@ public:
     const unsigned& getTickCounter() const;
 
     void tick();
+    void step();
 
 private:
     void resetRegisters();
