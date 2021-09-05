@@ -1868,15 +1868,8 @@ void gbtest::LR35902::opcodeC5h()
 // ADD A, d8
 void gbtest::LR35902::opcodeC6h()
 {
-    const uint8_t val = fetch();
-    m_registers.a += val;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (val & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (val & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 8;
+    ADD_A(fetch());
+    m_cyclesToWaste += 4;
 }
 
 // RST 00H
@@ -2030,15 +2023,8 @@ void gbtest::LR35902::opcodeCDh()
 // ADC A, d8
 void gbtest::LR35902::opcodeCEh()
 {
-    const uint8_t val = fetch();
-    m_registers.a += val + m_registers.f.c;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.a & 0xF) + (val & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.a & 0xFF) + (val & 0xFF)) & 0x100) == 0x100;
-
-    m_cyclesToWaste = 8;
+    ADC_A(fetch());
+    m_cyclesToWaste += 4;
 }
 
 // RST 08H
@@ -2120,15 +2106,8 @@ void gbtest::LR35902::opcodeD5h()
 // SUB A, d8
 void gbtest::LR35902::opcodeD6h()
 {
-    const uint8_t val = fetch();
-
-    m_registers.f.c = val > m_registers.a;
-    m_registers.a -= val;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 8;
+    SUB_A(fetch());
+    m_cyclesToWaste += 4;
 }
 
 // RST 10H
@@ -2208,16 +2187,8 @@ void gbtest::LR35902::opcodeDDh()
 // SBC A, d8
 void gbtest::LR35902::opcodeDEh()
 {
-    const uint8_t oldCarry = m_registers.f.c;
-    const uint8_t val = fetch();
-
-    m_registers.f.c = (val + oldCarry) > m_registers.a;
-    m_registers.a -= val + oldCarry;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 1;
-
-    m_cyclesToWaste = 8;
+    SBC_A(fetch());
+    m_cyclesToWaste += 4;
 }
 
 // RST 18H
@@ -2298,15 +2269,22 @@ void gbtest::LR35902::opcodeE7h()
 // ADD SP, r8
 void gbtest::LR35902::opcodeE8h()
 {
-    const auto val = (int8_t) fetch();
-    m_registers.sp += val;
+    // First compute the final result
+    const int8_t immediateValue = (int8_t) fetch();
+    const uint32_t res = m_registers.sp + immediateValue;
 
+    // Set the half-carry before doing anything as we need the current value in register A
+    m_registers.f.h = ((((m_registers.sp & 0x000F) + (immediateValue & 0x0F)) & 0x0010) == 0x0010);
+    m_registers.f.c = ((((m_registers.sp & 0x00FF) + (immediateValue & 0xFF)) & 0x0100) == 0x0100);
+
+    // Set the accumulator to the result
+    m_registers.sp = (res & 0xFFFF);
+
+    // Set the flags according to the result
     m_registers.f.z = 0;
     m_registers.f.n = 0;
-    m_registers.f.h = (((m_registers.sp & 0xF) + (val & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = (((m_registers.sp & 0xFF) + (val & 0xFF)) & 0x100) == 0x100;
 
-    m_cyclesToWaste = 16;
+    m_cyclesToWaste = 4;
 }
 
 // JP HL
@@ -2627,10 +2605,10 @@ void gbtest::LR35902::SET(const uint8_t& bitToSet, uint8_t& dest)
 void gbtest::LR35902::ADD_A(const uint8_t& src)
 {
     // First compute the final result
-    const unsigned res = m_registers.a + src;
+    const uint16_t res = m_registers.a + src;
 
     // Set the half-carry before doing anything as we need the current value in register A
-    m_registers.f.h = ((m_registers.a & 0xF) + (src & 0xF) > 0xF);
+    m_registers.f.h = ((((m_registers.a & 0x0F) + (src & 0x0F)) & 0x10) == 0x10);
 
     // Set the accumulator to the result
     m_registers.a = res;
@@ -2646,10 +2624,10 @@ void gbtest::LR35902::ADD_A(const uint8_t& src)
 void gbtest::LR35902::ADC_A(const uint8_t& src)
 {
     // First compute the final result
-    const unsigned res = m_registers.a + src + m_registers.f.c;
+    const uint16_t res = m_registers.a + src + m_registers.f.c;
 
     // We must compute the operation separately to set the half-carry properly
-    m_registers.f.h = (((m_registers.a & 0xF) + (src & 0xF) + (m_registers.f.c & 0xF)) > 0xF);
+    m_registers.f.h = ((((m_registers.a & 0x0F) + (src & 0x0F) + (m_registers.f.c & 0x0F)) & 0x10) == 0x10);
 
     // Set the accumulator to the result
     m_registers.a = res;
@@ -2665,7 +2643,7 @@ void gbtest::LR35902::ADC_A(const uint8_t& src)
 void gbtest::LR35902::SUB_A(const uint8_t& src)
 {
     // Set (half-)carry flags before the operation takes place
-    m_registers.f.h = (src & 0xF) > (m_registers.a & 0xF);
+    m_registers.f.h = (src & 0x0F) > (m_registers.a & 0x0F);
     m_registers.f.c = (src > m_registers.a);
 
     // Set the accumulator to the result
@@ -2682,7 +2660,7 @@ void gbtest::LR35902::SBC_A(const uint8_t& src)
 {
     // Set the (half-)carry before doing anything as we need the current value in register A
     const uint8_t oldCarry = m_registers.f.c;
-    m_registers.f.h = (((src & 0xF) + (oldCarry & 0xF))) > (m_registers.a & 0xF);
+    m_registers.f.h = (((src & 0x0F) + (oldCarry & 0x0F))) > (m_registers.a & 0x0F);
     m_registers.f.c = ((src + oldCarry) > m_registers.a);
 
     // Set the accumulator to the result
