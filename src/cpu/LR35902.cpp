@@ -506,9 +506,34 @@ void gbtest::LR35902::opcode26h()
     m_cyclesToWaste = 8;
 }
 
+// DAA
 void gbtest::LR35902::opcode27h()
 {
-    throw std::runtime_error("Opcode not implemented!");
+    if (m_registers.f.n == 0) {
+        // Previous operation was an addition
+        if (m_registers.f.c || m_registers.a > 0x99) {
+            m_registers.a += 0x60;
+            m_registers.f.c = 1;
+        }
+
+        if (m_registers.f.h || (m_registers.a & 0x0F) > 0x09) {
+            m_registers.a += 0x06;
+        }
+    }
+    else {
+        // Previous operation was a subtraction
+        if (m_registers.f.c) {
+            m_registers.a -= 0x60;
+        }
+
+        if (m_registers.f.h) {
+            m_registers.a -= 0x06;
+        }
+    }
+
+    // Set the flags according to the result
+    m_registers.f.z = (m_registers.a == 0x00);
+    m_registers.f.h = 0;
 }
 
 // JR Z, r8
