@@ -1399,313 +1399,148 @@ void gbtest::LR35902::opcode9Fh()
 // AND A, B
 void gbtest::LR35902::opcodeA0h()
 {
-    m_registers.a &= m_registers.b;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 1;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    AND_A(m_registers.b);
 }
 
 // AND A, C
 void gbtest::LR35902::opcodeA1h()
 {
-    m_registers.a &= m_registers.c;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 1;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    AND_A(m_registers.c);
 }
 
 // AND A, D
 void gbtest::LR35902::opcodeA2h()
 {
-    m_registers.a &= m_registers.d;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 1;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    AND_A(m_registers.d);
 }
 
 // AND A, E
 void gbtest::LR35902::opcodeA3h()
 {
-    m_registers.a &= m_registers.e;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 1;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    AND_A(m_registers.e);
 }
 
 // AND A, H
 void gbtest::LR35902::opcodeA4h()
 {
-    m_registers.a &= m_registers.h;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 1;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    AND_A(m_registers.h);
 }
 
 // AND A, L
 void gbtest::LR35902::opcodeA5h()
 {
-    m_registers.a &= m_registers.l;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 1;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    AND_A(m_registers.l);
 }
 
 // AND A, (HL)
 void gbtest::LR35902::opcodeA6h()
 {
-    m_registers.a &= m_bus.read(m_registers.hl);
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 1;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 8;
+    AND_A(m_bus.read(m_registers.hl));
+    m_cyclesToWaste += 4;
 }
 
 // AND A, A
 void gbtest::LR35902::opcodeA7h()
 {
-    m_registers.a &= m_registers.a;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 1;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    AND_A(m_registers.a);
 }
 
 // XOR A, B
 void gbtest::LR35902::opcodeA8h()
 {
-    m_registers.a ^= m_registers.b;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    XOR_A(m_registers.b);
 }
 
 // XOR A, C
 void gbtest::LR35902::opcodeA9h()
 {
-    m_registers.a ^= m_registers.c;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    XOR_A(m_registers.c);
 }
 
 // XOR A, D
 void gbtest::LR35902::opcodeAAh()
 {
-    m_registers.a ^= m_registers.d;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    XOR_A(m_registers.d);
 }
 
 // XOR A, E
 void gbtest::LR35902::opcodeABh()
 {
-    m_registers.a ^= m_registers.e;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    XOR_A(m_registers.e);
 }
 
 // XOR A, H
 void gbtest::LR35902::opcodeACh()
 {
-    m_registers.a ^= m_registers.h;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    XOR_A(m_registers.h);
 }
 
 // XOR A, L
 void gbtest::LR35902::opcodeADh()
 {
-    m_registers.a ^= m_registers.l;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    XOR_A(m_registers.l);
 }
 
 // XOR A, (HL)
 void gbtest::LR35902::opcodeAEh()
 {
-    m_registers.a ^= m_bus.read(m_registers.hl);
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 8;
+    XOR_A(m_bus.read(m_registers.hl));
+    m_cyclesToWaste += 4;
 }
 
 // XOR A, A
 void gbtest::LR35902::opcodeAFh()
 {
-    m_registers.a ^= m_registers.a;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    XOR_A(m_registers.a);
 }
 
 // OR A, B
 void gbtest::LR35902::opcodeB0h()
 {
-    m_registers.a |= m_registers.b;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    OR_A(m_registers.b);
 }
 
 // OR A, C
 void gbtest::LR35902::opcodeB1h()
 {
-    m_registers.a |= m_registers.c;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    OR_A(m_registers.c);
 }
 
 // OR A, D
 void gbtest::LR35902::opcodeB2h()
 {
-    m_registers.a |= m_registers.d;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    OR_A(m_registers.d);
 }
 
 // OR A, E
 void gbtest::LR35902::opcodeB3h()
 {
-    m_registers.a |= m_registers.e;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    OR_A(m_registers.e);
 }
 
 // OR A, H
 void gbtest::LR35902::opcodeB4h()
 {
-    m_registers.a |= m_registers.h;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    OR_A(m_registers.h);
 }
 
 // OR A, L
 void gbtest::LR35902::opcodeB5h()
 {
-    m_registers.a |= m_registers.l;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    OR_A(m_registers.l);
 }
 
 // OR A, (HL)
 void gbtest::LR35902::opcodeB6h()
 {
-    m_registers.a |= m_bus.read(m_registers.hl);
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 8;
+    OR_A(m_bus.read(m_registers.hl));
+    m_cyclesToWaste += 4;
 }
 
 // OR A, A
 void gbtest::LR35902::opcodeB7h()
 {
-    m_registers.a |= m_registers.a;
-
-    m_registers.f.z = m_registers.a == 0;
-    m_registers.f.n = 0;
-    m_registers.f.h = 0;
-    m_registers.f.c = 0;
-
-    m_cyclesToWaste = 4;
+    OR_A(m_registers.a);
 }
 
 // CP A, B
@@ -2631,6 +2466,48 @@ void gbtest::LR35902::SBC_A(const uint8_t& src)
     // Set the flags according to the result
     m_registers.f.z = (m_registers.a == 0);
     m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
+}
+
+void gbtest::LR35902::AND_A(const uint8_t& src)
+{
+    // Perform the operation
+    m_registers.a &= src;
+
+    // Set the flags according to the result
+    m_registers.f.z = (m_registers.a == 0);
+    m_registers.f.n = 0;
+    m_registers.f.h = 1;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
+}
+
+void gbtest::LR35902::XOR_A(const uint8_t& src)
+{
+    // Perform the operation
+    m_registers.a ^= src;
+
+    // Set the flags according to the result
+    m_registers.f.z = (m_registers.a == 0);
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
+
+    m_cyclesToWaste = 4;
+}
+
+void gbtest::LR35902::OR_A(const uint8_t& src)
+{
+    // Perform the operation
+    m_registers.a |= src;
+
+    // Set the flags according to the result
+    m_registers.f.z = (m_registers.a == 0);
+    m_registers.f.n = 0;
+    m_registers.f.h = 0;
+    m_registers.f.c = 0;
 
     m_cyclesToWaste = 4;
 }
