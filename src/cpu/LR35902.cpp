@@ -1785,7 +1785,11 @@ void gbtest::LR35902::opcodeCBh()
 
     // If the low opcode was equal to 6, then the destination was the memory
     if (lowOpcode == 0x06) {
-        m_bus.write(m_registers.hl, memValue);
+        if (opcode < 0x40 || opcode > 0x7F) {
+            // Only write the result if the operation was not BIT
+            m_bus.write(m_registers.hl, memValue);
+        }
+
         m_cyclesToWaste += 8;
     }
 }
