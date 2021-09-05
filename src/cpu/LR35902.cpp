@@ -324,7 +324,10 @@ void gbtest::LR35902::opcode0Fh()
 // STOP
 void gbtest::LR35902::opcode10h()
 {
+    // TODO: Implement that
+    m_halted = true;
     m_stopped = true;
+
     m_cyclesToWaste = 4;
 }
 
@@ -1097,6 +1100,7 @@ void gbtest::LR35902::opcode75h()
 // HALT
 void gbtest::LR35902::opcode76h()
 {
+    // TODO: Implement that
     m_halted = true;
     m_cyclesToWaste = 4;
 }
