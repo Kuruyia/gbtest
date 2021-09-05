@@ -333,6 +333,8 @@ private:
     void SUB_A(const uint8_t& src);
     void SBC_A(const uint8_t& src);
 
+    void CP_A(const uint8_t& src);
+
     void INC_r8(uint8_t& reg);
     void DEC_r8(uint8_t& reg);
 

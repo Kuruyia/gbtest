@@ -1711,80 +1711,46 @@ void gbtest::LR35902::opcodeB7h()
 // CP A, B
 void gbtest::LR35902::opcodeB8h()
 {
-    m_registers.f.z = m_registers.a == m_registers.b;
-    m_registers.f.n = 1;
-    m_registers.f.h = (m_registers.b & 0xF) > (m_registers.a & 0xF);
-    m_registers.f.c = m_registers.b > m_registers.a;
-
-    m_cyclesToWaste = 4;
+    CP_A(m_registers.b);
 }
 
 // CP A, C
 void gbtest::LR35902::opcodeB9h()
 {
-    m_registers.f.z = m_registers.a == m_registers.c;
-    m_registers.f.n = 1;
-    m_registers.f.h = (m_registers.c & 0xF) > (m_registers.a & 0xF);
-    m_registers.f.c = m_registers.c > m_registers.a;
-
-    m_cyclesToWaste = 4;
+    CP_A(m_registers.c);
 }
 
 // CP A, D
 void gbtest::LR35902::opcodeBAh()
 {
-    m_registers.f.z = m_registers.a == m_registers.d;
-    m_registers.f.n = 1;
-    m_registers.f.h = (m_registers.d & 0xF) > (m_registers.a & 0xF);
-    m_registers.f.c = m_registers.d > m_registers.a;
-
-    m_cyclesToWaste = 4;
+    CP_A(m_registers.d);
 }
 
 // CP A, E
 void gbtest::LR35902::opcodeBBh()
 {
-    m_registers.f.z = m_registers.a == m_registers.e;
-    m_registers.f.n = 1;
-    m_registers.f.h = (m_registers.e & 0xF) > (m_registers.a & 0xF);
-    m_registers.f.c = m_registers.e > m_registers.a;
-
-    m_cyclesToWaste = 4;
+    CP_A(m_registers.e);
 }
 
 // CP A, H
 void gbtest::LR35902::opcodeBCh()
 {
-    m_registers.f.z = m_registers.a == m_registers.h;
-    m_registers.f.n = 1;
-    m_registers.f.h = (m_registers.h & 0xF) > (m_registers.a & 0xF);
-    m_registers.f.c = m_registers.h > m_registers.a;
-
-    m_cyclesToWaste = 4;
+    CP_A(m_registers.h);
 }
 
 // CP A, L
 void gbtest::LR35902::opcodeBDh()
 {
-    m_registers.f.z = m_registers.a == m_registers.l;
-    m_registers.f.n = 1;
-    m_registers.f.h = (m_registers.l & 0xF) > (m_registers.a & 0xF);
-    m_registers.f.c = m_registers.l > m_registers.a;
-
-    m_cyclesToWaste = 4;
+    CP_A(m_registers.l);
 }
 
 // CP A, (HL)
 void gbtest::LR35902::opcodeBEh()
 {
     const uint8_t val = m_bus.read(m_registers.hl);
+    CP_A(val);
 
-    m_registers.f.z = m_registers.a == val;
-    m_registers.f.n = 1;
-    m_registers.f.h = (val & 0xF) > (m_registers.a & 0xF);
-    m_registers.f.c = val > m_registers.a;
-
-    m_cyclesToWaste = 8;
+    m_cyclesToWaste += 4;
 }
 
 // CP A, A
@@ -2455,13 +2421,9 @@ void gbtest::LR35902::opcodeFDh()
 void gbtest::LR35902::opcodeFEh()
 {
     const uint8_t val = fetch();
+    CP_A(val);
 
-    m_registers.f.z = m_registers.a == val;
-    m_registers.f.n = 1;
-    m_registers.f.h = (((m_registers.a & 0xF) + (val & 0xF)) & 0x10) == 0x10;
-    m_registers.f.c = val > m_registers.a;
-
-    m_cyclesToWaste = 8;
+    m_cyclesToWaste += 4;
 }
 
 // RST 38H
@@ -2669,6 +2631,17 @@ void gbtest::LR35902::SBC_A(const uint8_t& src)
     // Set the flags according to the result
     m_registers.f.z = (m_registers.a == 0);
     m_registers.f.n = 1;
+
+    m_cyclesToWaste = 4;
+}
+
+void gbtest::LR35902::CP_A(const uint8_t& src)
+{
+    // Set the flags according to the result
+    m_registers.f.z = (m_registers.a == src);
+    m_registers.f.n = 1;
+    m_registers.f.h = ((src & 0x0F) > (m_registers.a & 0x0F));
+    m_registers.f.c = (src > m_registers.a);
 
     m_cyclesToWaste = 4;
 }
