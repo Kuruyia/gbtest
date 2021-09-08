@@ -13,7 +13,7 @@ class Bus {
 public:
     Bus() = default;
 
-    uint8_t read(uint16_t addr) const;
+    [[nodiscard]] uint8_t read(uint16_t addr) const;
     void write(uint16_t addr, uint8_t val);
 
     void registerBusProvider(BusProvider* busProvider);
@@ -21,6 +21,8 @@ public:
 
 private:
     std::vector<BusProvider*> m_busProviders;
+
+    void ensureAddressIsUnlocked(uint16_t addr) const;
 
 }; // class Bus
 

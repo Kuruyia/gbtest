@@ -13,6 +13,8 @@ public:
     virtual bool read(uint16_t addr, uint8_t& val) const = 0;
     virtual bool write(uint16_t addr, uint8_t val) = 0;
 
+    virtual bool doesAuthorizeAccess(uint16_t addr) = 0;
+
 }; // class BusProvider
 
 } // namespace gbtest
