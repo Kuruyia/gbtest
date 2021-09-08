@@ -11,6 +11,8 @@ add_executable(gbtest
         src/cpu/LR35902.h
         src/exceptions/bus/BusLockedAddressException.cpp
         src/exceptions/bus/BusLockedAddressException.h
+        src/exceptions/bus/BusNoHandlerException.cpp
+        src/exceptions/bus/BusNoHandlerException.h
         src/memory/Memory.cpp
         src/memory/Memory.h
         src/platform/bus/Bus.cpp

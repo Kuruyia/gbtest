@@ -1,16 +1,23 @@
 #include "Bus.h"
 
 #include "../../exceptions/bus/BusLockedAddressException.h"
+#include "../../exceptions/bus/BusNoHandlerException.h"
 
 uint8_t gbtest::Bus::read(uint16_t addr) const
 {
-    // TODO: Throw an exception if no bus provider could satisfy the request
+    // Ensure that no provider is locking this address
     ensureAddressIsUnlocked(addr);
 
+    size_t i = 0;
     uint8_t val = 0;
 
-    for (BusProvider* const busProvider: m_busProviders) {
-        if (busProvider->read(addr, val)) { break; }
+    while (i < m_busProviders.size()) {
+        if (m_busProviders[i]->read(addr, val)) { break; }
+        ++i;
+    }
+
+    if (i == m_busProviders.size()) {
+        throw BusNoHandlerException(addr, false);
     }
 
     return val;
@@ -18,12 +25,14 @@ uint8_t gbtest::Bus::read(uint16_t addr) const
 
 void gbtest::Bus::write(uint16_t addr, uint8_t val)
 {
-    // TODO: Throw an exception if no bus provider could satisfy the request
+    // Ensure that no provider is locking this address
     ensureAddressIsUnlocked(addr);
 
     for (BusProvider* const busProvider: m_busProviders) {
         if (busProvider->write(addr, val)) { return; }
     }
+
+    throw BusNoHandlerException(addr, true);
 }
 
 void gbtest::Bus::registerBusProvider(BusProvider* busProvider)
@@ -38,7 +47,7 @@ void gbtest::Bus::unregisterBusProvider(BusProvider* busProvider)
 
 void gbtest::Bus::ensureAddressIsUnlocked(uint16_t addr) const
 {
-    // Check that no bus provider is locking the address
+    // Throw an exception if a bus provider is locking the address
     for (BusProvider* const busProvider: m_busProviders) {
         if (!busProvider->doesAuthorizeAccess(addr)) { throw BusLockedAddressException(addr); }
     }
