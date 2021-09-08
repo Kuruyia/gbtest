@@ -3,7 +3,7 @@
 #include "../../exceptions/bus/BusLockedAddressException.h"
 #include "../../exceptions/bus/BusNoHandlerException.h"
 
-uint8_t gbtest::Bus::read(uint16_t addr) const
+uint8_t gbtest::Bus::read(uint16_t addr, BusRequestSource requestSource) const
 {
     // Ensure that no provider is locking this address
     ensureAddressIsUnlocked(addr, false);
@@ -26,7 +26,7 @@ uint8_t gbtest::Bus::read(uint16_t addr) const
     return val;
 }
 
-void gbtest::Bus::write(uint16_t addr, uint8_t val)
+void gbtest::Bus::write(uint16_t addr, uint8_t val, BusRequestSource requestSource)
 {
     // Ensure that no provider is locking this address
     ensureAddressIsUnlocked(addr, true);

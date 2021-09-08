@@ -19,7 +19,7 @@ add_executable(gbtest
         src/platform/bus/Bus.h
         src/platform/GameBoy.cpp
         src/platform/GameBoy.h
-        src/platform/bus/BusProvider.h)
+        src/platform/bus/BusProvider.h src/platform/bus/BusRequestSource.h)
 
 target_link_libraries(gbtest raylib)
 

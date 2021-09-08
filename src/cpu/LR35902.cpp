@@ -179,7 +179,7 @@ void gbtest::LR35902::resetRegisters()
 
 uint8_t gbtest::LR35902::fetch()
 {
-    return m_bus.read(m_registers.pc++);
+    return m_bus.read(m_registers.pc++, gbtest::BusRequestSource::CPU);
 }
 
 void gbtest::LR35902::dumpRegisters()
@@ -212,7 +212,7 @@ void gbtest::LR35902::opcode01h()
 // LD (BC), A
 void gbtest::LR35902::opcode02h()
 {
-    m_bus.write(m_registers.bc, m_registers.a);
+    m_bus.write(m_registers.bc, m_registers.a, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -261,8 +261,8 @@ void gbtest::LR35902::opcode07h()
 void gbtest::LR35902::opcode08h()
 {
     uint16_t addr = fetch() | (fetch() << 8);
-    m_bus.write(addr, m_registers.sp);
-    m_bus.write(addr + 1, m_registers.sp >> 8);
+    m_bus.write(addr, m_registers.sp, gbtest::BusRequestSource::CPU);
+    m_bus.write(addr + 1, m_registers.sp >> 8, gbtest::BusRequestSource::CPU);
 
     m_cyclesToWaste = 20;
 }
@@ -276,7 +276,7 @@ void gbtest::LR35902::opcode09h()
 // LD A, (BC)
 void gbtest::LR35902::opcode0Ah()
 {
-    m_registers.a = m_bus.read(m_registers.bc);
+    m_registers.a = m_bus.read(m_registers.bc, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -342,7 +342,7 @@ void gbtest::LR35902::opcode11h()
 // LD (DE), A
 void gbtest::LR35902::opcode12h()
 {
-    m_bus.write(m_registers.de, m_registers.a);
+    m_bus.write(m_registers.de, m_registers.a, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -404,7 +404,7 @@ void gbtest::LR35902::opcode19h()
 // LD A, (DE)
 void gbtest::LR35902::opcode1Ah()
 {
-    m_registers.a = m_bus.read(m_registers.de);
+    m_registers.a = m_bus.read(m_registers.de, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -475,7 +475,7 @@ void gbtest::LR35902::opcode21h()
 // LD (HL+), A
 void gbtest::LR35902::opcode22h()
 {
-    m_bus.write(m_registers.hl++, m_registers.a);
+    m_bus.write(m_registers.hl++, m_registers.a, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -559,7 +559,7 @@ void gbtest::LR35902::opcode29h()
 // LD A, (HL+)
 void gbtest::LR35902::opcode2Ah()
 {
-    m_registers.a = m_bus.read(m_registers.hl++);
+    m_registers.a = m_bus.read(m_registers.hl++, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -625,7 +625,7 @@ void gbtest::LR35902::opcode31h()
 // LD (HL-), A
 void gbtest::LR35902::opcode32h()
 {
-    m_bus.write(m_registers.hl--, m_registers.a);
+    m_bus.write(m_registers.hl--, m_registers.a, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -640,8 +640,8 @@ void gbtest::LR35902::opcode33h()
 // INC (HL)
 void gbtest::LR35902::opcode34h()
 {
-    const uint8_t val = m_bus.read(m_registers.hl) + 1;
-    m_bus.write(m_registers.hl, val);
+    const uint8_t val = m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU) + 1;
+    m_bus.write(m_registers.hl, val, gbtest::BusRequestSource::CPU);
 
     m_registers.f.z = val == 0;
     m_registers.f.n = 0;
@@ -653,8 +653,8 @@ void gbtest::LR35902::opcode34h()
 // DEC (HL)
 void gbtest::LR35902::opcode35h()
 {
-    const uint8_t val = m_bus.read(m_registers.hl) - 1;
-    m_bus.write(m_registers.hl, val);
+    const uint8_t val = m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU) - 1;
+    m_bus.write(m_registers.hl, val, gbtest::BusRequestSource::CPU);
 
     m_registers.f.z = val == 0;
     m_registers.f.n = 1;
@@ -666,7 +666,7 @@ void gbtest::LR35902::opcode35h()
 // LD (HL), d8
 void gbtest::LR35902::opcode36h()
 {
-    m_bus.write(m_registers.hl, fetch());
+    m_bus.write(m_registers.hl, fetch(), gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 12;
 }
 
@@ -703,7 +703,7 @@ void gbtest::LR35902::opcode39h()
 // LD A, (HL-)
 void gbtest::LR35902::opcode3Ah()
 {
-    m_registers.a = m_bus.read(m_registers.hl--);
+    m_registers.a = m_bus.read(m_registers.hl--, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -789,7 +789,7 @@ void gbtest::LR35902::opcode45h()
 // LD B, (HL)
 void gbtest::LR35902::opcode46h()
 {
-    m_registers.b = m_bus.read(m_registers.hl);
+    m_registers.b = m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -845,7 +845,7 @@ void gbtest::LR35902::opcode4Dh()
 // LD C, (HL)
 void gbtest::LR35902::opcode4Eh()
 {
-    m_registers.c = m_bus.read(m_registers.hl);
+    m_registers.c = m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -901,7 +901,7 @@ void gbtest::LR35902::opcode55h()
 // LD D, (HL)
 void gbtest::LR35902::opcode56h()
 {
-    m_registers.d = m_bus.read(m_registers.hl);
+    m_registers.d = m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -957,7 +957,7 @@ void gbtest::LR35902::opcode5Dh()
 // LD E, (HL)
 void gbtest::LR35902::opcode5Eh()
 {
-    m_registers.e = m_bus.read(m_registers.hl);
+    m_registers.e = m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -1013,7 +1013,7 @@ void gbtest::LR35902::opcode65h()
 // LD H, (HL)
 void gbtest::LR35902::opcode66h()
 {
-    m_registers.h = m_bus.read(m_registers.hl);
+    m_registers.h = m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -1069,7 +1069,7 @@ void gbtest::LR35902::opcode6Dh()
 // LD L, (HL)
 void gbtest::LR35902::opcode6Eh()
 {
-    m_registers.l = m_bus.read(m_registers.hl);
+    m_registers.l = m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 4;
 }
 
@@ -1083,42 +1083,42 @@ void gbtest::LR35902::opcode6Fh()
 // LD (HL), B
 void gbtest::LR35902::opcode70h()
 {
-    m_bus.write(m_registers.hl, m_registers.b);
+    m_bus.write(m_registers.hl, m_registers.b, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
 // LD (HL), C
 void gbtest::LR35902::opcode71h()
 {
-    m_bus.write(m_registers.hl, m_registers.c);
+    m_bus.write(m_registers.hl, m_registers.c, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
 // LD (HL), D
 void gbtest::LR35902::opcode72h()
 {
-    m_bus.write(m_registers.hl, m_registers.d);
+    m_bus.write(m_registers.hl, m_registers.d, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
 // LD (HL), E
 void gbtest::LR35902::opcode73h()
 {
-    m_bus.write(m_registers.hl, m_registers.e);
+    m_bus.write(m_registers.hl, m_registers.e, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
 // LD (HL), H
 void gbtest::LR35902::opcode74h()
 {
-    m_bus.write(m_registers.hl, m_registers.h);
+    m_bus.write(m_registers.hl, m_registers.h, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
 // LD (HL), L
 void gbtest::LR35902::opcode75h()
 {
-    m_bus.write(m_registers.hl, m_registers.l);
+    m_bus.write(m_registers.hl, m_registers.l, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -1133,7 +1133,7 @@ void gbtest::LR35902::opcode76h()
 // LD (HL), A
 void gbtest::LR35902::opcode77h()
 {
-    m_bus.write(m_registers.hl, m_registers.a);
+    m_bus.write(m_registers.hl, m_registers.a, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -1182,7 +1182,7 @@ void gbtest::LR35902::opcode7Dh()
 // LD A, (HL)
 void gbtest::LR35902::opcode7Eh()
 {
-    m_registers.a = m_bus.read(m_registers.hl);
+    m_registers.a = m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -1231,7 +1231,7 @@ void gbtest::LR35902::opcode85h()
 // ADD A, (HL)
 void gbtest::LR35902::opcode86h()
 {
-    ADD_A(m_bus.read(m_registers.hl));
+    ADD_A(m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU));
     m_cyclesToWaste += 4;
 }
 
@@ -1280,7 +1280,7 @@ void gbtest::LR35902::opcode8Dh()
 // ADC A, (HL)
 void gbtest::LR35902::opcode8Eh()
 {
-    ADC_A(m_bus.read(m_registers.hl));
+    ADC_A(m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU));
     m_cyclesToWaste += 4;
 }
 
@@ -1329,7 +1329,7 @@ void gbtest::LR35902::opcode95h()
 // SUB A, (HL)
 void gbtest::LR35902::opcode96h()
 {
-    SUB_A(m_bus.read(m_registers.hl));
+    SUB_A(m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU));
     m_cyclesToWaste += 4;
 }
 
@@ -1386,7 +1386,7 @@ void gbtest::LR35902::opcode9Dh()
 // SBC A, (HL)
 void gbtest::LR35902::opcode9Eh()
 {
-    SBC_A(m_bus.read(m_registers.hl));
+    SBC_A(m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU));
     m_cyclesToWaste += 4;
 }
 
@@ -1435,7 +1435,7 @@ void gbtest::LR35902::opcodeA5h()
 // AND A, (HL)
 void gbtest::LR35902::opcodeA6h()
 {
-    AND_A(m_bus.read(m_registers.hl));
+    AND_A(m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU));
     m_cyclesToWaste += 4;
 }
 
@@ -1484,7 +1484,7 @@ void gbtest::LR35902::opcodeADh()
 // XOR A, (HL)
 void gbtest::LR35902::opcodeAEh()
 {
-    XOR_A(m_bus.read(m_registers.hl));
+    XOR_A(m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU));
     m_cyclesToWaste += 4;
 }
 
@@ -1533,7 +1533,7 @@ void gbtest::LR35902::opcodeB5h()
 // OR A, (HL)
 void gbtest::LR35902::opcodeB6h()
 {
-    OR_A(m_bus.read(m_registers.hl));
+    OR_A(m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU));
     m_cyclesToWaste += 4;
 }
 
@@ -1582,7 +1582,7 @@ void gbtest::LR35902::opcodeBDh()
 // CP A, (HL)
 void gbtest::LR35902::opcodeBEh()
 {
-    const uint8_t val = m_bus.read(m_registers.hl);
+    const uint8_t val = m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU);
     CP_A(val);
 
     m_cyclesToWaste += 4;
@@ -1607,14 +1607,16 @@ void gbtest::LR35902::opcodeC0h()
         return;
     }
 
-    m_registers.pc = m_bus.read(m_registers.sp++) | (m_bus.read(m_registers.sp++) << 8);
+    m_registers.pc = m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU)
+            | (m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU) << 8);
     m_cyclesToWaste = 20;
 }
 
 // POP BC
 void gbtest::LR35902::opcodeC1h()
 {
-    m_registers.bc = m_bus.read(m_registers.sp++) | (m_bus.read(m_registers.sp++) << 8);
+    m_registers.bc = m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU)
+            | (m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU) << 8);
     m_cyclesToWaste = 12;
 }
 
@@ -1649,8 +1651,8 @@ void gbtest::LR35902::opcodeC4h()
         return;
     }
 
-    m_bus.write(--m_registers.sp, m_registers.pc >> 8);
-    m_bus.write(--m_registers.sp, m_registers.pc);
+    m_bus.write(--m_registers.sp, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.pc, gbtest::BusRequestSource::CPU);
 
     m_registers.pc = val;
 
@@ -1660,8 +1662,8 @@ void gbtest::LR35902::opcodeC4h()
 // PUSH BC
 void gbtest::LR35902::opcodeC5h()
 {
-    m_bus.write(--m_registers.sp, m_registers.b);
-    m_bus.write(--m_registers.sp, m_registers.c);
+    m_bus.write(--m_registers.sp, m_registers.b, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.c, gbtest::BusRequestSource::CPU);
 
     m_cyclesToWaste = 16;
 }
@@ -1676,8 +1678,8 @@ void gbtest::LR35902::opcodeC6h()
 // RST 00H
 void gbtest::LR35902::opcodeC7h()
 {
-    m_bus.write(--m_registers.sp, m_registers.pc >> 8);
-    m_bus.write(--m_registers.sp, m_registers.pc);
+    m_bus.write(--m_registers.sp, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.pc, gbtest::BusRequestSource::CPU);
 
     m_registers.pc = 0x00;
 
@@ -1692,14 +1694,16 @@ void gbtest::LR35902::opcodeC8h()
         return;
     }
 
-    m_registers.pc = m_bus.read(m_registers.sp++) | (m_bus.read(m_registers.sp++) << 8);
+    m_registers.pc = m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU)
+            | (m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU) << 8);
     m_cyclesToWaste = 20;
 }
 
 // RET
 void gbtest::LR35902::opcodeC9h()
 {
-    m_registers.pc = m_bus.read(m_registers.sp++) | (m_bus.read(m_registers.sp++) << 8);
+    m_registers.pc = m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU)
+            | (m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU) << 8);
     m_cyclesToWaste = 16;
 }
 
@@ -1745,7 +1749,7 @@ void gbtest::LR35902::opcodeCBh()
       }
     };
 
-    uint8_t memValue = m_bus.read(m_registers.hl);
+    uint8_t memValue = m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU);
     uint8_t& dest = getRegisterByLowerBits(lowOpcode, memValue);
 
     // Apply the right operation
@@ -1787,7 +1791,7 @@ void gbtest::LR35902::opcodeCBh()
     if (lowOpcode == 0x06) {
         if (opcode < 0x40 || opcode > 0x7F) {
             // Only write the result if the operation was not BIT
-            m_bus.write(m_registers.hl, memValue);
+            m_bus.write(m_registers.hl, memValue, gbtest::BusRequestSource::CPU);
         }
 
         m_cyclesToWaste += 8;
@@ -1804,8 +1808,8 @@ void gbtest::LR35902::opcodeCCh()
         return;
     }
 
-    m_bus.write(--m_registers.sp, m_registers.pc >> 8);
-    m_bus.write(--m_registers.sp, m_registers.pc);
+    m_bus.write(--m_registers.sp, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.pc, gbtest::BusRequestSource::CPU);
 
     m_registers.pc = val;
 
@@ -1817,8 +1821,8 @@ void gbtest::LR35902::opcodeCDh()
 {
     const uint16_t val = fetch() | (fetch() << 8);
 
-    m_bus.write(--m_registers.sp, m_registers.pc >> 8);
-    m_bus.write(--m_registers.sp, m_registers.pc);
+    m_bus.write(--m_registers.sp, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.pc, gbtest::BusRequestSource::CPU);
 
     m_registers.pc = val;
 
@@ -1835,8 +1839,8 @@ void gbtest::LR35902::opcodeCEh()
 // RST 08H
 void gbtest::LR35902::opcodeCFh()
 {
-    m_bus.write(--m_registers.sp, m_registers.pc >> 8);
-    m_bus.write(--m_registers.sp, m_registers.pc);
+    m_bus.write(--m_registers.sp, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.pc, gbtest::BusRequestSource::CPU);
 
     m_registers.pc = 0x08;
 
@@ -1851,14 +1855,16 @@ void gbtest::LR35902::opcodeD0h()
         return;
     }
 
-    m_registers.pc = m_bus.read(m_registers.sp++) | (m_bus.read(m_registers.sp++) << 8);
+    m_registers.pc = m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU)
+            | (m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU) << 8);
     m_cyclesToWaste = 20;
 }
 
 // POP DE
 void gbtest::LR35902::opcodeD1h()
 {
-    m_registers.de = m_bus.read(m_registers.sp++) | (m_bus.read(m_registers.sp++) << 8);
+    m_registers.de = m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU)
+            | (m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU) << 8);
     m_cyclesToWaste = 12;
 }
 
@@ -1891,8 +1897,8 @@ void gbtest::LR35902::opcodeD4h()
         return;
     }
 
-    m_bus.write(--m_registers.sp, m_registers.pc >> 8);
-    m_bus.write(--m_registers.sp, m_registers.pc);
+    m_bus.write(--m_registers.sp, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.pc, gbtest::BusRequestSource::CPU);
 
     m_registers.pc = val;
 
@@ -1902,8 +1908,8 @@ void gbtest::LR35902::opcodeD4h()
 // PUSH DE
 void gbtest::LR35902::opcodeD5h()
 {
-    m_bus.write(--m_registers.sp, m_registers.d);
-    m_bus.write(--m_registers.sp, m_registers.e);
+    m_bus.write(--m_registers.sp, m_registers.d, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.e, gbtest::BusRequestSource::CPU);
 
     m_cyclesToWaste = 16;
 }
@@ -1918,8 +1924,8 @@ void gbtest::LR35902::opcodeD6h()
 // RST 10H
 void gbtest::LR35902::opcodeD7h()
 {
-    m_bus.write(--m_registers.sp, m_registers.pc >> 8);
-    m_bus.write(--m_registers.sp, m_registers.pc);
+    m_bus.write(--m_registers.sp, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.pc, gbtest::BusRequestSource::CPU);
 
     m_registers.pc = 0x10;
 
@@ -1934,7 +1940,8 @@ void gbtest::LR35902::opcodeD8h()
         return;
     }
 
-    m_registers.pc = m_bus.read(m_registers.sp++) | (m_bus.read(m_registers.sp++) << 8);
+    m_registers.pc = m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU)
+            | (m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU) << 8);
     m_cyclesToWaste = 20;
 }
 
@@ -1942,7 +1949,8 @@ void gbtest::LR35902::opcodeD8h()
 void gbtest::LR35902::opcodeD9h()
 {
     m_ime = true;
-    m_registers.pc = m_bus.read(m_registers.sp++) | (m_bus.read(m_registers.sp++) << 8);
+    m_registers.pc = m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU)
+            | (m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU) << 8);
 
     m_cyclesToWaste = 16;
 }
@@ -1976,8 +1984,8 @@ void gbtest::LR35902::opcodeDCh()
         return;
     }
 
-    m_bus.write(--m_registers.sp, m_registers.pc >> 8);
-    m_bus.write(--m_registers.sp, m_registers.pc);
+    m_bus.write(--m_registers.sp, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.pc, gbtest::BusRequestSource::CPU);
 
     m_registers.pc = val;
 
@@ -1999,8 +2007,8 @@ void gbtest::LR35902::opcodeDEh()
 // RST 18H
 void gbtest::LR35902::opcodeDFh()
 {
-    m_bus.write(--m_registers.sp, m_registers.pc >> 8);
-    m_bus.write(--m_registers.sp, m_registers.pc);
+    m_bus.write(--m_registers.sp, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.pc, gbtest::BusRequestSource::CPU);
 
     m_registers.pc = 0x18;
 
@@ -2010,21 +2018,22 @@ void gbtest::LR35902::opcodeDFh()
 // LDH (a8), A
 void gbtest::LR35902::opcodeE0h()
 {
-    m_bus.write(0xFF00 | fetch(), m_registers.a);
+    m_bus.write(0xFF00 | fetch(), m_registers.a, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 12;
 }
 
 // POP HL
 void gbtest::LR35902::opcodeE1h()
 {
-    m_registers.hl = m_bus.read(m_registers.sp++) | (m_bus.read(m_registers.sp++) << 8);
+    m_registers.hl = m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU)
+            | (m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU) << 8);
     m_cyclesToWaste = 12;
 }
 
 // LD (C), A
 void gbtest::LR35902::opcodeE2h()
 {
-    m_bus.write(0xFF00 + m_registers.c, m_registers.a);
+    m_bus.write(0xFF00 + m_registers.c, m_registers.a, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -2041,8 +2050,8 @@ void gbtest::LR35902::opcodeE4h()
 // PUSH HL
 void gbtest::LR35902::opcodeE5h()
 {
-    m_bus.write(--m_registers.sp, m_registers.h);
-    m_bus.write(--m_registers.sp, m_registers.l);
+    m_bus.write(--m_registers.sp, m_registers.h, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.l, gbtest::BusRequestSource::CPU);
 
     m_cyclesToWaste = 16;
 }
@@ -2063,8 +2072,8 @@ void gbtest::LR35902::opcodeE6h()
 // RST 20H
 void gbtest::LR35902::opcodeE7h()
 {
-    m_bus.write(--m_registers.sp, m_registers.pc >> 8);
-    m_bus.write(--m_registers.sp, m_registers.pc);
+    m_bus.write(--m_registers.sp, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.pc, gbtest::BusRequestSource::CPU);
 
     m_registers.pc = 0x20;
 
@@ -2102,7 +2111,7 @@ void gbtest::LR35902::opcodeE9h()
 // LD (a16), A
 void gbtest::LR35902::opcodeEAh()
 {
-    m_bus.write(fetch() | (fetch() << 8), m_registers.a);
+    m_bus.write(fetch() | (fetch() << 8), m_registers.a, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 16;
 }
 
@@ -2137,8 +2146,8 @@ void gbtest::LR35902::opcodeEEh()
 // RST 28H
 void gbtest::LR35902::opcodeEFh()
 {
-    m_bus.write(--m_registers.sp, m_registers.pc >> 8);
-    m_bus.write(--m_registers.sp, m_registers.pc);
+    m_bus.write(--m_registers.sp, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.pc, gbtest::BusRequestSource::CPU);
 
     m_registers.pc = 0x28;
 
@@ -2148,21 +2157,22 @@ void gbtest::LR35902::opcodeEFh()
 // LDH A, (a8)
 void gbtest::LR35902::opcodeF0h()
 {
-    m_registers.a = m_bus.read(0xFF00 | fetch());
+    m_registers.a = m_bus.read(0xFF00 | fetch(), gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 12;
 }
 
 // POP AF
 void gbtest::LR35902::opcodeF1h()
 {
-    m_registers.af = (m_bus.read(m_registers.sp++) & 0xF0) | (m_bus.read(m_registers.sp++) << 8);
+    m_registers.af = (m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU) & 0xF0)
+            | (m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU) << 8);
     m_cyclesToWaste = 12;
 }
 
 // LD A, (C)
 void gbtest::LR35902::opcodeF2h()
 {
-    m_registers.a = m_bus.read(0xFF00 + m_registers.c);
+    m_registers.a = m_bus.read(0xFF00 + m_registers.c, gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 8;
 }
 
@@ -2181,8 +2191,8 @@ void gbtest::LR35902::opcodeF4h()
 // PUSH AF
 void gbtest::LR35902::opcodeF5h()
 {
-    m_bus.write(--m_registers.sp, m_registers.af >> 8);
-    m_bus.write(--m_registers.sp, m_registers.af);
+    m_bus.write(--m_registers.sp, m_registers.af >> 8, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.af, gbtest::BusRequestSource::CPU);
 
     m_cyclesToWaste = 16;
 }
@@ -2203,8 +2213,8 @@ void gbtest::LR35902::opcodeF6h()
 // RST 30H
 void gbtest::LR35902::opcodeF7h()
 {
-    m_bus.write(--m_registers.sp, m_registers.pc >> 8);
-    m_bus.write(--m_registers.sp, m_registers.pc);
+    m_bus.write(--m_registers.sp, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.pc, gbtest::BusRequestSource::CPU);
 
     m_registers.pc = 0x30;
 
@@ -2235,7 +2245,7 @@ void gbtest::LR35902::opcodeF9h()
 // LD A, (a16)
 void gbtest::LR35902::opcodeFAh()
 {
-    m_registers.a = m_bus.read(fetch() | (fetch() << 8));
+    m_registers.a = m_bus.read(fetch() | (fetch() << 8), gbtest::BusRequestSource::CPU);
     m_cyclesToWaste = 16;
 }
 
@@ -2268,8 +2278,8 @@ void gbtest::LR35902::opcodeFEh()
 // RST 38H
 void gbtest::LR35902::opcodeFFh()
 {
-    m_bus.write(--m_registers.sp, m_registers.pc >> 8);
-    m_bus.write(--m_registers.sp, m_registers.pc);
+    m_bus.write(--m_registers.sp, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.pc, gbtest::BusRequestSource::CPU);
 
     m_registers.pc = 0x38;
 

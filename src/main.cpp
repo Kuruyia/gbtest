@@ -17,20 +17,20 @@ int main()
         uint8_t currByte;
         unsigned offset = 0;
         while (fread(&currByte, sizeof(currByte), 0x1, gbRom)>0) {
-            gameboy.getBus().write(offset++, currByte);
+            gameboy.getBus().write(offset++, currByte, gbtest::BusRequestSource::Privileged);
         }
 
         fclose(gbRom);
     }
     else {
-        gameboy.getBus().write(0x100, 0x3E); // LD A, 0xFF
-        gameboy.getBus().write(0x101, 0xFF);
+        gameboy.getBus().write(0x100, 0x3E, gbtest::BusRequestSource::Privileged); // LD A, 0xFF
+        gameboy.getBus().write(0x101, 0xFF, gbtest::BusRequestSource::Privileged);
 
-        gameboy.getBus().write(0x102, 0xC6); // ADD A, 0x01
-        gameboy.getBus().write(0x103, 0x01);
+        gameboy.getBus().write(0x102, 0xC6, gbtest::BusRequestSource::Privileged); // ADD A, 0x01
+        gameboy.getBus().write(0x103, 0x01, gbtest::BusRequestSource::Privileged);
 
-        gameboy.getBus().write(0x110, 0x18); // JR -2
-        gameboy.getBus().write(0x111, -2);
+        gameboy.getBus().write(0x110, 0x18, gbtest::BusRequestSource::Privileged); // JR -2
+        gameboy.getBus().write(0x111, -2, gbtest::BusRequestSource::Privileged);
     }
 
     while (!WindowShouldClose()) {

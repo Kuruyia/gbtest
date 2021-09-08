@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "BusProvider.h"
+#include "BusRequestSource.h"
 
 namespace gbtest {
 
@@ -13,8 +14,8 @@ class Bus {
 public:
     Bus() = default;
 
-    [[nodiscard]] uint8_t read(uint16_t addr) const;
-    void write(uint16_t addr, uint8_t val);
+    [[nodiscard]] uint8_t read(uint16_t addr, BusRequestSource requestSource) const;
+    void write(uint16_t addr, uint8_t val, BusRequestSource requestSource);
 
     void registerBusProvider(BusProvider* busProvider);
     void unregisterBusProvider(BusProvider* busProvider);
