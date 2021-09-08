@@ -3,12 +3,16 @@
 
 #include <stdexcept>
 
+namespace gbtest {
+
 class BusLockedAddressException
         : public std::runtime_error {
 
 public:
-    explicit BusLockedAddressException(uint16_t addr);
+    BusLockedAddressException(uint16_t addr, bool isWrite);
 
 }; // class BusLockedAddressException
+
+} // namespace gbtest
 
 #endif //GBTEST_BUSLOCKEDADDRESSEXCEPTION_H

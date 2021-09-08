@@ -6,7 +6,7 @@
 uint8_t gbtest::Bus::read(uint16_t addr) const
 {
     // Ensure that no provider is locking this address
-    ensureAddressIsUnlocked(addr);
+    ensureAddressIsUnlocked(addr, false);
 
     size_t i = 0;
     uint8_t val = 0;
@@ -26,7 +26,7 @@ uint8_t gbtest::Bus::read(uint16_t addr) const
 void gbtest::Bus::write(uint16_t addr, uint8_t val)
 {
     // Ensure that no provider is locking this address
-    ensureAddressIsUnlocked(addr);
+    ensureAddressIsUnlocked(addr, true);
 
     for (BusProvider* const busProvider: m_busProviders) {
         if (busProvider->write(addr, val)) { return; }
@@ -45,10 +45,10 @@ void gbtest::Bus::unregisterBusProvider(BusProvider* busProvider)
     m_busProviders.erase(std::remove(m_busProviders.begin(), m_busProviders.end(), busProvider), m_busProviders.end());
 }
 
-void gbtest::Bus::ensureAddressIsUnlocked(uint16_t addr) const
+void gbtest::Bus::ensureAddressIsUnlocked(uint16_t addr, bool isWrite) const
 {
     // Throw an exception if a bus provider is locking the address
     for (BusProvider* const busProvider: m_busProviders) {
-        if (!busProvider->doesAuthorizeAccess(addr)) { throw BusLockedAddressException(addr); }
+        if (!busProvider->doesAuthorizeAccess(addr, isWrite)) { throw BusLockedAddressException(addr, isWrite); }
     }
 }

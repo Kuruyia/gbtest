@@ -15,7 +15,7 @@ public:
     bool read(uint16_t addr, uint8_t& val) const override;
     bool write(uint16_t addr, uint8_t val) override;
 
-    bool doesAuthorizeAccess(uint16_t addr) override;
+    bool doesAuthorizeAccess(uint16_t addr, bool isWrite) override;
 
 private:
     uint16_t m_baseAddress;

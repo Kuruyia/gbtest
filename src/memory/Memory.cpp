@@ -43,7 +43,7 @@ bool gbtest::Memory::write(uint16_t addr, uint8_t val)
     return true;
 }
 
-bool gbtest::Memory::doesAuthorizeAccess(uint16_t addr)
+bool gbtest::Memory::doesAuthorizeAccess(uint16_t addr, bool isWrite)
 {
     // We have no reason to lock the bus
     return true;

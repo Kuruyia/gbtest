@@ -22,7 +22,7 @@ public:
 private:
     std::vector<BusProvider*> m_busProviders;
 
-    void ensureAddressIsUnlocked(uint16_t addr) const;
+    void ensureAddressIsUnlocked(uint16_t addr, bool isWrite) const;
 
 }; // class Bus
 
