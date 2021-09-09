@@ -20,23 +20,23 @@ public:
     typedef void (LR35902::*fnOpcode)();
 
 public:
-    LR35902(Bus& bus);
+    explicit LR35902(Bus& bus);
     ~LR35902() override = default;
 
     void setRegisters(const LR35902Registers& registers);
-    const LR35902Registers& getRegisters() const;
+    [[nodiscard]] const LR35902Registers& getRegisters() const;
 
     void setInterruptMasterEnabled(bool interruptMasterEnabled);
-    const bool& isInterruptMasterEnabled() const;
+    [[nodiscard]] const bool& isInterruptMasterEnabled() const;
 
     void setHalted(bool halted);
-    const bool& isHalted() const;
+    [[nodiscard]] const bool& isHalted() const;
 
     void setStopped(bool stopped);
-    const bool& isStopped() const;
+    [[nodiscard]] const bool& isStopped() const;
 
-    const uint8_t& getCyclesToWaste() const;
-    const unsigned& getTickCounter() const;
+    [[nodiscard]] const uint8_t& getCyclesToWaste() const;
+    [[nodiscard]] const unsigned& getTickCounter() const;
 
     void tick() override;
     void step();
