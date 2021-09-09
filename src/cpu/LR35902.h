@@ -7,17 +7,21 @@
 #include <vector>
 
 #include "../platform/bus/Bus.h"
+#include "../utils/Tickable.h"
+
 #include "LR35902Registers.h"
 
 namespace gbtest {
 
-class LR35902 {
+class LR35902
+        : public Tickable {
 
 public:
     typedef void (LR35902::*fnOpcode)();
 
 public:
     LR35902(Bus& bus);
+    ~LR35902() override = default;
 
     void setRegisters(const LR35902Registers& registers);
     const LR35902Registers& getRegisters() const;
@@ -34,7 +38,7 @@ public:
     const uint8_t& getCyclesToWaste() const;
     const unsigned& getTickCounter() const;
 
-    void tick();
+    void tick() override;
     void step();
 
 private:

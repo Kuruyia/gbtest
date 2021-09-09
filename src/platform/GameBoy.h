@@ -4,16 +4,19 @@
 #include "bus/Bus.h"
 #include "../cpu/LR35902.h"
 #include "../memory/Memory.h"
+#include "../utils/Tickable.h"
 
 namespace gbtest {
 
-class GameBoy {
+class GameBoy
+        : public Tickable {
 
 public:
     GameBoy();
+    ~GameBoy() override = default;
 
     void update(int64_t delta);
-    void tick();
+    void tick() override;
 
     Bus& getBus();
     LR35902& getCpu();

@@ -22,7 +22,8 @@ add_executable(gbtest
         src/platform/bus/BusProvider.h
         src/platform/bus/BusRequestSource.h
         src/ppu/oam/OAMDMA.cpp
-        src/ppu/oam/OAMDMA.h)
+        src/ppu/oam/OAMDMA.h
+        src/utils/Tickable.h)
 
 target_link_libraries(gbtest raylib)
 

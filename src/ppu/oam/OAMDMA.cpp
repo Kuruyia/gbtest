@@ -1,5 +1,10 @@
 #include "OAMDMA.h"
 
+void gbtest::OAMDMA::tick()
+{
+    // TODO: Handle the transfer one is in progress
+}
+
 bool gbtest::OAMDMA::read(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
     // OAM DMA only uses address FF46h
