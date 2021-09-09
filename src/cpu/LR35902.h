@@ -9,6 +9,7 @@
 #include "../platform/bus/Bus.h"
 #include "../utils/Tickable.h"
 
+#include "InterruptController.h"
 #include "LR35902Registers.h"
 
 namespace gbtest {
@@ -26,8 +27,7 @@ public:
     void setRegisters(const LR35902Registers& registers);
     [[nodiscard]] const LR35902Registers& getRegisters() const;
 
-    void setInterruptMasterEnabled(bool interruptMasterEnabled);
-    [[nodiscard]] const bool& isInterruptMasterEnabled() const;
+    [[nodiscard]] const InterruptController& getInterruptController() const;
 
     void setHalted(bool halted);
     [[nodiscard]] const bool& isHalted() const;
@@ -51,10 +51,10 @@ private:
 
     const std::array<std::function<void()>, 0x100> m_opcodeLookup;
 
+    InterruptController m_interruptController;
     LR35902Registers m_registers;
 
     uint8_t m_cyclesToWaste;
-    bool m_ime; // Interrupt Master Enable Flag
     bool m_halted; // CPU halted state
     bool m_stopped; // CPU stopped state
 

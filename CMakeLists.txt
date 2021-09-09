@@ -6,7 +6,8 @@ find_package(raylib 3.0 REQUIRED)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(gbtest
-        src/main.cpp
+        src/cpu/InterruptController.cpp
+        src/cpu/InterruptController.h
         src/cpu/LR35902.cpp
         src/cpu/LR35902.h
         src/exceptions/bus/BusLockedAddressException.cpp
@@ -23,7 +24,8 @@ add_executable(gbtest
         src/platform/bus/BusRequestSource.h
         src/ppu/oam/OAMDMA.cpp
         src/ppu/oam/OAMDMA.h
-        src/utils/Tickable.h)
+        src/utils/Tickable.h
+        src/main.cpp)
 
 target_link_libraries(gbtest raylib)
 

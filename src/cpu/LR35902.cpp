@@ -74,7 +74,6 @@ gbtest::LR35902::LR35902(Bus& bus)
                  [this] { opcodeFCh(); }, [this] { opcodeFDh(); }, [this] { opcodeFEh(); }, [this] { opcodeFFh(); }})
         , m_registers({})
         , m_cyclesToWaste(0)
-        , m_ime(true)
         , m_halted(false)
         , m_stopped(false)
         , m_tickCounter(0)
@@ -92,14 +91,9 @@ const gbtest::LR35902Registers& gbtest::LR35902::getRegisters() const
     return m_registers;
 }
 
-void gbtest::LR35902::setInterruptMasterEnabled(bool interruptMasterEnabled)
+const gbtest::InterruptController& gbtest::LR35902::getInterruptController() const
 {
-    m_ime = interruptMasterEnabled;
-}
-
-const bool& gbtest::LR35902::isInterruptMasterEnabled() const
-{
-    return m_ime;
+    return m_interruptController;
 }
 
 void gbtest::LR35902::setHalted(bool halted)
@@ -1948,7 +1942,7 @@ void gbtest::LR35902::opcodeD8h()
 // RETI
 void gbtest::LR35902::opcodeD9h()
 {
-    m_ime = true;
+    m_interruptController.setInterruptMasterEnable(true);
     m_registers.pc = m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU)
             | (m_bus.read(m_registers.sp++, gbtest::BusRequestSource::CPU) << 8);
 
@@ -2179,7 +2173,7 @@ void gbtest::LR35902::opcodeF2h()
 // DI
 void gbtest::LR35902::opcodeF3h()
 {
-    m_ime = false;
+    m_interruptController.setInterruptMasterEnable(false);
     m_cyclesToWaste = 4;
 }
 
@@ -2252,7 +2246,7 @@ void gbtest::LR35902::opcodeFAh()
 // EI
 void gbtest::LR35902::opcodeFBh()
 {
-    m_ime = true;
+    m_interruptController.setInterruptMasterEnable(true);
     m_cyclesToWaste = 4;
 }
 
