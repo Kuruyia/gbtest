@@ -14,7 +14,7 @@ uint8_t gbtest::Bus::read(uint16_t addr, BusRequestSource requestSource) const
 
     // Try to read from every provider
     while (i < m_busProviders.size()) {
-        if (m_busProviders[i]->read(addr, val)) { break; }
+        if (m_busProviders[i]->read(addr, val, requestSource)) { break; }
         ++i;
     }
 
@@ -33,7 +33,7 @@ void gbtest::Bus::write(uint16_t addr, uint8_t val, BusRequestSource requestSour
 
     // Try to write to every provider
     for (BusProvider* const busProvider: m_busProviders) {
-        if (busProvider->write(addr, val)) { return; }
+        if (busProvider->write(addr, val, requestSource)) { return; }
     }
 
     // Throw an exception if no provider was found

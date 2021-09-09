@@ -12,8 +12,8 @@ public:
     Memory(uint16_t baseAddr, uint32_t size);
     ~Memory() override;
 
-    bool read(uint16_t addr, uint8_t& val) const override;
-    bool write(uint16_t addr, uint8_t val) override;
+    bool read(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
+    bool write(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
     bool doesAuthorizeAccess(uint16_t addr, bool isWrite) override;
 

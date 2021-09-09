@@ -13,7 +13,7 @@ gbtest::Memory::~Memory()
     delete[] m_memory;
 }
 
-bool gbtest::Memory::read(uint16_t addr, uint8_t& val) const
+bool gbtest::Memory::read(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const
 {
     const uint16_t offset = addr - m_baseAddress;
 
@@ -28,7 +28,7 @@ bool gbtest::Memory::read(uint16_t addr, uint8_t& val) const
     return true;
 }
 
-bool gbtest::Memory::write(uint16_t addr, uint8_t val)
+bool gbtest::Memory::write(uint16_t addr, uint8_t val, BusRequestSource requestSource)
 {
     const uint16_t offset = addr - m_baseAddress;
 
