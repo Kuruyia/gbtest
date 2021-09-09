@@ -15,7 +15,8 @@ public:
     virtual bool read(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const = 0;
     virtual bool write(uint16_t addr, uint8_t val, BusRequestSource requestSource) = 0;
 
-    virtual bool doesAuthorizeAccess(uint16_t addr, bool isWrite) = 0;
+    virtual bool readOverride(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const = 0;
+    virtual bool writeOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) = 0;
 
 }; // class BusProvider
 

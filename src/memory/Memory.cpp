@@ -43,8 +43,14 @@ bool gbtest::Memory::write(uint16_t addr, uint8_t val, BusRequestSource requestS
     return true;
 }
 
-bool gbtest::Memory::doesAuthorizeAccess(uint16_t addr, bool isWrite)
+bool gbtest::Memory::readOverride(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
-    // We have no reason to lock the bus
-    return true;
+    // Memory never overrides read requests
+    return false;
+}
+
+bool gbtest::Memory::writeOverride(uint16_t addr, uint8_t val, gbtest::BusRequestSource requestSource)
+{
+    // Memory never overrides write requests
+    return false;
 }
