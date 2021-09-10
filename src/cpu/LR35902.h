@@ -52,6 +52,7 @@ private:
     const std::array<std::function<void()>, 0x100> m_opcodeLookup;
 
     InterruptController m_interruptController;
+
     LR35902Registers m_registers;
 
     uint8_t m_cyclesToWaste;

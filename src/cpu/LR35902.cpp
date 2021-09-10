@@ -128,6 +128,9 @@ const unsigned& gbtest::LR35902::getTickCounter() const
 
 void gbtest::LR35902::tick()
 {
+    // Tick the interrupt controller
+    m_interruptController.tick();
+
     // Decrement cycles to waste if needed
     if (m_cyclesToWaste > 0) {
         --m_cyclesToWaste;
@@ -144,6 +147,9 @@ void gbtest::LR35902::tick()
                       << "PC = 0x" << m_registers.pc << "; Opcode = 0x" << (int) opcode << std::endl
                       << "Caught exception: " << e.what() << std::endl;
         }
+
+        // Handle delayed interrupt enable
+        m_interruptController.handleDelayedInterrupt();
     }
 
     ++m_tickCounter;
@@ -2246,7 +2252,8 @@ void gbtest::LR35902::opcodeFAh()
 // EI
 void gbtest::LR35902::opcodeFBh()
 {
-    m_interruptController.setInterruptMasterEnable(true);
+    // Interrupt enable is delayed
+    m_interruptController.setDelayedInterruptEnableCountdown(2);
     m_cyclesToWaste = 4;
 }
 

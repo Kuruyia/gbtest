@@ -15,10 +15,14 @@ public:
     void setInterruptMasterEnable(bool interruptMasterEnable);
     [[nodiscard]] bool isInterruptMasterEnabled() const;
 
+    void setDelayedInterruptEnableCountdown(int delayedInterruptEnableCountdown);
+    void handleDelayedInterrupt();
+
     void tick() override;
 
 private:
     bool m_interruptMasterEnable;
+    int m_delayedInterruptEnableCountdown;
 
 }; // class InterruptController
 
