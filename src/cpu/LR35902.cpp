@@ -182,19 +182,6 @@ uint8_t gbtest::LR35902::fetch()
     return m_bus.read(m_registers.pc++, gbtest::BusRequestSource::CPU);
 }
 
-void gbtest::LR35902::dumpRegisters()
-{
-    std::cout << std::uppercase << std::hex
-              << "AF: " << std::setw(4) << std::setfill('0') << m_registers.af << std::endl
-              << "BC: " << std::setw(4) << std::setfill('0') << m_registers.bc << std::endl
-              << "DE: " << std::setw(4) << std::setfill('0') << m_registers.de << std::endl
-              << "HL: " << std::setw(4) << std::setfill('0') << m_registers.hl << std::endl
-              << "SP: " << std::setw(4) << std::setfill('0') << m_registers.sp << std::endl
-              << "PC: " << std::setw(4) << std::setfill('0') << m_registers.pc << std::endl
-              << "F:  " << (m_registers.f.z ? 'Z' : '-') << ' ' << (m_registers.f.n ? 'N' : '-') << ' '
-              << (m_registers.f.h ? 'H' : '-') << ' ' << (m_registers.f.c ? 'C' : '-') << ' ' << std::endl;
-}
-
 // NOP
 void gbtest::LR35902::opcode00h()
 {

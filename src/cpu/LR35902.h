@@ -45,8 +45,6 @@ private:
     void resetRegisters();
     uint8_t fetch();
 
-    void dumpRegisters();
-
     Bus& m_bus;
 
     const std::array<std::function<void()>, 0x100> m_opcodeLookup;
