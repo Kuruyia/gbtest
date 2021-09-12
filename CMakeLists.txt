@@ -23,10 +23,19 @@ add_executable(gbtest
         src/platform/GameBoy.h
         src/platform/bus/BusProvider.h
         src/platform/bus/BusRequestSource.h
+        src/ppu/oam/OAM.cpp
+        src/ppu/oam/OAM.h
         src/ppu/oam/OAMDMA.cpp
         src/ppu/oam/OAMDMA.h
+        src/ppu/oam/OAMEntry.h
+        src/ppu/vram/VRAM.cpp
+        src/ppu/vram/VRAM.h
+        src/ppu/vram/VRAMTileData.cpp
+        src/ppu/vram/VRAMTileData.h
+        src/ppu/vram/VRAMTileMaps.cpp
+        src/ppu/vram/VRAMTileMaps.h
         src/utils/Tickable.h
-        src/main.cpp src/ppu/vram/VRAM.cpp src/ppu/vram/VRAM.h src/ppu/vram/VRAMTileData.cpp src/ppu/vram/VRAMTileData.h src/ppu/vram/VRAMTileMaps.cpp src/ppu/vram/VRAMTileMaps.h)
+        src/main.cpp)
 
 target_link_libraries(gbtest raylib)
 
