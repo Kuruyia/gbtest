@@ -42,7 +42,6 @@ public:
     void step();
 
 private:
-    void resetRegisters();
     uint8_t fetch();
 
     Bus& m_bus;

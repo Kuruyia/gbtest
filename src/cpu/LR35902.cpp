@@ -78,7 +78,7 @@ gbtest::LR35902::LR35902(Bus& bus)
         , m_stopped(false)
         , m_tickCounter(0)
 {
-    resetRegisters();
+
 }
 
 void gbtest::LR35902::setRegisters(const LR35902Registers& registers)
@@ -165,16 +165,6 @@ void gbtest::LR35902::step()
 
     // Execute the instruction
     tick();
-}
-
-void gbtest::LR35902::resetRegisters()
-{
-    m_registers.af = 0x00;
-    m_registers.bc = 0x00;
-    m_registers.de = 0x00;
-    m_registers.hl = 0x00;
-    m_registers.sp = 0x00;
-    m_registers.pc = 0x100;
 }
 
 uint8_t gbtest::LR35902::fetch()

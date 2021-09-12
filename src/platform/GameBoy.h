@@ -15,6 +15,7 @@ public:
     GameBoy();
     ~GameBoy() override = default;
 
+    void init();
     void update(int64_t delta);
     void tick() override;
 
@@ -25,6 +26,8 @@ private:
     Bus m_bus;
     LR35902 m_cpu;
     Memory m_wholeMemory;
+
+    void resetCpuRegisters();
 
 }; // class GameBoy
 

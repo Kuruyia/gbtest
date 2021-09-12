@@ -6,7 +6,16 @@ gbtest::GameBoy::GameBoy()
         : m_cpu(m_bus)
         , m_wholeMemory(0x0000, 0x10000)
 {
+
+}
+
+void gbtest::GameBoy::init()
+{
+    // Reset CPU registers
+    resetCpuRegisters();
+
     // TODO: Have the real memory layout
+    // Register bus providers
     m_bus.registerBusProvider(&m_wholeMemory);
 }
 
@@ -33,4 +42,18 @@ gbtest::Bus& gbtest::GameBoy::getBus()
 gbtest::LR35902& gbtest::GameBoy::getCpu()
 {
     return m_cpu;
+}
+
+void gbtest::GameBoy::resetCpuRegisters()
+{
+    // DMG registers
+    gbtest::LR35902Registers registers{};
+    registers.af = 0x0180;
+    registers.bc = 0x0013;
+    registers.de = 0x00D8;
+    registers.hl = 0x014D;
+    registers.pc = 0x0100;
+    registers.sp = 0xFFFE;
+
+    m_cpu.setRegisters(registers);
 }
