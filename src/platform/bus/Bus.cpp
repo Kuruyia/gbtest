@@ -55,3 +55,18 @@ void gbtest::Bus::unregisterBusProvider(BusProvider* busProvider)
     // Remove the provider from the provider list
     m_busProviders.erase(std::remove(m_busProviders.begin(), m_busProviders.end(), busProvider), m_busProviders.end());
 }
+
+void gbtest::Bus::setInterruptLineHigh(gbtest::InterruptType interruptType, bool isHigh)
+{
+    m_interruptLines.set(static_cast<size_t>(interruptType), isHigh);
+}
+
+bool gbtest::Bus::isInterruptLineHigh(gbtest::InterruptType interruptType) const
+{
+    return m_interruptLines.test(static_cast<size_t>(interruptType));
+}
+
+const std::bitset<5>& gbtest::Bus::getInterruptLines() const
+{
+    return m_interruptLines;
+}

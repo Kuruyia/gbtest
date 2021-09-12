@@ -1,11 +1,14 @@
 #ifndef GBTEST_BUS_H
 #define GBTEST_BUS_H
 
+#include <bitset>
 #include <cinttypes>
 #include <vector>
 
 #include "BusProvider.h"
 #include "BusRequestSource.h"
+
+#include "../../cpu/interrupts/InterruptType.h"
 
 namespace gbtest {
 
@@ -20,8 +23,13 @@ public:
     void registerBusProvider(BusProvider* busProvider);
     void unregisterBusProvider(BusProvider* busProvider);
 
+    void setInterruptLineHigh(InterruptType interruptType, bool isHigh);
+    [[nodiscard]] bool isInterruptLineHigh(InterruptType interruptType) const;
+    [[nodiscard]] const std::bitset<5>& getInterruptLines() const;
+
 private:
     std::vector<BusProvider*> m_busProviders;
+    std::bitset<5> m_interruptLines;
 
 }; // class Bus
 
