@@ -13,7 +13,7 @@ class GameBoy
 
 public:
     GameBoy();
-    ~GameBoy() override = default;
+    ~GameBoy() override;
 
     void init();
     void update(int64_t delta);
@@ -28,6 +28,9 @@ private:
     Memory m_wholeMemory;
 
     void resetCpuRegisters();
+
+    void registerBusProviders();
+    void unregisterBusProviders();
 
 }; // class GameBoy
 
