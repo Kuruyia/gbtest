@@ -1,8 +1,9 @@
 #include "InterruptController.h"
 
-gbtest::InterruptController::InterruptController()
+gbtest::InterruptController::InterruptController(Bus& bus)
         : m_interruptMasterEnable(true)
         , m_delayedInterruptEnableCountdown(0)
+        , m_bus(bus)
 {
 
 }
@@ -54,7 +55,11 @@ bool gbtest::InterruptController::isInterruptRequested(InterruptType interruptTy
 
 void gbtest::InterruptController::tick()
 {
-    // TODO: Manage interrupts
+    // Detect which interrupt lines became high at this tick, and set the Interrupt Flag register accordingly
+    const std::bitset<5>& interruptLines = m_bus.getInterruptLines();
+
+    m_interruptFlag |= (m_previousInterruptLines ^ interruptLines) & interruptLines;
+    m_previousInterruptLines = interruptLines;
 }
 
 bool gbtest::InterruptController::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const

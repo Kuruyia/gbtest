@@ -5,6 +5,7 @@
 
 #include "InterruptType.h"
 #include "../../platform/bus/BusProvider.h"
+#include "../../platform/bus/Bus.h"
 #include "../../utils/Tickable.h"
 
 namespace gbtest {
@@ -13,7 +14,7 @@ class InterruptController
         : public Tickable, public BusProvider {
 
 public:
-    InterruptController();
+    explicit InterruptController(Bus& bus);
     ~InterruptController() override = default;
 
     void setInterruptMasterEnable(bool interruptMasterEnable);
@@ -42,6 +43,9 @@ private:
 
     std::bitset<5> m_interruptEnable;
     std::bitset<5> m_interruptFlag;
+
+    Bus& m_bus;
+    std::bitset<5> m_previousInterruptLines;
 
 }; // class InterruptController
 
