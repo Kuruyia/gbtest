@@ -1,7 +1,8 @@
+#include <bitset>
+#include <cassert>
 #include <iomanip>
 #include <iostream>
 #include <stdexcept>
-#include <cassert>
 
 #include "LR35902.h"
 
@@ -142,6 +143,9 @@ void gbtest::LR35902::tick()
     }
 
     if (m_cyclesToWaste == 0) {
+        // Handle interrupts before fetching the instruction
+        handleInterrupt();
+
         // Execute current instruction
         const uint8_t opcode = fetch();
         try {
@@ -175,6 +179,43 @@ void gbtest::LR35902::step()
 uint8_t gbtest::LR35902::fetch()
 {
     return m_bus.read(m_registers.pc++, gbtest::BusRequestSource::CPU);
+}
+
+void gbtest::LR35902::handleInterrupt()
+{
+    // Don't do anything if interrupts are disabled
+    if (!m_interruptController.isInterruptMasterEnabled()) { return; }
+
+    // Check if an interrupt has been requested
+    const std::bitset<5> requestedInterrupts =
+            m_interruptController.getInterruptRequest() & m_interruptController.getInterruptEnable();
+    uint16_t vectorAddress;
+    size_t i = 0;
+
+    while (i < 5) {
+        if (requestedInterrupts.test(i)) {
+            vectorAddress = 0x0040 + (8 * i);
+            break;
+        }
+
+        ++i;
+    }
+
+    // Return if no interrupt was requested
+    if (i == 5) { return; }
+
+    // Handle the requested interrupt
+    // Start by resetting the request flag and the master enable
+    m_interruptController.setInterruptRequested(static_cast<InterruptType>(i), false);
+    m_interruptController.setInterruptMasterEnable(false);
+
+    // Call the interrupt vector
+    m_bus.write(--m_registers.sp, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
+    m_bus.write(--m_registers.sp, m_registers.pc, gbtest::BusRequestSource::CPU);
+
+    m_registers.pc = vectorAddress;
+
+    m_cyclesToWaste = 20;
 }
 
 // NOP
@@ -1711,24 +1752,24 @@ void gbtest::LR35902::opcodeCBh()
     uint8_t lowOpcode = opcode & 0x7;
 
     auto getRegisterByLowerBits = [&](const uint8_t& lowerBits, uint8_t& defaultDest) -> uint8_t& {
-      switch (lowerBits) {
-      case 0x00:
-          return m_registers.b;
-      case 0x01:
-          return m_registers.c;
-      case 0x02:
-          return m_registers.d;
-      case 0x03:
-          return m_registers.e;
-      case 0x04:
-          return m_registers.h;
-      case 0x05:
-          return m_registers.l;
-      case 0x07:
-          return m_registers.a;
-      default:
-          return defaultDest;
-      }
+        switch (lowerBits) {
+        case 0x00:
+            return m_registers.b;
+        case 0x01:
+            return m_registers.c;
+        case 0x02:
+            return m_registers.d;
+        case 0x03:
+            return m_registers.e;
+        case 0x04:
+            return m_registers.h;
+        case 0x05:
+            return m_registers.l;
+        case 0x07:
+            return m_registers.a;
+        default:
+            return defaultDest;
+        }
     };
 
     uint8_t memValue = m_bus.read(m_registers.hl, gbtest::BusRequestSource::CPU);

@@ -24,10 +24,12 @@ public:
     void handleDelayedInterrupt();
 
     void setInterruptEnabled(InterruptType interruptType, bool enabled);
-    [[nodiscard]] bool isInterruptEnabled(InterruptType interruptType);
+    [[nodiscard]] bool isInterruptEnabled(InterruptType interruptType) const;
+    [[nodiscard]] const std::bitset<5>& getInterruptEnable() const;
 
     void setInterruptRequested(InterruptType interruptType, bool requested);
-    [[nodiscard]] bool isInterruptRequested(InterruptType interruptType);
+    [[nodiscard]] bool isInterruptRequested(InterruptType interruptType) const;
+    [[nodiscard]] const std::bitset<5>& getInterruptRequest() const;
 
     void tick() override;
 

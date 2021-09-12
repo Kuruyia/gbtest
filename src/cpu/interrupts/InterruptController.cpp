@@ -38,9 +38,14 @@ void gbtest::InterruptController::setInterruptEnabled(InterruptType interruptTyp
     m_interruptEnable.set(static_cast<size_t>(interruptType), enabled);
 }
 
-bool gbtest::InterruptController::isInterruptEnabled(InterruptType interruptType)
+bool gbtest::InterruptController::isInterruptEnabled(InterruptType interruptType) const
 {
     return m_interruptEnable.test(static_cast<size_t>(interruptType));
+}
+
+const std::bitset<5>& gbtest::InterruptController::getInterruptEnable() const
+{
+    return m_interruptEnable;
 }
 
 void gbtest::InterruptController::setInterruptRequested(InterruptType interruptType, bool requested)
@@ -48,9 +53,14 @@ void gbtest::InterruptController::setInterruptRequested(InterruptType interruptT
     m_interruptFlag.set(static_cast<size_t>(interruptType), requested);
 }
 
-bool gbtest::InterruptController::isInterruptRequested(InterruptType interruptType)
+bool gbtest::InterruptController::isInterruptRequested(InterruptType interruptType) const
 {
     return m_interruptFlag.test(static_cast<size_t>(interruptType));
+}
+
+const std::bitset<5>& gbtest::InterruptController::getInterruptRequest() const
+{
+    return m_interruptFlag;
 }
 
 void gbtest::InterruptController::tick()

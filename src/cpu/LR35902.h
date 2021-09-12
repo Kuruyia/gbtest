@@ -50,6 +50,7 @@ private:
     const std::array<std::function<void()>, 0x100> m_opcodeLookup;
 
     InterruptController m_interruptController;
+    void handleInterrupt();
 
     LR35902Registers m_registers;
 
