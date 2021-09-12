@@ -26,7 +26,7 @@ add_executable(gbtest
         src/ppu/oam/OAMDMA.cpp
         src/ppu/oam/OAMDMA.h
         src/utils/Tickable.h
-        src/main.cpp)
+        src/main.cpp src/ppu/vram/VRAM.cpp src/ppu/vram/VRAM.h src/ppu/vram/VRAMTileData.cpp src/ppu/vram/VRAMTileData.h src/ppu/vram/VRAMTileMaps.cpp src/ppu/vram/VRAMTileMaps.h)
 
 target_link_libraries(gbtest raylib)
 
