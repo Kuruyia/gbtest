@@ -11,12 +11,12 @@ uint8_t gbtest::Bus::read(uint16_t addr, BusRequestSource requestSource) const
 
     // Check first if a provider overrides the request
     for (BusProvider* const busProvider: m_busProviders) {
-        if (busProvider->readOverride(addr, val, requestSource)) { return val; }
+        if (busProvider->busReadOverride(addr, val, requestSource)) { return val; }
     }
 
     // Try to read from every provider
     while (i < m_busProviders.size()) {
-        if (m_busProviders[i]->read(addr, val, requestSource)) { break; }
+        if (m_busProviders[i]->busRead(addr, val, requestSource)) { break; }
         ++i;
     }
 
@@ -32,12 +32,12 @@ void gbtest::Bus::write(uint16_t addr, uint8_t val, BusRequestSource requestSour
 {
     // Check first if a provider overrides the request
     for (BusProvider* const busProvider: m_busProviders) {
-        if (busProvider->writeOverride(addr, val, requestSource)) { return; }
+        if (busProvider->busWriteOverride(addr, val, requestSource)) { return; }
     }
 
     // Try to write to every provider
     for (BusProvider* const busProvider: m_busProviders) {
-        if (busProvider->write(addr, val, requestSource)) { return; }
+        if (busProvider->busWrite(addr, val, requestSource)) { return; }
     }
 
     // Throw an exception if no provider was found

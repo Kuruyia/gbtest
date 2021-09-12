@@ -13,7 +13,7 @@ gbtest::Memory::~Memory()
     delete[] m_memory;
 }
 
-bool gbtest::Memory::read(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const
+bool gbtest::Memory::busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const
 {
     const uint16_t offset = addr - m_baseAddress;
 
@@ -28,7 +28,7 @@ bool gbtest::Memory::read(uint16_t addr, uint8_t& val, BusRequestSource requestS
     return true;
 }
 
-bool gbtest::Memory::write(uint16_t addr, uint8_t val, BusRequestSource requestSource)
+bool gbtest::Memory::busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource)
 {
     const uint16_t offset = addr - m_baseAddress;
 
@@ -43,13 +43,13 @@ bool gbtest::Memory::write(uint16_t addr, uint8_t val, BusRequestSource requestS
     return true;
 }
 
-bool gbtest::Memory::readOverride(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
+bool gbtest::Memory::busReadOverride(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
     // Memory never overrides read requests
     return false;
 }
 
-bool gbtest::Memory::writeOverride(uint16_t addr, uint8_t val, gbtest::BusRequestSource requestSource)
+bool gbtest::Memory::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusRequestSource requestSource)
 {
     // Memory never overrides write requests
     return false;

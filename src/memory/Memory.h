@@ -12,11 +12,11 @@ public:
     Memory(uint16_t baseAddr, uint32_t size);
     ~Memory() override;
 
-    bool read(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
-    bool write(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
+    bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
+    bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
-    bool readOverride(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
-    bool writeOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
+    bool busReadOverride(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
+    bool busWriteOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
 private:
     uint16_t m_baseAddress;

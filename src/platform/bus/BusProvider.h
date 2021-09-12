@@ -12,11 +12,11 @@ class BusProvider {
 public:
     virtual ~BusProvider() = default;
 
-    virtual bool read(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const = 0;
-    virtual bool write(uint16_t addr, uint8_t val, BusRequestSource requestSource) = 0;
+    virtual bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const = 0;
+    virtual bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) = 0;
 
-    virtual bool readOverride(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const = 0;
-    virtual bool writeOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) = 0;
+    virtual bool busReadOverride(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const = 0;
+    virtual bool busWriteOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) = 0;
 
 }; // class BusProvider
 
