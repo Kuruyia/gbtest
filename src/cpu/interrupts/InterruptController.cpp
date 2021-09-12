@@ -1,7 +1,7 @@
 #include "InterruptController.h"
 
 gbtest::InterruptController::InterruptController(Bus& bus)
-        : m_interruptMasterEnable(true)
+        : m_interruptMasterEnable(false)
         , m_delayedInterruptEnableCountdown(0)
         , m_bus(bus)
 {
