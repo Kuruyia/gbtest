@@ -32,6 +32,26 @@ void gbtest::InterruptController::handleDelayedInterrupt()
     }
 }
 
+void gbtest::InterruptController::setInterruptEnabled(InterruptType interruptType, bool enabled)
+{
+    m_interruptEnable.set(static_cast<size_t>(interruptType), enabled);
+}
+
+bool gbtest::InterruptController::isInterruptEnabled(InterruptType interruptType)
+{
+    return m_interruptEnable.test(static_cast<size_t>(interruptType));
+}
+
+void gbtest::InterruptController::setInterruptRequested(InterruptType interruptType, bool requested)
+{
+    m_interruptFlag.set(static_cast<size_t>(interruptType), requested);
+}
+
+bool gbtest::InterruptController::isInterruptRequested(InterruptType interruptType)
+{
+    return m_interruptFlag.test(static_cast<size_t>(interruptType));
+}
+
 void gbtest::InterruptController::tick()
 {
     // TODO: Manage interrupts

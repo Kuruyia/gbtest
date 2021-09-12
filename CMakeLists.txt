@@ -6,8 +6,9 @@ find_package(raylib 3.0 REQUIRED)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(gbtest
-        src/cpu/InterruptController.cpp
-        src/cpu/InterruptController.h
+        src/cpu/interrupts/InterruptController.cpp
+        src/cpu/interrupts/InterruptController.h
+        src/cpu/interrupts/InterruptType.h
         src/cpu/LR35902.cpp
         src/cpu/LR35902.h
         src/exceptions/bus/BusLockedAddressException.cpp

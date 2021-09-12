@@ -1,7 +1,10 @@
 #ifndef GBTEST_INTERRUPTCONTROLLER_H
 #define GBTEST_INTERRUPTCONTROLLER_H
 
-#include "../utils/Tickable.h"
+#include <bitset>
+
+#include "InterruptType.h"
+#include "../../utils/Tickable.h"
 
 namespace gbtest {
 
@@ -18,11 +21,20 @@ public:
     void setDelayedInterruptEnableCountdown(int delayedInterruptEnableCountdown);
     void handleDelayedInterrupt();
 
+    void setInterruptEnabled(InterruptType interruptType, bool enabled);
+    [[nodiscard]] bool isInterruptEnabled(InterruptType interruptType);
+
+    void setInterruptRequested(InterruptType interruptType, bool requested);
+    [[nodiscard]] bool isInterruptRequested(InterruptType interruptType);
+
     void tick() override;
 
 private:
     bool m_interruptMasterEnable;
     int m_delayedInterruptEnableCountdown;
+
+    std::bitset<5> m_interruptEnable;
+    std::bitset<5> m_interruptFlag;
 
 }; // class InterruptController
 

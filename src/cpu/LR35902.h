@@ -9,7 +9,7 @@
 #include "../platform/bus/Bus.h"
 #include "../utils/Tickable.h"
 
-#include "InterruptController.h"
+#include "interrupts/InterruptController.h"
 #include "LR35902Registers.h"
 
 namespace gbtest {
