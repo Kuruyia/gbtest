@@ -96,6 +96,11 @@ const gbtest::InterruptController& gbtest::LR35902::getInterruptController() con
     return m_interruptController;
 }
 
+gbtest::InterruptController& gbtest::LR35902::getInterruptController()
+{
+    return m_interruptController;
+}
+
 void gbtest::LR35902::setHalted(bool halted)
 {
     m_halted = halted;

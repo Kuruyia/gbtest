@@ -56,3 +56,50 @@ void gbtest::InterruptController::tick()
 {
     // TODO: Manage interrupts
 }
+
+bool gbtest::InterruptController::read(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
+{
+    // Interrupt Flag register
+    if (addr == 0xFF0F) {
+        val = m_interruptFlag.to_ulong();
+        return true;
+    }
+
+    // Interrupt Enable register
+    if (addr == 0xFFFF) {
+        val = m_interruptEnable.to_ulong();
+        return true;
+    }
+
+    return false;
+}
+
+bool gbtest::InterruptController::write(uint16_t addr, uint8_t val, gbtest::BusRequestSource requestSource)
+{
+    // Interrupt Flag register
+    if (addr == 0xFF0F) {
+        m_interruptFlag = val;
+        return true;
+    }
+
+    // Interrupt Enable register
+    if (addr == 0xFFFF) {
+        m_interruptEnable = val;
+        return true;
+    }
+
+    return false;
+}
+
+bool
+gbtest::InterruptController::readOverride(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
+{
+    // Interrupt controller never overrides read requests
+    return false;
+}
+
+bool gbtest::InterruptController::writeOverride(uint16_t addr, uint8_t val, gbtest::BusRequestSource requestSource)
+{
+    // Interrupt controller never overrides write requests
+    return false;
+}

@@ -28,6 +28,7 @@ public:
     [[nodiscard]] const LR35902Registers& getRegisters() const;
 
     [[nodiscard]] const InterruptController& getInterruptController() const;
+    [[nodiscard]] InterruptController& getInterruptController();
 
     void setHalted(bool halted);
     [[nodiscard]] const bool& isHalted() const;

@@ -16,6 +16,7 @@ void gbtest::GameBoy::init()
 
     // TODO: Have the real memory layout
     // Register bus providers
+    m_bus.registerBusProvider(&(m_cpu.getInterruptController()));
     m_bus.registerBusProvider(&m_wholeMemory);
 }
 

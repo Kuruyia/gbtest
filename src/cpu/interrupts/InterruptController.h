@@ -4,12 +4,13 @@
 #include <bitset>
 
 #include "InterruptType.h"
+#include "../../platform/bus/BusProvider.h"
 #include "../../utils/Tickable.h"
 
 namespace gbtest {
 
 class InterruptController
-        : public Tickable {
+        : public Tickable, public BusProvider {
 
 public:
     InterruptController();
@@ -28,6 +29,12 @@ public:
     [[nodiscard]] bool isInterruptRequested(InterruptType interruptType);
 
     void tick() override;
+
+    bool read(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
+    bool write(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
+
+    bool readOverride(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
+    bool writeOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
 private:
     bool m_interruptMasterEnable;
