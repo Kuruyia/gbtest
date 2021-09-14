@@ -54,7 +54,7 @@ private:
 
     LR35902Registers m_registers;
 
-    uint8_t m_cyclesToWaste;
+    uint8_t m_cyclesToWait;
     bool m_halted; // CPU halted state
     bool m_stopped; // CPU stopped state
 
