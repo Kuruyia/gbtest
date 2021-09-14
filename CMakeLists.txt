@@ -23,6 +23,10 @@ add_executable(gbtest
         src/platform/GameBoy.h
         src/platform/bus/BusProvider.h
         src/platform/bus/BusRequestSource.h
+        src/ppu/fifo/Fetcher.h
+        src/ppu/fifo/Fetcher.cpp
+        src/ppu/fifo/FetcherState.h
+        src/ppu/fifo/FIFOPixelData.h
         src/ppu/oam/OAM.cpp
         src/ppu/oam/OAM.h
         src/ppu/oam/OAMDMA.cpp
