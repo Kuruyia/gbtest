@@ -1,9 +1,11 @@
 #include "Fetcher.h"
 
-gbtest::Fetcher::Fetcher(std::deque<FIFOPixelData>& managedQueue)
+gbtest::Fetcher::Fetcher(const PPURegisters& ppuRegisters, const VRAM& vram, std::deque<FIFOPixelData>& managedQueue)
         : m_fetcherState(FetcherState::FetchTileMap)
         , m_paused(false)
         , m_cyclesToWait(0)
+        , m_ppuRegisters(ppuRegisters)
+        , m_vram(vram)
         , m_managedQueue(managedQueue)
 {
 
@@ -19,10 +21,21 @@ bool gbtest::Fetcher::isPaused() const
     return m_paused;
 }
 
-void gbtest::Fetcher::reset()
+void gbtest::Fetcher::resetState()
 {
     m_fetcherState = FetcherState::FetchTileMap;
     m_cyclesToWait = 0;
+    m_fetchedPixels.clear();
+}
+
+void gbtest::Fetcher::beginScanline()
+{
+    resetState();
+}
+
+void gbtest::Fetcher::beginFrame()
+{
+    beginScanline();
 }
 
 void gbtest::Fetcher::tick()
