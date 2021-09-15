@@ -59,13 +59,13 @@ union MonochromePalette {
     uint8_t raw;
 }; // union MonochromePalette
 
-static_assert(sizeof(monochromePalette) == 1, "Monochrome Palette structure size is incorrect");
+static_assert(sizeof(MonochromePalette) == 1, "Monochrome Palette structure size is incorrect");
 
 struct DMGPalettes {
     MonochromePalette bgPaletteData;        // Data for the BG palette
     MonochromePalette objectPaletteData0;   // Data for the first OBJ palette
     MonochromePalette objectPaletteData1;   // Data for the second OBJ palette
-}; // DMGPalettes Palettes
+}; // struct DMGPalettes
 
 // Registers
 struct PPURegisters {
@@ -73,7 +73,7 @@ struct PPURegisters {
     LCDStatus lcdStatus;
     LCDPositionAndScrolling lcdPositionAndScrolling;
     DMGPalettes dmgPalettes;
-};
+}; // struct PPURegisters
 
 } // namespace gbtest
 
