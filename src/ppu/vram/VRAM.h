@@ -12,8 +12,14 @@ class VRAM
         : public BusProvider {
 
 public:
-    VRAM() = default;
+    VRAM();
     ~VRAM() override = default;
+
+    [[nodiscard]] const VRAMTileData& getVramTileData() const;
+    [[nodiscard]] const VRAMTileMaps& getVramTileMaps() const;
+
+    void setReadBlocked(bool readBlocked);
+    [[nodiscard]] bool isReadBlocked() const;
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
@@ -24,6 +30,8 @@ public:
 private:
     VRAMTileData m_vramTileData;
     VRAMTileMaps m_vramTileMaps;
+
+    bool m_readBlocked;
 
 }; // class VRAM
 

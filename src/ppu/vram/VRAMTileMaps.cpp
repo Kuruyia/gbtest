@@ -1,5 +1,17 @@
 #include "VRAMTileMaps.h"
 
+gbtest::VRAMTileMaps::VRAMTileMaps()
+        : m_memory()
+{
+
+}
+
+uint8_t gbtest::VRAMTileMaps::getTileNumberFromTileMap(uint8_t offset, uint8_t whichMap) const
+{
+    // TODO: Ensure that offset < 400h && whichMap == 0 || whichMap == 1
+    return m_memory.at((0x400 * whichMap) + offset);
+}
+
 bool gbtest::VRAMTileMaps::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
     // VRAM Tile Maps is in memory area from 9800h to 9FFFh

@@ -1,5 +1,32 @@
 #include "VRAM.h"
 
+gbtest::VRAM::VRAM()
+        : m_readBlocked(false)
+{
+
+}
+
+const gbtest::VRAMTileData& gbtest::VRAM::getVramTileData() const
+{
+    return m_vramTileData;
+}
+
+const gbtest::VRAMTileMaps& gbtest::VRAM::getVramTileMaps() const
+{
+    return m_vramTileMaps;
+}
+
+void gbtest::VRAM::setReadBlocked(bool readBlocked)
+{
+    // TODO: Emulate that
+    m_readBlocked = readBlocked;
+}
+
+bool gbtest::VRAM::isReadBlocked() const
+{
+    return m_readBlocked;
+}
+
 bool gbtest::VRAM::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
     // Dispatch the read request
