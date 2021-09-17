@@ -39,7 +39,6 @@ protected:
     const VRAM& m_vram;
 
     std::deque<FIFOPixelData>& m_managedQueue;
-    std::deque<FIFOPixelData> m_fetchedPixels;
 
 }; // class Fetcher
 

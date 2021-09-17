@@ -4,6 +4,7 @@ gbtest::BackgroundFetcher::BackgroundFetcher(const PPURegisters& ppuRegisters, c
         std::deque<FIFOPixelData>& managedQueue)
         : Fetcher(ppuRegisters, vram, managedQueue)
         , m_currentTileNumber(0)
+        , m_currentTileData(0)
         , m_fetcherX(0)
         , m_fetcherY(0)
         , m_scanlineBeginSkip(true)
@@ -83,8 +84,15 @@ void gbtest::BackgroundFetcher::executeState()
 
     case FetcherState::PushFIFO:
         if (m_managedQueue.empty()) {
-            // We need to fill the queue
-            std::swap(m_managedQueue, m_fetchedPixels);
+            // Fill the queue with the fetched pixels
+            for (uint8_t i = 0; i < 7; ++i) {
+                m_managedQueue.emplace_front(
+                        ((m_currentTileData >> (8 + i)) | (m_currentTileData >> i)) & 0x3,
+                        0,
+                        0,
+                        0
+                );
+            }
 
             ++m_fetcherX;
             m_fetcherState = FetcherState::FetchTileMap;

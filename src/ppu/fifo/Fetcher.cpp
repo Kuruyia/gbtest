@@ -25,7 +25,6 @@ void gbtest::Fetcher::resetState()
 {
     m_fetcherState = FetcherState::FetchTileMap;
     m_cyclesToWait = 0;
-    m_fetchedPixels.clear();
 }
 
 void gbtest::Fetcher::beginScanline()

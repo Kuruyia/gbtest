@@ -10,6 +10,15 @@ struct FIFOPixelData {
     uint8_t spriteOamIndex;     // Index of the sprite in the OAM (CGB only)
     bool backgroundPriority;    // For sprites: Priority of the sprite over the background
     // (False: Sprite above BG; True: BG colors 1 to 3 above sprite)
+
+    FIFOPixelData(uint8_t colorIndex, uint8_t palette, uint8_t spriteOamIndex, bool backgroundPriority)
+            : colorIndex(colorIndex)
+            , palette(palette)
+            , spriteOamIndex(spriteOamIndex)
+            , backgroundPriority(backgroundPriority)
+    {
+
+    }
 }; // struct FIFOPixelData
 
 } // namespace gbtest
