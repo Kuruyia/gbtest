@@ -21,9 +21,14 @@ public:
     void update(int64_t delta);
     void tick() override;
 
-    Bus& getBus();
-    LR35902& getCpu();
-    PPU& getPpu();
+    [[nodiscard]] Bus& getBus();
+    [[nodiscard]] const Bus& getBus() const;
+
+    [[nodiscard]] LR35902& getCpu();
+    [[nodiscard]] const LR35902& getCpu() const;
+
+    [[nodiscard]] PPU& getPpu();
+    [[nodiscard]] const PPU& getPpu() const;
 
 private:
     Bus m_bus;

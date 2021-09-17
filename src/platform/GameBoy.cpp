@@ -44,12 +44,27 @@ gbtest::Bus& gbtest::GameBoy::getBus()
     return m_bus;
 }
 
+const gbtest::Bus& gbtest::GameBoy::getBus() const
+{
+    return m_bus;
+}
+
 gbtest::LR35902& gbtest::GameBoy::getCpu()
 {
     return m_cpu;
 }
 
+const gbtest::LR35902& gbtest::GameBoy::getCpu() const
+{
+    return m_cpu;
+}
+
 gbtest::PPU& gbtest::GameBoy::getPpu()
+{
+    return m_ppu;
+}
+
+const gbtest::PPU& gbtest::GameBoy::getPpu() const
 {
     return m_ppu;
 }
