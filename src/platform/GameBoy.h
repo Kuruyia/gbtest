@@ -2,8 +2,10 @@
 #define GBTEST_GAMEBOY_H
 
 #include "bus/Bus.h"
+
 #include "../cpu/LR35902.h"
 #include "../memory/Memory.h"
+#include "../ppu/PPU.h"
 #include "../utils/Tickable.h"
 
 namespace gbtest {
@@ -21,11 +23,13 @@ public:
 
     Bus& getBus();
     LR35902& getCpu();
+    PPU& getPpu();
 
 private:
     Bus m_bus;
     LR35902 m_cpu;
     Memory m_wholeMemory;
+    PPU m_ppu;
 
     void resetCpuRegisters();
 

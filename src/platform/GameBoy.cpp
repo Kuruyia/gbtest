@@ -5,6 +5,7 @@
 gbtest::GameBoy::GameBoy()
         : m_cpu(m_bus)
         , m_wholeMemory(0x0000, 0x10000)
+        , m_ppu(m_bus)
 {
 
 }
@@ -48,6 +49,11 @@ gbtest::LR35902& gbtest::GameBoy::getCpu()
     return m_cpu;
 }
 
+gbtest::PPU& gbtest::GameBoy::getPpu()
+{
+    return m_ppu;
+}
+
 void gbtest::GameBoy::resetCpuRegisters()
 {
     // DMG registers
@@ -67,10 +73,12 @@ void gbtest::GameBoy::registerBusProviders()
     // TODO: Have the real memory layout
     m_bus.registerBusProvider(&(m_cpu.getInterruptController()));
     m_bus.registerBusProvider(&m_wholeMemory);
+    m_bus.registerBusProvider(&m_ppu);
 }
 
 void gbtest::GameBoy::unregisterBusProviders()
 {
+    m_bus.unregisterBusProvider(&m_ppu);
     m_bus.unregisterBusProvider(&m_wholeMemory);
     m_bus.unregisterBusProvider(&(m_cpu.getInterruptController()));
 }
