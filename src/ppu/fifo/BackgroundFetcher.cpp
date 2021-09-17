@@ -69,7 +69,8 @@ void gbtest::BackgroundFetcher::executeState()
                             + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
         }
         else {
-            m_currentTileData = m_vram.getVramTileData().getTileLineUsingSecondMethod(m_currentTileNumber,
+            m_currentTileData = m_vram.getVramTileData().getTileLineUsingSecondMethod(
+                    static_cast<int8_t>(m_currentTileNumber),
                     (m_ppuRegisters.lcdPositionAndScrolling.yScroll
                             + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
         }
