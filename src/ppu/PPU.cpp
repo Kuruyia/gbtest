@@ -1,7 +1,7 @@
 #include "PPU.h"
 
 gbtest::PPU::PPU(Bus& bus)
-        : m_oamDma(bus)
+        : m_oamDma(bus, m_oam)
 {
 
 }

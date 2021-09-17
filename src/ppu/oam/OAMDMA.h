@@ -1,6 +1,8 @@
 #ifndef GBTEST_OAMDMA_H
 #define GBTEST_OAMDMA_H
 
+#include "OAM.h"
+
 #include "../../platform/bus/Bus.h"
 #include "../../platform/bus/BusProvider.h"
 #include "../../utils/Tickable.h"
@@ -11,7 +13,7 @@ class OAMDMA
         : public BusProvider, public Tickable {
 
 public:
-    OAMDMA(Bus& bus);
+    OAMDMA(Bus& bus, OAM& oam);
     ~OAMDMA() override = default;
 
     void startTransfer(uint8_t sourceAddressHigh);
@@ -31,6 +33,7 @@ private:
     uint8_t m_sourceAddressHigh;
 
     Bus& m_bus;
+    OAM& m_oam;
 
 }; // class OAMDMA
 

@@ -15,6 +15,9 @@ public:
     OAM() = default;
     ~OAM() override = default;
 
+    void writeRawValue(size_t offset, uint8_t val);
+    void readRawValue(size_t offset, uint8_t& val) const;
+
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 

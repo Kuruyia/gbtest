@@ -1,10 +1,11 @@
 #include "OAMDMA.h"
 
-gbtest::OAMDMA::OAMDMA(gbtest::Bus& bus)
+gbtest::OAMDMA::OAMDMA(Bus& bus, OAM& oam)
         : m_transferring(false)
         , m_currentAddressLow(0x00)
         , m_sourceAddressHigh(0x00)
         , m_bus(bus)
+        , m_oam(oam)
 {
 
 }
@@ -40,7 +41,7 @@ void gbtest::OAMDMA::tick()
     const uint16_t sourceAddress = (m_sourceAddressHigh << 8) | m_currentAddressLow;
     const uint16_t destinationAddress = 0xFE00 | m_currentAddressLow;
 
-    m_bus.write(destinationAddress, m_bus.read(sourceAddress, BusRequestSource::OAMDMA), BusRequestSource::OAMDMA);
+    m_oam.writeRawValue(m_currentAddressLow, m_bus.read(sourceAddress, BusRequestSource::OAMDMA));
 
     // Increment the current address low byte, check if the transfer has finished
     ++m_currentAddressLow;
