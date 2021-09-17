@@ -24,9 +24,11 @@ public:
 
 private:
     uint8_t m_currentTileNumber;
+    uint16_t m_currentTileData;
 
     uint8_t m_fetcherX;
     uint8_t m_fetcherY;
+    bool m_scanlineBeginSkip;
 
 }; // class BackgroundFetcher
 

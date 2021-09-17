@@ -5,8 +5,7 @@ namespace gbtest {
 
 enum class FetcherState {
     FetchTileMap,
-    FetchTileDataLow,
-    FetchTileDataHigh,
+    FetchTileData,
     PushFIFO,
 }; // enum class FetcherState
 

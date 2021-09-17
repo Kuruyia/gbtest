@@ -6,6 +6,7 @@ gbtest::BackgroundFetcher::BackgroundFetcher(const PPURegisters& ppuRegisters, c
         , m_currentTileNumber(0)
         , m_fetcherX(0)
         , m_fetcherY(0)
+        , m_scanlineBeginSkip(true)
 {
 
 }
@@ -16,6 +17,7 @@ void gbtest::BackgroundFetcher::beginScanline()
 
     m_fetcherX = 0;
     ++m_fetcherY;
+    m_scanlineBeginSkip = true;
 }
 
 void gbtest::BackgroundFetcher::beginFrame()
@@ -28,6 +30,12 @@ void gbtest::BackgroundFetcher::beginFrame()
 void gbtest::BackgroundFetcher::executeState()
 {
     // TODO: Support Window
+    // The first fetch of a scanline is always wasted
+    if (m_scanlineBeginSkip) {
+        m_cyclesToWait = 6;
+        m_scanlineBeginSkip = false;
+    }
+
     switch (m_fetcherState) {
     case FetcherState::FetchTileMap: {
         // Get the correct tile map address
@@ -47,23 +55,28 @@ void gbtest::BackgroundFetcher::executeState()
         }
 
         // Continue to the next state
-        m_fetcherState = FetcherState::FetchTileDataLow;
+        m_fetcherState = FetcherState::FetchTileData;
         m_cyclesToWait = 2;
 
         break;
     }
 
-    case FetcherState::FetchTileDataLow:
-        // Continue to the next state
-        m_fetcherState = FetcherState::FetchTileDataHigh;
-        m_cyclesToWait = 2;
+    case FetcherState::FetchTileData:
+        // Emulation shortcut: Fetch both bytes during this step
+        if (m_ppuRegisters.lcdControl.bgAndWindowTileDataArea == 1) {
+            m_currentTileData = m_vram.getVramTileData().getTileLineUsingFirstMethod(m_currentTileNumber,
+                    (m_ppuRegisters.lcdPositionAndScrolling.yScroll
+                            + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
+        }
+        else {
+            m_currentTileData = m_vram.getVramTileData().getTileLineUsingSecondMethod(m_currentTileNumber,
+                    (m_ppuRegisters.lcdPositionAndScrolling.yScroll
+                            + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
+        }
 
-        break;
-
-    case FetcherState::FetchTileDataHigh:
         // Continue to the next state
         m_fetcherState = FetcherState::PushFIFO;
-        m_cyclesToWait = 2;
+        m_cyclesToWait = 4;
 
         break;
 
