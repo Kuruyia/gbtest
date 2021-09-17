@@ -15,6 +15,9 @@ public:
     VRAMTileData() = default;
     ~VRAMTileData() override = default;
 
+    [[nodiscard]] uint16_t getTileLineUsingFirstMethod(uint8_t tileNumber, uint8_t lineNumber) const;
+    [[nodiscard]] uint16_t getTileLineUsingSecondMethod(int8_t tileNumber, uint8_t lineNumber) const;
+
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 

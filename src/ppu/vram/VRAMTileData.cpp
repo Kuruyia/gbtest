@@ -1,5 +1,15 @@
 #include "VRAMTileData.h"
 
+uint16_t gbtest::VRAMTileData::getTileLineUsingFirstMethod(uint8_t tileNumber, uint8_t lineNumber) const
+{
+    return m_memory.at((16 * tileNumber) + (2 * lineNumber));
+}
+
+uint16_t gbtest::VRAMTileData::getTileLineUsingSecondMethod(int8_t tileNumber, uint8_t lineNumber) const
+{
+    return m_memory.at(0x1000 + (16 * tileNumber) + (2 * lineNumber));
+}
+
 bool gbtest::VRAMTileData::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
     // VRAM Tile Data is in memory area from 8000h to 97FFh
