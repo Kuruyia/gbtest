@@ -49,5 +49,6 @@ bool gbtest::PPU::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusReques
 void gbtest::PPU::tick()
 {
     // Dispatch the tick
+    m_modeManager.tick();
     m_oamDma.tick();
 }

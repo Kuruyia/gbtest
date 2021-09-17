@@ -1,6 +1,7 @@
 #ifndef GBTEST_PPU_H
 #define GBTEST_PPU_H
 
+#include "modes/PPUModeManager.h"
 #include "oam/OAM.h"
 #include "oam/OAMDMA.h"
 #include "vram/VRAM.h"
@@ -27,6 +28,8 @@ public:
     void tick() override;
 
 private:
+    PPUModeManager m_modeManager;
+
     OAM m_oam;
     OAMDMA m_oamDma;
 

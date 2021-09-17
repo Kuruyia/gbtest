@@ -25,10 +25,23 @@ add_executable(gbtest
         src/platform/bus/BusRequestSource.h
         src/ppu/fifo/BackgroundFetcher.cpp
         src/ppu/fifo/BackgroundFetcher.h
-        src/ppu/fifo/Fetcher.h
         src/ppu/fifo/Fetcher.cpp
+        src/ppu/fifo/Fetcher.h
         src/ppu/fifo/FetcherState.h
         src/ppu/fifo/FIFOPixelData.h
+        src/ppu/modes/DrawingPPUMode.cpp
+        src/ppu/modes/DrawingPPUMode.h
+        src/ppu/modes/HBlankPPUMode.cpp
+        src/ppu/modes/HBlankPPUMode.h
+        src/ppu/modes/OAMSearchPPUMode.cpp
+        src/ppu/modes/OAMSearchPPUMode.h
+        src/ppu/modes/PPUMode.cpp
+        src/ppu/modes/PPUMode.h
+        src/ppu/modes/PPUModeManager.cpp
+        src/ppu/modes/PPUModeManager.h
+        src/ppu/modes/PPUModeType.h
+        src/ppu/modes/VBlankPPUMode.cpp
+        src/ppu/modes/VBlankPPUMode.h
         src/ppu/oam/OAM.cpp
         src/ppu/oam/OAM.h
         src/ppu/oam/OAMDMA.cpp
