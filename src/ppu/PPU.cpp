@@ -6,6 +6,46 @@ gbtest::PPU::PPU(Bus& bus)
 
 }
 
+gbtest::PPUModeManager& gbtest::PPU::getModeManager()
+{
+    return m_modeManager;
+}
+
+const gbtest::PPUModeManager& gbtest::PPU::getModeManager() const
+{
+    return m_modeManager;
+}
+
+gbtest::OAM& gbtest::PPU::getOam()
+{
+    return m_oam;
+}
+
+const gbtest::OAM& gbtest::PPU::getOam() const
+{
+    return m_oam;
+}
+
+gbtest::OAMDMA& gbtest::PPU::getOamDma()
+{
+    return m_oamDma;
+}
+
+const gbtest::OAMDMA& gbtest::PPU::getOamDma() const
+{
+    return m_oamDma;
+}
+
+gbtest::VRAM& gbtest::PPU::getVram()
+{
+    return m_vram;
+}
+
+const gbtest::VRAM& gbtest::PPU::getVram() const
+{
+    return m_vram;
+}
+
 bool gbtest::PPU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
     // Dispatch the read request

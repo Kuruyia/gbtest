@@ -19,6 +19,18 @@ public:
     explicit PPU(Bus& bus);
     ~PPU() override = default;
 
+    [[nodiscard]] PPUModeManager& getModeManager();
+    [[nodiscard]] const PPUModeManager& getModeManager() const;
+
+    [[nodiscard]] OAM& getOam();
+    [[nodiscard]] const OAM& getOam() const;
+
+    [[nodiscard]] OAMDMA& getOamDma();
+    [[nodiscard]] const OAMDMA& getOamDma() const;
+
+    [[nodiscard]] VRAM& getVram();
+    [[nodiscard]] const VRAM& getVram() const;
+
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
