@@ -47,5 +47,7 @@ void gbtest::Fetcher::tick()
         executeState();
     }
 
-    --m_cyclesToWait;
+    if (m_cyclesToWait > 0) {
+        --m_cyclesToWait;
+    }
 }
