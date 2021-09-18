@@ -1,7 +1,9 @@
 #include "PPU.h"
 
 gbtest::PPU::PPU(Bus& bus)
-        : m_oamDma(bus, m_oam)
+        : m_modeManager(m_ppuRegisters, m_oam)
+        , m_ppuRegisters()
+        , m_oamDma(bus, m_oam)
 {
 
 }
@@ -14,6 +16,16 @@ gbtest::PPUModeManager& gbtest::PPU::getModeManager()
 const gbtest::PPUModeManager& gbtest::PPU::getModeManager() const
 {
     return m_modeManager;
+}
+
+gbtest::PPURegisters& gbtest::PPU::getPpuRegisters()
+{
+    return m_ppuRegisters;
+}
+
+const gbtest::PPURegisters& gbtest::PPU::getPpuRegisters() const
+{
+    return m_ppuRegisters;
 }
 
 gbtest::OAM& gbtest::PPU::getOam()

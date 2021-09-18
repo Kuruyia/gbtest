@@ -5,6 +5,7 @@
 #include "oam/OAM.h"
 #include "oam/OAMDMA.h"
 #include "vram/VRAM.h"
+#include "PPURegisters.h"
 
 #include "../platform/bus/BusProvider.h"
 #include "../platform/bus/Bus.h"
@@ -21,6 +22,9 @@ public:
 
     [[nodiscard]] PPUModeManager& getModeManager();
     [[nodiscard]] const PPUModeManager& getModeManager() const;
+
+    [[nodiscard]] PPURegisters& getPpuRegisters();
+    [[nodiscard]] const PPURegisters& getPpuRegisters() const;
 
     [[nodiscard]] OAM& getOam();
     [[nodiscard]] const OAM& getOam() const;
@@ -41,6 +45,7 @@ public:
 
 private:
     PPUModeManager m_modeManager;
+    PPURegisters m_ppuRegisters;
 
     OAM m_oam;
     OAMDMA m_oamDma;

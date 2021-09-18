@@ -1,7 +1,8 @@
 #include "PPUModeManager.h"
 
-gbtest::PPUModeManager::PPUModeManager(PPURegisters& ppuRegisters)
-        : m_currentMode(PPUModeType::OAM_Search)
+gbtest::PPUModeManager::PPUModeManager(PPURegisters& ppuRegisters, OAM& oam)
+        : m_oamSearchPpuMode(oam)
+        , m_currentMode(PPUModeType::OAM_Search)
         , m_ppuRegisters(ppuRegisters)
 {
     // Start OAM Search right away

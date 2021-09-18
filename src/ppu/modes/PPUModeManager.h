@@ -17,7 +17,7 @@ class PPUModeManager
         : public Tickable {
 
 public:
-    explicit PPUModeManager(PPURegisters& ppuRegisters);
+    PPUModeManager(PPURegisters& ppuRegisters, OAM& oam);
     ~PPUModeManager() override = default;
 
     [[nodiscard]] PPUModeType getCurrentMode() const;
