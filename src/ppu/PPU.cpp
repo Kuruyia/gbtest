@@ -1,5 +1,7 @@
 #include "PPU.h"
 
+#include "modes/PPUModeType.h"
+
 gbtest::PPU::PPU(Bus& bus)
         : m_modeManager(bus, m_ppuRegisters, m_oam, m_vram)
         , m_ppuRegisters()
@@ -180,6 +182,20 @@ bool gbtest::PPU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource 
 
 bool gbtest::PPU::busReadOverride(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
+    PPUModeType currentMode = m_modeManager.getCurrentMode();
+
+    /*
+     * Prevent reads on OAM during modes 2 and 3
+     * Prevent reads on VRAM and CGB palette registers during mode 3
+     */
+    if ((addr >= 0xFE00 && addr <= 0xFE9F
+            && (currentMode == PPUModeType::OAM_Search || currentMode == PPUModeType::Drawing))
+            || (((addr >= 0x8000 && addr <= 0x9FFF) || addr == 0xFF69 || addr == 0xFF6B)
+                    && currentMode == PPUModeType::Drawing)) {
+        val = 0xFF;
+        return true;
+    }
+
     // Dispatch the read override request
     if (m_oam.busReadOverride(addr, val, requestSource)) { return true; }
     if (m_oamDma.busReadOverride(addr, val, requestSource)) { return true; }
@@ -190,6 +206,19 @@ bool gbtest::PPU::busReadOverride(uint16_t addr, uint8_t& val, gbtest::BusReques
 
 bool gbtest::PPU::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusRequestSource requestSource)
 {
+    PPUModeType currentMode = m_modeManager.getCurrentMode();
+
+    /*
+     * Prevent writes on OAM during modes 2 and 3
+     * Prevent writes on VRAM and CGB palette registers during mode 3
+     */
+    if ((addr >= 0xFE00 && addr <= 0xFE9F
+            && (currentMode == PPUModeType::OAM_Search || currentMode == PPUModeType::Drawing))
+            || (((addr >= 0x8000 && addr <= 0x9FFF) || addr == 0xFF69 || addr == 0xFF6B)
+                    && currentMode == PPUModeType::Drawing)) {
+        return true;
+    }
+
     // Dispatch the write override request
     if (m_oam.busWriteOverride(addr, val, requestSource)) { return true; }
     if (m_oamDma.busWriteOverride(addr, val, requestSource)) { return true; }
