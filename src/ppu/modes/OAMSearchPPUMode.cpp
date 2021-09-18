@@ -5,7 +5,7 @@ inline gbtest::PPUModeType gbtest::OAMSearchPPUMode::getModeType()
     return PPUModeType::OAM_Search;
 }
 
-void gbtest::OAMSearchPPUMode::tick()
+void gbtest::OAMSearchPPUMode::executeMode()
 {
-    PPUMode::tick();
+    // TODO: Implement this mode
 }

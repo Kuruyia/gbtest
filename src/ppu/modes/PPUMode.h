@@ -16,10 +16,13 @@ public:
     virtual void restart();
     [[nodiscard]] bool isFinished() const;
 
+    virtual void executeMode() = 0;
+
     void tick() override;
 
-private:
+protected:
     bool m_finished;
+    unsigned m_cyclesToWait;
 
 }; // class PPUMode
 

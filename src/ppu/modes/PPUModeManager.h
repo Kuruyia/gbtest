@@ -8,6 +8,7 @@
 
 #include "PPUModeType.h"
 
+#include "../PPURegisters.h"
 #include "../../utils/Tickable.h"
 
 namespace gbtest {
@@ -16,7 +17,7 @@ class PPUModeManager
         : public Tickable {
 
 public:
-    PPUModeManager();
+    explicit PPUModeManager(PPURegisters& ppuRegisters);
     ~PPUModeManager() override = default;
 
     [[nodiscard]] PPUModeType getCurrentMode() const;
@@ -30,6 +31,8 @@ private:
     VBlankPPUMode m_vblankPpuMode;
 
     PPUModeType m_currentMode;
+
+    PPURegisters& m_ppuRegisters;
 
     [[nodiscard]] PPUMode& getCurrentModeInstance();
 

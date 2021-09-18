@@ -1,7 +1,8 @@
 #include "PPUModeManager.h"
 
-gbtest::PPUModeManager::PPUModeManager()
+gbtest::PPUModeManager::PPUModeManager(PPURegisters& ppuRegisters)
         : m_currentMode(PPUModeType::OAM_Search)
+        , m_ppuRegisters(ppuRegisters)
 {
     // Start OAM Search right away
     getCurrentModeInstance().restart();
@@ -30,12 +31,26 @@ void gbtest::PPUModeManager::tick()
             break;
 
         case PPUModeType::HBlank:
-            // TODO: Support VBlank
-            m_currentMode = PPUModeType::OAM_Search;
+            // Increment the current line we're on
+            ++m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate;
+
+            if (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate < 144) {
+                // We're still drawing to the LCD
+                m_currentMode = PPUModeType::OAM_Search;
+            }
+            else {
+                // Lines 144 to 153 are the vertical blanking interval
+                m_currentMode = PPUModeType::VBlank;
+            }
+
             break;
 
         case PPUModeType::VBlank:
+            // Restart a frame
+            m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate = 0;
+
             m_currentMode = PPUModeType::OAM_Search;
+
             break;
         }
 

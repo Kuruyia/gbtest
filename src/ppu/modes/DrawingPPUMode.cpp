@@ -5,7 +5,7 @@ inline gbtest::PPUModeType gbtest::DrawingPPUMode::getModeType()
     return PPUModeType::Drawing;
 }
 
-void gbtest::DrawingPPUMode::tick()
+void gbtest::DrawingPPUMode::executeMode()
 {
-    PPUMode::tick();
+    // TODO: Implement this mode
 }

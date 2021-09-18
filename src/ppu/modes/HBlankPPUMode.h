@@ -10,12 +10,21 @@ class HBlankPPUMode
         : public PPUMode {
 
 public:
-    HBlankPPUMode() = default;
+    HBlankPPUMode();
     ~HBlankPPUMode() override = default;
+
+    void setBlankingCycleCount(unsigned blankingCycleCount);
+    [[nodiscard]] unsigned getBlankingCycleCount() const;
 
     [[nodiscard]] static PPUModeType getModeType();
 
-    void tick() override;
+    void restart() override;
+
+    void executeMode() override;
+
+private:
+    bool m_blanking;
+    unsigned m_blankingCycleCount;
 
 }; // class HBlankPPUMode
 

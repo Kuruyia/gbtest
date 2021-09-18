@@ -10,12 +10,17 @@ class VBlankPPUMode
         : public PPUMode {
 
 public:
-    VBlankPPUMode() = default;
+    VBlankPPUMode();
     ~VBlankPPUMode() override = default;
 
     [[nodiscard]] static PPUModeType getModeType();
 
-    void tick() override;
+    void restart() override;
+
+    void executeMode() override;
+
+private:
+    bool m_blanking;
 
 }; // class VBlankPPUMode
 

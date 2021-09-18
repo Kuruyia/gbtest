@@ -15,7 +15,7 @@ public:
 
     [[nodiscard]] static PPUModeType getModeType();
 
-    void tick() override;
+    void executeMode() override;
 
 }; // class OAMSearchPPUMode
 
