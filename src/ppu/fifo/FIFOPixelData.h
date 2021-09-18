@@ -19,6 +19,15 @@ struct FIFOPixelData {
     {
 
     }
+
+    FIFOPixelData(FIFOPixelData&& o) noexcept
+            : colorIndex(o.colorIndex)
+            , palette(o.palette)
+            , spriteOamIndex(o.spriteOamIndex)
+            , backgroundPriority(o.backgroundPriority)
+    {
+
+    }
 }; // struct FIFOPixelData
 
 } // namespace gbtest
