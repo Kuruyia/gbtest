@@ -27,10 +27,12 @@ void gbtest::PPUModeManager::tick()
         switch (m_currentMode) {
         case PPUModeType::OAM_Search:
             m_currentMode = PPUModeType::Drawing;
+
             break;
 
         case PPUModeType::Drawing:
             m_currentMode = PPUModeType::HBlank;
+
             break;
 
         case PPUModeType::HBlank:
@@ -44,6 +46,7 @@ void gbtest::PPUModeManager::tick()
             else {
                 // Lines 144 to 153 are the vertical blanking interval
                 m_bus.setInterruptLineHigh(InterruptType::VBlank, true);
+
                 m_currentMode = PPUModeType::VBlank;
             }
 
@@ -60,6 +63,7 @@ void gbtest::PPUModeManager::tick()
         }
 
         getCurrentModeInstance().restart();
+        updateLcdStatusModeRegister();
     }
 
     // Update the STAT interrupt on the bus
@@ -80,6 +84,27 @@ gbtest::PPUMode& gbtest::PPUModeManager::getCurrentModeInstance()
 
     case PPUModeType::VBlank:
         return m_vblankPpuMode;
+    }
+}
+
+void gbtest::PPUModeManager::updateLcdStatusModeRegister()
+{
+    switch (m_currentMode) {
+    case PPUModeType::OAM_Search:
+        m_ppuRegisters.lcdStatus.mode = 2;
+        break;
+
+    case PPUModeType::Drawing:
+        m_ppuRegisters.lcdStatus.mode = 3;
+        break;
+
+    case PPUModeType::HBlank:
+        m_ppuRegisters.lcdStatus.mode = 0;
+        break;
+
+    case PPUModeType::VBlank:
+        m_ppuRegisters.lcdStatus.mode = 1;
+        break;
     }
 }
 

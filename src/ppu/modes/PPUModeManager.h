@@ -38,6 +38,7 @@ private:
 
     [[nodiscard]] PPUMode& getCurrentModeInstance();
 
+    void updateLcdStatusModeRegister();
     void updateStatInterrupt();
 
 }; // class PPUModeManager
