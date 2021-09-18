@@ -12,11 +12,15 @@ class OAM
         : public BusProvider {
 
 public:
-    OAM() = default;
+    OAM();
     ~OAM() override = default;
 
     void writeRawValue(size_t offset, uint8_t val);
     void readRawValue(size_t offset, uint8_t& val) const;
+
+    void setOamEntry(const OAMEntry& entry, size_t idx);
+    [[nodiscard]] const OAMEntry& getOamEntry(size_t idx) const;
+    [[nodiscard]] OAMEntry& getOamEntry(size_t idx);
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;

@@ -1,5 +1,11 @@
 #include "OAM.h"
 
+gbtest::OAM::OAM()
+        : m_oamEntries()
+{
+
+}
+
 void gbtest::OAM::writeRawValue(size_t offset, uint8_t val)
 {
     // Grab the correct entry
@@ -58,6 +64,21 @@ void gbtest::OAM::readRawValue(size_t offset, uint8_t& val) const
     default:
         break;
     }
+}
+
+void gbtest::OAM::setOamEntry(const gbtest::OAMEntry& entry, size_t idx)
+{
+    m_oamEntries.at(idx) = entry;
+}
+
+const gbtest::OAMEntry& gbtest::OAM::getOamEntry(size_t idx) const
+{
+    return m_oamEntries.at(idx);
+}
+
+gbtest::OAMEntry& gbtest::OAM::getOamEntry(size_t idx)
+{
+    return m_oamEntries.at(idx);
 }
 
 bool gbtest::OAM::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
