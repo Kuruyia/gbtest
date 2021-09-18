@@ -9,6 +9,7 @@
 #include "PPUModeType.h"
 
 #include "../PPURegisters.h"
+#include "../../platform/bus/Bus.h"
 #include "../../utils/Tickable.h"
 
 namespace gbtest {
@@ -17,7 +18,7 @@ class PPUModeManager
         : public Tickable {
 
 public:
-    PPUModeManager(PPURegisters& ppuRegisters, const OAM& oam, const VRAM& vram);
+    PPUModeManager(Bus& bus, PPURegisters& ppuRegisters, const OAM& oam, const VRAM& vram);
     ~PPUModeManager() override = default;
 
     [[nodiscard]] PPUModeType getCurrentMode() const;
@@ -32,9 +33,12 @@ private:
 
     PPUModeType m_currentMode;
 
+    Bus& m_bus;
     PPURegisters& m_ppuRegisters;
 
     [[nodiscard]] PPUMode& getCurrentModeInstance();
+
+    void updateStatInterrupt();
 
 }; // class PPUModeManager
 

@@ -1,9 +1,10 @@
 #include "PPUModeManager.h"
 
-gbtest::PPUModeManager::PPUModeManager(PPURegisters& ppuRegisters, const OAM& oam, const VRAM& vram)
+gbtest::PPUModeManager::PPUModeManager(Bus& bus, PPURegisters& ppuRegisters, const OAM& oam, const VRAM& vram)
         : m_drawingPpuMode(ppuRegisters, vram)
         , m_oamSearchPpuMode(ppuRegisters, oam)
         , m_currentMode(PPUModeType::OAM_Search)
+        , m_bus(bus)
         , m_ppuRegisters(ppuRegisters)
 {
     // Start OAM Search right away
@@ -42,6 +43,7 @@ void gbtest::PPUModeManager::tick()
             }
             else {
                 // Lines 144 to 153 are the vertical blanking interval
+                m_bus.setInterruptLineHigh(InterruptType::VBlank, true);
                 m_currentMode = PPUModeType::VBlank;
             }
 
@@ -50,6 +52,7 @@ void gbtest::PPUModeManager::tick()
         case PPUModeType::VBlank:
             // Restart a frame
             m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate = 0;
+            m_bus.setInterruptLineHigh(InterruptType::VBlank, false);
 
             m_currentMode = PPUModeType::OAM_Search;
 
@@ -58,6 +61,9 @@ void gbtest::PPUModeManager::tick()
 
         getCurrentModeInstance().restart();
     }
+
+    // Update the STAT interrupt on the bus
+    updateStatInterrupt();
 }
 
 gbtest::PPUMode& gbtest::PPUModeManager::getCurrentModeInstance()
@@ -75,4 +81,15 @@ gbtest::PPUMode& gbtest::PPUModeManager::getCurrentModeInstance()
     case PPUModeType::VBlank:
         return m_vblankPpuMode;
     }
+}
+
+void gbtest::PPUModeManager::updateStatInterrupt()
+{
+    LCDStatus& lcdStatus = m_ppuRegisters.lcdStatus;
+
+    m_bus.setInterruptLineHigh(InterruptType::LCDSTAT,
+            (lcdStatus.mode0InterruptSource && m_currentMode == PPUModeType::HBlank)
+                    || (lcdStatus.mode1InterruptSource && m_currentMode == PPUModeType::VBlank)
+                    || (lcdStatus.mode2InterruptSource && m_currentMode == PPUModeType::OAM_Search)
+                    || lcdStatus.lycEqualsLy);
 }

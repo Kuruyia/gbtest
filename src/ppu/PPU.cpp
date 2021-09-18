@@ -1,7 +1,7 @@
 #include "PPU.h"
 
 gbtest::PPU::PPU(Bus& bus)
-        : m_modeManager(m_ppuRegisters, m_oam, m_vram)
+        : m_modeManager(bus, m_ppuRegisters, m_oam, m_vram)
         , m_ppuRegisters()
         , m_oamDma(bus, m_oam)
 {
