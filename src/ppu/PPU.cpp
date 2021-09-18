@@ -1,11 +1,12 @@
 #include "PPU.h"
 
 gbtest::PPU::PPU(Bus& bus)
-        : m_modeManager(m_ppuRegisters, m_oam)
+        : m_modeManager(m_ppuRegisters, m_oam, m_vram)
         , m_ppuRegisters()
         , m_oamDma(bus, m_oam)
 {
-
+    // Reset the Y LCD Coordinate
+    m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate = 0;
 }
 
 gbtest::PPUModeManager& gbtest::PPU::getModeManager()

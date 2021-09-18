@@ -53,6 +53,8 @@ add_executable(gbtest
         src/ppu/vram/VRAMTileData.h
         src/ppu/vram/VRAMTileMaps.cpp
         src/ppu/vram/VRAMTileMaps.h
+        src/ppu/ColorUtils.cpp
+        src/ppu/ColorUtils.h
         src/ppu/PPU.cpp
         src/ppu/PPU.h
         src/ppu/PPURegisters.h
