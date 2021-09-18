@@ -62,9 +62,9 @@ union MonochromePalette {
 static_assert(sizeof(MonochromePalette) == 1, "Monochrome Palette structure size is incorrect");
 
 struct DMGPalettes {
-    MonochromePalette bgPaletteData;        // Data for the BG palette
-    MonochromePalette objectPaletteData0;   // Data for the first OBJ palette
-    MonochromePalette objectPaletteData1;   // Data for the second OBJ palette
+    MonochromePalette bgPaletteData;        // [ BGP] Data for the BG palette
+    MonochromePalette objectPaletteData0;   // [OBP0] Data for the first OBJ palette
+    MonochromePalette objectPaletteData1;   // [OBP1] Data for the second OBJ palette
 }; // struct DMGPalettes
 
 // Registers

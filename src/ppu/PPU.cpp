@@ -61,6 +61,56 @@ const gbtest::VRAM& gbtest::PPU::getVram() const
 
 bool gbtest::PPU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
+    // Check if it's for one of our registers
+    switch (addr) {
+    case 0xFF40: // [LCDC] LCD Control
+        val = m_ppuRegisters.lcdControl.raw;
+        return true;
+
+    case 0xFF41: // [STAT] LCD Status
+        val = m_ppuRegisters.lcdStatus.raw;
+        return true;
+
+    case 0xFF42: // [SCY] BG Y scroll coordinate
+        val = m_ppuRegisters.lcdPositionAndScrolling.yScroll;
+        return true;
+
+    case 0xFF43: // [SCX] BG X scroll coordinate
+        val = m_ppuRegisters.lcdPositionAndScrolling.xScroll;
+        return true;
+
+    case 0xFF44: // [ LY] LCD Y coordinate
+        val = m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate;
+        return true;
+
+    case 0xFF45: // [LYC] LY compare
+        val = m_ppuRegisters.lcdPositionAndScrolling.lyCompare;
+        return true;
+
+    case 0xFF47: // [ BGP] Data for the BG palette
+        val = m_ppuRegisters.dmgPalettes.bgPaletteData.raw;
+        return true;
+
+    case 0xFF48: // [OBP0] Data for the first OBJ palette
+        val = m_ppuRegisters.dmgPalettes.objectPaletteData0.raw;
+        return true;
+
+    case 0xFF49: // [OBP1] Data for the second OBJ palette
+        val = m_ppuRegisters.dmgPalettes.objectPaletteData1.raw;
+        return true;
+
+    case 0xFF4A: // [ WY] Window Y position
+        val = m_ppuRegisters.lcdPositionAndScrolling.yWindowPosition;
+        return true;
+
+    case 0xFF4B: // [ WX] Window X position
+        val = m_ppuRegisters.lcdPositionAndScrolling.xWindowPosition;
+        return true;
+
+    default:
+        break;
+    }
+
     // Dispatch the read request
     if (m_oam.busRead(addr, val, requestSource)) { return true; }
     if (m_oamDma.busRead(addr, val, requestSource)) { return true; }
@@ -71,6 +121,55 @@ bool gbtest::PPU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource 
 
 bool gbtest::PPU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource requestSource)
 {
+    // Check if it's for one of our registers
+    switch (addr) {
+    case 0xFF40: // [LCDC] LCD Control
+        m_ppuRegisters.lcdControl.raw = val;
+        return true;
+
+    case 0xFF41: // [STAT] LCD Status
+        m_ppuRegisters.lcdStatus.raw = (val & 0xF8);
+        return true;
+
+    case 0xFF42: // [SCY] BG Y scroll coordinate
+        m_ppuRegisters.lcdPositionAndScrolling.yScroll = val;
+        return true;
+
+    case 0xFF43: // [SCX] BG X scroll coordinate
+        m_ppuRegisters.lcdPositionAndScrolling.xScroll = val;
+        return true;
+
+    case 0xFF44: // [ LY] LCD Y coordinate
+        return true;
+
+    case 0xFF45: // [LYC] LY compare
+        m_ppuRegisters.lcdPositionAndScrolling.lyCompare = val;
+        return true;
+
+    case 0xFF47: // [ BGP] Data for the BG palette
+        m_ppuRegisters.dmgPalettes.bgPaletteData.raw = val;
+        return true;
+
+    case 0xFF48: // [OBP0] Data for the first OBJ palette
+        m_ppuRegisters.dmgPalettes.objectPaletteData0.raw = val;
+        return true;
+
+    case 0xFF49: // [OBP1] Data for the second OBJ palette
+        m_ppuRegisters.dmgPalettes.objectPaletteData1.raw = val;
+        return true;
+
+    case 0xFF4A: // [ WY] Window Y position
+        m_ppuRegisters.lcdPositionAndScrolling.yWindowPosition = val;
+        return true;
+
+    case 0xFF4B: // [ WX] Window X position
+        m_ppuRegisters.lcdPositionAndScrolling.xWindowPosition = val;
+        return true;
+
+    default:
+        break;
+    }
+
     // Dispatch the write request
     if (m_oam.busWrite(addr, val, requestSource)) { return true; }
     if (m_oamDma.busWrite(addr, val, requestSource)) { return true; }
