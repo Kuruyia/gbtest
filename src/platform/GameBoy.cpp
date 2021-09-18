@@ -37,6 +37,7 @@ void gbtest::GameBoy::update(int64_t delta)
 void gbtest::GameBoy::tick()
 {
     m_cpu.tick();
+    m_ppu.tick();
 }
 
 gbtest::Bus& gbtest::GameBoy::getBus()
