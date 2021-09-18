@@ -18,7 +18,6 @@ public:
     ~BackgroundFetcher() override = default;
 
     void beginScanline() override;
-    void beginFrame() override;
 
     void executeState() override;
 
@@ -27,7 +26,6 @@ private:
     uint16_t m_currentTileData;
 
     uint8_t m_fetcherX;
-    uint8_t m_fetcherY;
     bool m_scanlineBeginSkip;
 
 }; // class BackgroundFetcher

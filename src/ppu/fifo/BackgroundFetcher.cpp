@@ -6,7 +6,6 @@ gbtest::BackgroundFetcher::BackgroundFetcher(const PPURegisters& ppuRegisters, c
         , m_currentTileNumber(0)
         , m_currentTileData(0)
         , m_fetcherX(0)
-        , m_fetcherY(0)
         , m_scanlineBeginSkip(true)
 {
 
@@ -17,15 +16,7 @@ void gbtest::BackgroundFetcher::beginScanline()
     Fetcher::beginScanline();
 
     m_fetcherX = 0;
-    ++m_fetcherY;
     m_scanlineBeginSkip = true;
-}
-
-void gbtest::BackgroundFetcher::beginFrame()
-{
-    Fetcher::beginFrame();
-
-    m_fetcherY = 0;
 }
 
 void gbtest::BackgroundFetcher::executeState()
