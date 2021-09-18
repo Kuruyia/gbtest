@@ -1,6 +1,6 @@
 #include "OAMSearchPPUMode.h"
 
-gbtest::OAMSearchPPUMode::OAMSearchPPUMode(PPURegisters& ppuRegisters, OAM& oam)
+gbtest::OAMSearchPPUMode::OAMSearchPPUMode(const PPURegisters& ppuRegisters, const OAM& oam)
         : m_spriteBuffer()
         , m_spriteBufferSize(0)
         , m_oamIdx(0)

@@ -15,7 +15,7 @@ class OAMSearchPPUMode
         : public PPUMode {
 
 public:
-    OAMSearchPPUMode(PPURegisters& ppuRegisters, OAM& oam);
+    OAMSearchPPUMode(const PPURegisters& ppuRegisters, const OAM& oam);
     ~OAMSearchPPUMode() override = default;
 
     [[nodiscard]] static PPUModeType getModeType();
@@ -32,8 +32,8 @@ private:
     size_t m_spriteBufferSize;
     unsigned m_oamIdx;
 
-    PPURegisters& m_ppuRegisters;
-    OAM& m_oam;
+    const PPURegisters& m_ppuRegisters;
+    const OAM& m_oam;
 
     void checkCurrentSprite();
 
