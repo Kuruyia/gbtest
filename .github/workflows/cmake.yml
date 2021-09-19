@@ -1,0 +1,28 @@
+name: CMake
+on: [ push ]
+
+env:
+  VCPKG_COMMIT: 4428702c1c56fdb7cb779584efdcba254d7b57ca
+
+jobs:
+  job:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - uses: lukka/get-cmake@latest
+
+      - uses: lukka/run-vcpkg@main
+        with:
+          setupOnly: true
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
+
+      - uses: lukka/run-cmake@main
+        with:
+          useVcpkgToolchainFile: true
