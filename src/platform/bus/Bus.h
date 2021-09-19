@@ -2,7 +2,7 @@
 #define GBTEST_BUS_H
 
 #include <bitset>
-#include <cinttypes>
+#include <cstdint>
 #include <vector>
 
 #include "BusProvider.h"

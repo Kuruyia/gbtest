@@ -2,7 +2,7 @@
 #define GBTEST_VRAMTILEDATA_H
 
 #include <array>
-#include <cinttypes>
+#include <cstdint>
 
 #include "../../platform/bus/BusProvider.h"
 

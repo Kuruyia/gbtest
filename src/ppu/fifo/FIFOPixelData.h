@@ -1,6 +1,8 @@
 #ifndef GBTEST_FIFOPIXELDATA_H
 #define GBTEST_FIFOPIXELDATA_H
 
+#include <cstdint>
+
 namespace gbtest {
 
 // Data of a pixel in the FIFO
