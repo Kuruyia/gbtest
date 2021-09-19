@@ -1,0 +1,13 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+    "name": "gbtest",
+    "version-string": "develop",
+    "builtin-baseline": "4428702c1c56fdb7cb779584efdcba254d7b57ca",
+    "dependencies": [
+        "raylib",
+        {
+            "name": "raylib",
+            "default-features": false
+        }
+    ]
+}
