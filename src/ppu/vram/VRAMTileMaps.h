@@ -15,7 +15,7 @@ public:
     VRAMTileMaps();
     ~VRAMTileMaps() override = default;
 
-    [[nodiscard]] uint8_t getTileNumberFromTileMap(uint8_t offset, uint8_t whichMap) const;
+    [[nodiscard]] uint8_t getTileNumberFromTileMap(size_t offset, uint8_t whichMap) const;
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;

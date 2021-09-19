@@ -35,7 +35,7 @@ void gbtest::BackgroundFetcher::executeState()
         const uint8_t y =
                 (m_ppuRegisters.lcdPositionAndScrolling.yScroll + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate)
                         & 0xFF;
-        const uint8_t offset = ((32 * (y / 8)) + x) & 0x3FF;
+        const size_t offset = ((32 * (y / 8)) + x) & 0x3FF;
 
         // Fetch the tile number
         if (!m_vram.isReadBlocked()) {

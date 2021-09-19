@@ -6,7 +6,7 @@ gbtest::VRAMTileMaps::VRAMTileMaps()
 
 }
 
-uint8_t gbtest::VRAMTileMaps::getTileNumberFromTileMap(uint8_t offset, uint8_t whichMap) const
+uint8_t gbtest::VRAMTileMaps::getTileNumberFromTileMap(size_t offset, uint8_t whichMap) const
 {
     // TODO: Ensure that offset < 400h && whichMap == 0 || whichMap == 1
     return m_memory.at((0x400 * whichMap) + offset);
