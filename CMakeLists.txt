@@ -66,7 +66,17 @@ add_executable(gbtest
         src/utils/Tickable.h
         src/main.cpp)
 
-target_link_libraries(gbtest PRIVATE raylib)
+if (TARGET raylib)
+    # System-wide raylib install
+    target_link_libraries(gbtest PRIVATE raylib)
+elseif (RAYLIB_FOUND)
+    # vcpkg raylib install
+    target_include_directories(gbtest PRIVATE ${RAYLIB_INCLUDE_DIRS})
+    target_link_libraries(gbtest PRIVATE ${RAYLIB_LIBRARIES})
+else ()
+    # Not found
+    message(FATAL_ERROR "raylib not found")
+endif ()
 
 if (APPLE)
     target_link_libraries(gbtest PRIVATE "-framework IOKit")
