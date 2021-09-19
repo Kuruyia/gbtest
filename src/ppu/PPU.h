@@ -60,9 +60,6 @@ private:
 
     Framebuffer m_framebuffer;
 
-    bool m_stopped;
-    void updateStoppedState();
-
 }; // class PPU
 
 } // namespace gbtest

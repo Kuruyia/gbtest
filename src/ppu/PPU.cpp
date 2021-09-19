@@ -6,7 +6,6 @@ gbtest::PPU::PPU(Bus& bus)
         : m_modeManager(bus, m_framebuffer, m_ppuRegisters, m_oam, m_vram)
         , m_ppuRegisters()
         , m_oamDma(bus, m_oam)
-        , m_stopped(false)
 {
 
 }
@@ -141,6 +140,11 @@ bool gbtest::PPU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource 
     // Check if it's for one of our registers
     switch (addr) {
     case 0xFF40: // [LCDC] LCD Control
+        if (m_ppuRegisters.lcdControl.lcdAndPpuEnable == 1 && (val & 0x80) == 0x00) {
+            // PPU just stopped, reset it
+            reset();
+        }
+
         m_ppuRegisters.lcdControl.raw = val;
         return true;
 
@@ -250,21 +254,7 @@ void gbtest::PPU::tick()
     m_oamDma.tick();
 
     // Don't continue if the PPU is stopped
-    updateStoppedState();
-    if (m_stopped) { return; }
+    if (m_ppuRegisters.lcdControl.lcdAndPpuEnable == 0) { return; }
 
     m_modeManager.tick();
-}
-
-void gbtest::PPU::updateStoppedState()
-{
-    if (m_ppuRegisters.lcdControl.lcdAndPpuEnable == 0 && !m_stopped) {
-        // If we just stopped, stop and reset the PPU
-        m_stopped = true;
-        reset();
-    }
-    else if (m_ppuRegisters.lcdControl.lcdAndPpuEnable == 1 && m_stopped) {
-        // If we just resumed, update the stopped flag
-        m_stopped = false;
-    }
 }
