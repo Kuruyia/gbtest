@@ -16,6 +16,19 @@ gbtest::PPUModeType gbtest::PPUModeManager::getCurrentMode() const
     return m_currentMode;
 }
 
+void gbtest::PPUModeManager::reset()
+{
+    // Go to the OAM Search mode
+    m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate = 0;
+    m_bus.setInterruptLineHigh(InterruptType::VBlank, false);
+
+    m_currentMode = PPUModeType::OAM_Search;
+
+    getCurrentModeInstance().restart();
+    updateLcdStatusModeRegister();
+    updateStatInterrupt();
+}
+
 void gbtest::PPUModeManager::tick()
 {
     // Tick the current instance

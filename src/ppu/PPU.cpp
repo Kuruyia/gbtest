@@ -6,9 +6,9 @@ gbtest::PPU::PPU(Bus& bus)
         : m_modeManager(bus, m_ppuRegisters, m_oam, m_vram)
         , m_ppuRegisters()
         , m_oamDma(bus, m_oam)
+        , m_stopped(false)
 {
-    // Reset the Y LCD Coordinate
-    m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate = 0;
+
 }
 
 gbtest::PPUModeManager& gbtest::PPU::getModeManager()
@@ -59,6 +59,11 @@ gbtest::VRAM& gbtest::PPU::getVram()
 const gbtest::VRAM& gbtest::PPU::getVram() const
 {
     return m_vram;
+}
+
+void gbtest::PPU::reset()
+{
+    m_modeManager.reset();
 }
 
 bool gbtest::PPU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
@@ -188,10 +193,11 @@ bool gbtest::PPU::busReadOverride(uint16_t addr, uint8_t& val, gbtest::BusReques
      * Prevent reads on OAM during modes 2 and 3
      * Prevent reads on VRAM and CGB palette registers during mode 3
      */
-    if ((addr >= 0xFE00 && addr <= 0xFE9F
-            && (currentMode == PPUModeType::OAM_Search || currentMode == PPUModeType::Drawing))
-            || (((addr >= 0x8000 && addr <= 0x9FFF) || addr == 0xFF69 || addr == 0xFF6B)
-                    && currentMode == PPUModeType::Drawing)) {
+    if (m_ppuRegisters.lcdControl.lcdAndPpuEnable == 1
+            && ((addr >= 0xFE00 && addr <= 0xFE9F
+                    && (currentMode == PPUModeType::OAM_Search || currentMode == PPUModeType::Drawing))
+                    || (((addr >= 0x8000 && addr <= 0x9FFF) || addr == 0xFF69 || addr == 0xFF6B)
+                            && currentMode == PPUModeType::Drawing))) {
         val = 0xFF;
         return true;
     }
@@ -212,10 +218,11 @@ bool gbtest::PPU::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusReques
      * Prevent writes on OAM during modes 2 and 3
      * Prevent writes on VRAM and CGB palette registers during mode 3
      */
-    if ((addr >= 0xFE00 && addr <= 0xFE9F
-            && (currentMode == PPUModeType::OAM_Search || currentMode == PPUModeType::Drawing))
-            || (((addr >= 0x8000 && addr <= 0x9FFF) || addr == 0xFF69 || addr == 0xFF6B)
-                    && currentMode == PPUModeType::Drawing)) {
+    if (m_ppuRegisters.lcdControl.lcdAndPpuEnable == 1
+            && ((addr >= 0xFE00 && addr <= 0xFE9F
+                    && (currentMode == PPUModeType::OAM_Search || currentMode == PPUModeType::Drawing))
+                    || (((addr >= 0x8000 && addr <= 0x9FFF) || addr == 0xFF69 || addr == 0xFF6B)
+                            && currentMode == PPUModeType::Drawing))) {
         return true;
     }
 
@@ -229,7 +236,25 @@ bool gbtest::PPU::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusReques
 
 void gbtest::PPU::tick()
 {
-    // Dispatch the tick
-    m_modeManager.tick();
+    // Tick the OAM DMA engine
     m_oamDma.tick();
+
+    // Don't continue if the PPU is stopped
+    updateStoppedState();
+    if (m_stopped) { return; }
+
+    m_modeManager.tick();
+}
+
+void gbtest::PPU::updateStoppedState()
+{
+    if (m_ppuRegisters.lcdControl.lcdAndPpuEnable == 0 && !m_stopped) {
+        // If we just stopped, stop and reset the PPU
+        m_stopped = true;
+        reset();
+    }
+    else if (m_ppuRegisters.lcdControl.lcdAndPpuEnable == 1 && m_stopped) {
+        // If we just resumed, update the stopped flag
+        m_stopped = false;
+    }
 }

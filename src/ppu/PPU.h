@@ -35,6 +35,8 @@ public:
     [[nodiscard]] VRAM& getVram();
     [[nodiscard]] const VRAM& getVram() const;
 
+    void reset();
+
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
@@ -51,6 +53,9 @@ private:
     OAMDMA m_oamDma;
 
     VRAM m_vram;
+
+    bool m_stopped;
+    void updateStoppedState();
 
 }; // class PPU
 

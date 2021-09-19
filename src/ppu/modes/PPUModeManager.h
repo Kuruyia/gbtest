@@ -23,6 +23,8 @@ public:
 
     [[nodiscard]] PPUModeType getCurrentMode() const;
 
+    void reset();
+
     void tick() override;
 
 private:
