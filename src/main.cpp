@@ -1,3 +1,5 @@
+#include <array>
+#include <chrono>
 #include <iostream>
 
 #include <raylib.h>
@@ -6,11 +8,26 @@
 
 int main()
 {
-    InitWindow(600, 700, "gbtest");
+    InitWindow(680, 616, "gbtest");
     SetTargetFPS(60);
 
     gbtest::GameBoy gameboy;
     gameboy.init();
+
+    Image lcdImage = {
+            &(gameboy.getPpu().getFramebuffer().getRawBuffer().front()),
+            160,
+            144,
+            1,
+            PIXELFORMAT_UNCOMPRESSED_R8G8B8A8
+    };
+    Texture2D lcdTex = LoadTextureFromImage(lcdImage);
+
+    gameboy.getPpu().getFramebuffer().setFramebufferReadyCallback(
+            [&](const gbtest::Framebuffer::FramebufferContainer& framebuffer) -> void {
+                // Copy the framebuffer for rendering
+                UpdateTexture(lcdTex, &(framebuffer.front()));
+            });
 
     bool tickEnabled = true;
 
@@ -39,12 +56,12 @@ int main()
         // Tick the CPU (if enabled)
         if (tickEnabled) {
             // TODO: De-hardcode that
-            gameboy.update(1000);
+            gameboy.update(16667);
         }
 
         // Check if keys were pressed
         int keyPressed = 0;
-        while ((keyPressed = GetKeyPressed())!=0) {
+        while ((keyPressed = GetKeyPressed()) != 0) {
             switch (keyPressed) {
             case KEY_SPACE:
                 gameboy.tick();
@@ -61,10 +78,11 @@ int main()
 
         // Draw the window
         BeginDrawing();
-        ClearBackground(RAYWHITE);
+        ClearBackground({0xE3, 0xFF, 0x8A, 0xFF});
+
+        DrawTexturePro(lcdTex, {0, 0, 160, 144}, {20, 20, 640, 576}, {0, 0}, 0, WHITE);
 
         DrawFPS(0, 0);
-
         EndDrawing();
     }
 
