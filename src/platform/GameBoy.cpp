@@ -106,13 +106,13 @@ void gbtest::GameBoy::registerBusProviders()
 {
     // TODO: Have the real memory layout
     m_bus.registerBusProvider(&(m_cpu.getInterruptController()));
-    m_bus.registerBusProvider(&m_wholeMemory);
     m_bus.registerBusProvider(&m_ppu);
+    m_bus.registerBusProvider(&m_wholeMemory);
 }
 
 void gbtest::GameBoy::unregisterBusProviders()
 {
-    m_bus.unregisterBusProvider(&m_ppu);
     m_bus.unregisterBusProvider(&m_wholeMemory);
+    m_bus.unregisterBusProvider(&m_ppu);
     m_bus.unregisterBusProvider(&(m_cpu.getInterruptController()));
 }
