@@ -73,6 +73,8 @@ const gbtest::PPU& gbtest::GameBoy::getPpu() const
 void gbtest::GameBoy::resetCpuRegisters()
 {
     // DMG registers
+
+    // CPU
     gbtest::LR35902Registers registers{};
     registers.af = 0x0180;
     registers.bc = 0x0013;
@@ -82,6 +84,22 @@ void gbtest::GameBoy::resetCpuRegisters()
     registers.sp = 0xFFFE;
 
     m_cpu.setRegisters(registers);
+
+    // PPU
+    PPURegisters& ppuRegisters = m_ppu.getPpuRegisters();
+
+    ppuRegisters.lcdControl.raw = 0x91;
+    ppuRegisters.lcdStatus.raw = 0x80;
+
+    ppuRegisters.lcdPositionAndScrolling.xScroll = 0x00;
+    ppuRegisters.lcdPositionAndScrolling.yScroll = 0x00;
+    ppuRegisters.lcdPositionAndScrolling.lyCompare = 0x00;
+    ppuRegisters.lcdPositionAndScrolling.xWindowPosition = 0x00;
+    ppuRegisters.lcdPositionAndScrolling.yWindowPosition = 0x00;
+
+    ppuRegisters.dmgPalettes.bgPaletteData.raw = 0xFC;
+    ppuRegisters.dmgPalettes.objectPaletteData0.raw = 0xFF;
+    ppuRegisters.dmgPalettes.objectPaletteData1.raw = 0xFF;
 }
 
 void gbtest::GameBoy::registerBusProviders()
