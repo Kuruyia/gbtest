@@ -76,9 +76,12 @@ void gbtest::BackgroundFetcher::executeState()
     case FetcherState::PushFIFO:
         if (m_managedQueue.empty()) {
             // Fill the queue with the fetched pixels
-            for (uint8_t i = 0; i < 7; ++i) {
+            for (uint8_t i = 0; i < 8; ++i) {
+                const uint8_t lowBit = (m_currentTileData >> (8 + i)) & 0x1;
+                const uint8_t highBit = (m_currentTileData >> i) & 0x1;
+
                 m_managedQueue.emplace_front(
-                        ((m_currentTileData >> (8 + i)) | (m_currentTileData >> i)) & 0x3,
+                        (highBit << 1) | lowBit,
                         0,
                         0,
                         0

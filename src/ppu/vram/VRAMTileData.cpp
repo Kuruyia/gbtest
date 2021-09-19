@@ -2,12 +2,16 @@
 
 uint16_t gbtest::VRAMTileData::getTileLineUsingFirstMethod(uint8_t tileNumber, uint8_t lineNumber) const
 {
-    return m_memory.at((16 * tileNumber) + (2 * lineNumber));
+    const size_t offset = ((16 * tileNumber) + (2 * lineNumber));
+
+    return (m_memory.at(offset) << 8) | m_memory.at(offset + 1);
 }
 
 uint16_t gbtest::VRAMTileData::getTileLineUsingSecondMethod(int8_t tileNumber, uint8_t lineNumber) const
 {
-    return m_memory.at(0x1000 + (16 * tileNumber) + (2 * lineNumber));
+    const size_t offset = (0x1000 + (16 * tileNumber) + (2 * lineNumber));
+
+    return (m_memory.at(offset) << 8) | m_memory.at(offset + 1);
 }
 
 bool gbtest::VRAMTileData::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
