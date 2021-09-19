@@ -7,6 +7,7 @@ gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegist
         , m_currentXCoordinate(0)
         , m_framebuffer(framebuffer)
         , m_ppuRegisters(ppuRegisters)
+        , m_tickCounter(0)
 {
 
 }
@@ -16,11 +17,17 @@ inline gbtest::PPUModeType gbtest::DrawingPPUMode::getModeType()
     return PPUModeType::Drawing;
 }
 
+unsigned gbtest::DrawingPPUMode::getTickCounter() const
+{
+    return m_tickCounter;
+}
+
 void gbtest::DrawingPPUMode::restart()
 {
     PPUMode::restart();
 
     m_currentXCoordinate = 0;
+    m_tickCounter = 0;
 
     // Tell the fetcher that a line/frame has started
     if (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate > 0) {
@@ -46,6 +53,8 @@ void gbtest::DrawingPPUMode::executeMode()
     if (m_currentXCoordinate == 160) {
         m_finished = true;
     }
+
+    ++m_tickCounter;
 }
 
 void gbtest::DrawingPPUMode::drawPixel()

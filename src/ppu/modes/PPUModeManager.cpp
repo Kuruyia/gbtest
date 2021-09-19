@@ -47,6 +47,7 @@ void gbtest::PPUModeManager::tick()
             break;
 
         case PPUModeType::Drawing:
+            m_hblankPpuMode.setBlankingCycleCount(376 - m_drawingPpuMode.getTickCounter());
             m_currentMode = PPUModeType::HBlank;
 
             break;

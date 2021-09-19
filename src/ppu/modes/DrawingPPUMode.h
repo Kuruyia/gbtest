@@ -23,6 +23,8 @@ public:
 
     [[nodiscard]] static PPUModeType getModeType();
 
+    [[nodiscard]] unsigned getTickCounter() const;
+
     void restart() override;
 
     void executeMode() override;
@@ -32,6 +34,7 @@ private:
     BackgroundFetcher m_backgroundFetcher;
 
     unsigned m_currentXCoordinate;
+    unsigned m_tickCounter;
 
     Framebuffer& m_framebuffer;
     const PPURegisters& m_ppuRegisters;
