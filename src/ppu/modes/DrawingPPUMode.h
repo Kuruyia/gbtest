@@ -34,6 +34,7 @@ private:
     BackgroundFetcher m_backgroundFetcher;
 
     unsigned m_currentXCoordinate;
+    unsigned m_pixelsToDiscard;
     unsigned m_tickCounter;
 
     Framebuffer& m_framebuffer;

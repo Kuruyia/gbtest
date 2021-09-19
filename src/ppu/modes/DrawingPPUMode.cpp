@@ -7,6 +7,7 @@ gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegist
         , m_currentXCoordinate(0)
         , m_framebuffer(framebuffer)
         , m_ppuRegisters(ppuRegisters)
+        , m_pixelsToDiscard(0)
         , m_tickCounter(0)
 {
 
@@ -27,6 +28,7 @@ void gbtest::DrawingPPUMode::restart()
     PPUMode::restart();
 
     m_currentXCoordinate = 0;
+    m_pixelsToDiscard = (m_ppuRegisters.lcdPositionAndScrolling.xScroll % 8);
     m_tickCounter = 0;
 
     // Tell the fetcher that a line/frame has started
@@ -66,14 +68,21 @@ void gbtest::DrawingPPUMode::drawPixel()
     FIFOPixelData backgroundPixelData = std::move(m_backgroundPixelQueue.front());
     m_backgroundPixelQueue.pop_front();
 
-    // Draw the pixel to the screen
-    ColorUtils::ColorRGBA8888 pixelColor = ColorUtils::dmgBGPaletteIndexToRGBA8888(
-            m_ppuRegisters.dmgPalettes.bgPaletteData,
-            backgroundPixelData.colorIndex);
+    // Only draw the pixel to the screen if it's not to be discarded
+    if (m_pixelsToDiscard == 0) {
+        // Draw the pixel to the screen
+        ColorUtils::ColorRGBA8888 pixelColor = ColorUtils::dmgBGPaletteIndexToRGBA8888(
+                m_ppuRegisters.dmgPalettes.bgPaletteData,
+                backgroundPixelData.colorIndex);
 
-    // Set the pixel in the framebuffer
-    m_framebuffer.setPixel(m_currentXCoordinate, m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate, pixelColor.raw);
+        // Set the pixel in the framebuffer
+        m_framebuffer.setPixel(m_currentXCoordinate, m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate,
+                pixelColor.raw);
 
-    // Go to the next pixel on the line
-    ++m_currentXCoordinate;
+        // Go to the next pixel on the line
+        ++m_currentXCoordinate;
+    }
+    else {
+        --m_pixelsToDiscard;
+    }
 }
