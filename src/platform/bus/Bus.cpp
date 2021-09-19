@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "Bus.h"
 
 #include "../../exceptions/bus/BusLockedAddressException.h"
