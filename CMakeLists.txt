@@ -29,6 +29,8 @@ add_executable(gbtest
         src/ppu/fifo/Fetcher.h
         src/ppu/fifo/FetcherState.h
         src/ppu/fifo/FIFOPixelData.h
+        src/ppu/framebuffer/Framebuffer.cpp
+        src/ppu/framebuffer/Framebuffer.h
         src/ppu/modes/DrawingPPUMode.cpp
         src/ppu/modes/DrawingPPUMode.h
         src/ppu/modes/HBlankPPUMode.cpp
