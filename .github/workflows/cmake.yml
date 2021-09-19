@@ -38,3 +38,4 @@ jobs:
         with:
           useVcpkgToolchainFile: true
           cmakeGenerator: '${{ matrix.cmakeGenerator }}'
+          cmakeBuildType: 'Release'
