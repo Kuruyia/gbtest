@@ -5,6 +5,7 @@ project(gbtest)
 set(CMAKE_CXX_STANDARD 17)
 
 # Dependencies
+find_package(Threads REQUIRED)
 find_package(raylib 3.0 CONFIG REQUIRED)
 
 # Target
@@ -78,8 +79,14 @@ else ()
     message(FATAL_ERROR "raylib not found")
 endif ()
 
+target_link_libraries(gbtest PRIVATE Threads::Threads)
+
 if (APPLE)
     target_link_libraries(gbtest PRIVATE "-framework IOKit")
     target_link_libraries(gbtest PRIVATE "-framework Cocoa")
     target_link_libraries(gbtest PRIVATE "-framework OpenGL")
+endif ()
+
+if (UNIX)
+    target_link_libraries(gbtest PRIVATE ${CMAKE_DL_LIBS})
 endif ()
