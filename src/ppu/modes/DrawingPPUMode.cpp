@@ -1,13 +1,11 @@
-#include <utility>
-#include "raylib.h"
-
 #include "DrawingPPUMode.h"
 
 #include "../ColorUtils.h"
 
-gbtest::DrawingPPUMode::DrawingPPUMode(const PPURegisters& ppuRegisters, const VRAM& vram)
+gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram)
         : m_backgroundFetcher(ppuRegisters, vram, m_backgroundPixelQueue)
         , m_currentXCoordinate(0)
+        , m_framebuffer(framebuffer)
         , m_ppuRegisters(ppuRegisters)
 {
 
@@ -60,13 +58,12 @@ void gbtest::DrawingPPUMode::drawPixel()
     m_backgroundPixelQueue.pop_front();
 
     // Draw the pixel to the screen
-    ColorUtils::ColorRGB888 pixelColor = ColorUtils::dmgBGPaletteIndexToRGB888(m_ppuRegisters.dmgPalettes.bgPaletteData,
+    ColorUtils::ColorRGBA8888 pixelColor = ColorUtils::dmgBGPaletteIndexToRGBA8888(
+            m_ppuRegisters.dmgPalettes.bgPaletteData,
             backgroundPixelData.colorIndex);
 
-    // TODO: Abstract this
-    Color raylibColor = {pixelColor.r, pixelColor.g, pixelColor.b, 255};
-    DrawPixel(static_cast<int>(m_currentXCoordinate),
-            static_cast<int>(m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate), raylibColor);
+    // Set the pixel in the framebuffer
+    m_framebuffer.setPixel(m_currentXCoordinate, m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate, pixelColor.raw);
 
     // Go to the next pixel on the line
     ++m_currentXCoordinate;

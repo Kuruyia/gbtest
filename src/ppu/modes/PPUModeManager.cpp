@@ -1,10 +1,12 @@
 #include "PPUModeManager.h"
 
-gbtest::PPUModeManager::PPUModeManager(Bus& bus, PPURegisters& ppuRegisters, const OAM& oam, const VRAM& vram)
-        : m_drawingPpuMode(ppuRegisters, vram)
+gbtest::PPUModeManager::PPUModeManager(Bus& bus, Framebuffer& framebuffer, PPURegisters& ppuRegisters, const OAM& oam,
+        const VRAM& vram)
+        : m_drawingPpuMode(framebuffer, ppuRegisters, vram)
         , m_oamSearchPpuMode(ppuRegisters, oam)
         , m_currentMode(PPUModeType::OAM_Search)
         , m_bus(bus)
+        , m_framebuffer(framebuffer)
         , m_ppuRegisters(ppuRegisters)
 {
     // Start OAM Search right away
@@ -59,6 +61,7 @@ void gbtest::PPUModeManager::tick()
             else {
                 // Lines 144 to 153 are the vertical blanking interval
                 m_bus.setInterruptLineHigh(InterruptType::VBlank, true);
+                m_framebuffer.notifyReady();
 
                 m_currentMode = PPUModeType::VBlank;
             }

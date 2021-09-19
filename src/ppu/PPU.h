@@ -1,6 +1,7 @@
 #ifndef GBTEST_PPU_H
 #define GBTEST_PPU_H
 
+#include "framebuffer/Framebuffer.h"
 #include "modes/PPUModeManager.h"
 #include "oam/OAM.h"
 #include "oam/OAMDMA.h"
@@ -35,6 +36,9 @@ public:
     [[nodiscard]] VRAM& getVram();
     [[nodiscard]] const VRAM& getVram() const;
 
+    [[nodiscard]] Framebuffer& getFramebuffer();
+    [[nodiscard]] const Framebuffer& getFramebuffer() const;
+
     void reset();
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
@@ -53,6 +57,8 @@ private:
     OAMDMA m_oamDma;
 
     VRAM m_vram;
+
+    Framebuffer m_framebuffer;
 
     bool m_stopped;
     void updateStoppedState();

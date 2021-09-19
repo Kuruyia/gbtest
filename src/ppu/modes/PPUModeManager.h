@@ -8,6 +8,7 @@
 
 #include "PPUModeType.h"
 
+#include "../framebuffer/Framebuffer.h"
 #include "../PPURegisters.h"
 #include "../../platform/bus/Bus.h"
 #include "../../utils/Tickable.h"
@@ -18,7 +19,7 @@ class PPUModeManager
         : public Tickable {
 
 public:
-    PPUModeManager(Bus& bus, PPURegisters& ppuRegisters, const OAM& oam, const VRAM& vram);
+    PPUModeManager(Bus& bus, Framebuffer& framebuffer, PPURegisters& ppuRegisters, const OAM& oam, const VRAM& vram);
     ~PPUModeManager() override = default;
 
     [[nodiscard]] PPUModeType getCurrentMode() const;
@@ -36,6 +37,7 @@ private:
     PPUModeType m_currentMode;
 
     Bus& m_bus;
+    Framebuffer& m_framebuffer;
     PPURegisters& m_ppuRegisters;
 
     [[nodiscard]] PPUMode& getCurrentModeInstance();

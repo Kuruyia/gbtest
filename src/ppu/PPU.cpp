@@ -3,7 +3,7 @@
 #include "modes/PPUModeType.h"
 
 gbtest::PPU::PPU(Bus& bus)
-        : m_modeManager(bus, m_ppuRegisters, m_oam, m_vram)
+        : m_modeManager(bus, m_framebuffer, m_ppuRegisters, m_oam, m_vram)
         , m_ppuRegisters()
         , m_oamDma(bus, m_oam)
         , m_stopped(false)
@@ -59,6 +59,16 @@ gbtest::VRAM& gbtest::PPU::getVram()
 const gbtest::VRAM& gbtest::PPU::getVram() const
 {
     return m_vram;
+}
+
+gbtest::Framebuffer& gbtest::PPU::getFramebuffer()
+{
+    return m_framebuffer;
+}
+
+const gbtest::Framebuffer& gbtest::PPU::getFramebuffer() const
+{
+    return m_framebuffer;
 }
 
 void gbtest::PPU::reset()

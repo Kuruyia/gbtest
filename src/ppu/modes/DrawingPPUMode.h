@@ -8,6 +8,7 @@
 
 #include "../fifo/BackgroundFetcher.h"
 #include "../fifo/FIFOPixelData.h"
+#include "../framebuffer/Framebuffer.h"
 #include "../vram/VRAM.h"
 #include "../PPURegisters.h"
 
@@ -17,7 +18,7 @@ class DrawingPPUMode
         : public PPUMode {
 
 public:
-    DrawingPPUMode(const PPURegisters& ppuRegisters, const VRAM& vram);
+    DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram);
     ~DrawingPPUMode() override = default;
 
     [[nodiscard]] static PPUModeType getModeType();
@@ -32,6 +33,7 @@ private:
 
     unsigned m_currentXCoordinate;
 
+    Framebuffer& m_framebuffer;
     const PPURegisters& m_ppuRegisters;
 
     void drawPixel();

@@ -2,15 +2,15 @@
 
 #include "ColorUtils.h"
 
-static constexpr std::array<gbtest::ColorUtils::ColorRGB888, 4> s_dmgPaletteColors = {
-        gbtest::ColorUtils::ColorRGB888(255, 255, 255), // White
-        gbtest::ColorUtils::ColorRGB888(170, 170, 170), // Light gray
-        gbtest::ColorUtils::ColorRGB888(85, 85, 85), // Dark gray
-        gbtest::ColorUtils::ColorRGB888(0, 0, 0), // Black
+static constexpr std::array<gbtest::ColorUtils::ColorRGBA8888, 4> s_dmgPaletteColors = {
+        gbtest::ColorUtils::ColorRGBA8888(255, 255, 255), // White
+        gbtest::ColorUtils::ColorRGBA8888(170, 170, 170), // Light gray
+        gbtest::ColorUtils::ColorRGBA8888(85, 85, 85), // Dark gray
+        gbtest::ColorUtils::ColorRGBA8888(0, 0, 0), // Black
 };
 
-gbtest::ColorUtils::ColorRGB888
-gbtest::ColorUtils::dmgBGPaletteIndexToRGB888(const MonochromePalette& dmgBgPalette, const uint8_t colorIndex)
+gbtest::ColorUtils::ColorRGBA8888
+gbtest::ColorUtils::dmgBGPaletteIndexToRGBA8888(const MonochromePalette& dmgBgPalette, uint8_t colorIndex)
 {
     switch (colorIndex) {
     case 0: // Index 0
