@@ -4,13 +4,15 @@
 #include "PPUMode.h"
 #include "PPUModeType.h"
 
+#include "../PPURegisters.h"
+
 namespace gbtest {
 
 class VBlankPPUMode
         : public PPUMode {
 
 public:
-    VBlankPPUMode();
+    explicit VBlankPPUMode(PPURegisters& ppuRegisters);
     ~VBlankPPUMode() override = default;
 
     [[nodiscard]] static PPUModeType getModeType();
@@ -20,7 +22,9 @@ public:
     void executeMode() override;
 
 private:
-    bool m_blanking;
+    unsigned m_blankingLineCount;
+
+    PPURegisters& m_ppuRegisters;
 
 }; // class VBlankPPUMode
 
