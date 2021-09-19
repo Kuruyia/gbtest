@@ -2,7 +2,7 @@ name: CMake
 on: [ push ]
 
 env:
-  VCPKG_COMMIT: 4428702c1c56fdb7cb779584efdcba254d7b57ca
+  VCPKG_COMMIT: '4428702c1c56fdb7cb779584efdcba254d7b57ca'
 
 jobs:
   job:
@@ -10,19 +10,27 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
+        include:
+          - os: windows-latest
+            cmakeGenerator: 'VS16Win64'
+          - os: ubuntu-latest
+            cmakeGenerator: 'UnixMakefiles'
+          - os: macos-latest
+            cmakeGenerator: 'Ninja'
 
     steps:
       - uses: actions/checkout@v2
         with:
-          submodules: recursive
+          submodules: 'recursive'
 
       - uses: lukka/get-cmake@latest
 
       - uses: lukka/run-vcpkg@main
         with:
           setupOnly: true
-          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
+          vcpkgGitCommitId: '${{ env.VCPKG_COMMIT }}'
 
       - uses: lukka/run-cmake@main
         with:
           useVcpkgToolchainFile: true
+          cmakeGenerator: '${{ matrix.cmakeGenerator }}'
