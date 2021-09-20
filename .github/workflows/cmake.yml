@@ -39,3 +39,13 @@ jobs:
           useVcpkgToolchainFile: true
           cmakeGenerator: '${{ matrix.cmakeGenerator }}'
           cmakeBuildType: 'Release'
+          buildDirectory: '${{ github.workspace }}/build'
+
+      - name: Install project
+        run: cmake --install '${{ github.workspace }}/build' --prefix '${{ github.workspace }}/out'
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: gbtest
+          path: '${{ github.workspace }}/out'
