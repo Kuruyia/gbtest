@@ -13,10 +13,13 @@ jobs:
         include:
           - os: windows-latest
             cmakeGenerator: 'VS16Win64'
+            osPrettyName: Windows
           - os: ubuntu-latest
             cmakeGenerator: 'UnixMakefiles'
+            osPrettyName: Ubuntu
           - os: macos-latest
             cmakeGenerator: 'Ninja'
+            osPrettyName: macOS
 
     steps:
       - name: Install dependencies (ubuntu)
@@ -47,5 +50,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2.2.4
         with:
-          name: gbtest
+          name: 'gbtest-${{ matrix.osPrettyName }}'
           path: '${{ github.workspace }}/out'
