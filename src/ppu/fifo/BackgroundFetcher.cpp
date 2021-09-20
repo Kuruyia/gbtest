@@ -26,6 +26,8 @@ void gbtest::BackgroundFetcher::executeState()
     if (m_scanlineBeginSkip) {
         m_cyclesToWait = 6;
         m_scanlineBeginSkip = false;
+
+        return;
     }
 
     switch (m_fetcherState) {
