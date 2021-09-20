@@ -38,7 +38,7 @@ void gbtest::PPUModeManager::tick()
     currentModeInstance.tick();
 
     // Start the next mode if the current one finished
-    if (currentModeInstance.isFinished()) {
+    if (currentModeInstance.isFullyFinished()) {
         switch (m_currentMode) {
         case PPUModeType::OAM_Search:
             m_currentMode = PPUModeType::Drawing;

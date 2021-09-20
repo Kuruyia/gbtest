@@ -17,12 +17,14 @@ bool gbtest::PPUMode::isFinished() const
     return m_finished;
 }
 
+bool gbtest::PPUMode::isFullyFinished() const
+{
+    return m_finished && m_cyclesToWait == 0;
+}
+
 void gbtest::PPUMode::tick()
 {
-    // Don't do anything if the mode has finished
-    if (m_finished) { return; }
-
-    if (m_cyclesToWait == 0) {
+    if (m_cyclesToWait == 0 && !m_finished) {
         // Execute a step of the mode
         executeMode();
     }

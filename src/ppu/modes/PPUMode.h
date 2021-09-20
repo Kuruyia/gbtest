@@ -15,6 +15,7 @@ public:
 
     virtual void restart();
     [[nodiscard]] bool isFinished() const;
+    [[nodiscard]] bool isFullyFinished() const;
 
     virtual void executeMode() = 0;
 

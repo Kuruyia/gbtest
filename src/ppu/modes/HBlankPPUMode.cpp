@@ -33,7 +33,7 @@ void gbtest::HBlankPPUMode::executeMode()
 {
     if (m_blanking) {
         // Wait for the amount of cycles we were given
-        m_cyclesToWait = m_blankingCycleCount;
+        m_cyclesToWait = (m_blankingCycleCount - 1);
         m_blanking = false;
     }
     else {

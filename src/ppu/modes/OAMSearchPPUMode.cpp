@@ -42,11 +42,10 @@ void gbtest::OAMSearchPPUMode::executeMode()
 
     ++m_oamIdx;
 
-    if (m_oamIdx < 40) {
-        // Each OAM check takes 2 cycles
-        m_cyclesToWait = 2;
-    }
-    else {
+    // Each OAM check takes 2 cycles
+    m_cyclesToWait = 2;
+
+    if (m_oamIdx == 40) {
         // There are no more sprites to check
         m_finished = true;
     }
