@@ -89,3 +89,6 @@ endif ()
 if (UNIX)
     target_link_libraries(gbtest PRIVATE ${CMAKE_DL_LIBS})
 endif ()
+
+# Install
+install(TARGETS gbtest)
