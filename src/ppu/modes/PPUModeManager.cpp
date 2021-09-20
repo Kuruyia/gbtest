@@ -4,7 +4,6 @@ gbtest::PPUModeManager::PPUModeManager(Bus& bus, Framebuffer& framebuffer, PPURe
         const VRAM& vram)
         : m_drawingPpuMode(framebuffer, ppuRegisters, vram)
         , m_oamSearchPpuMode(ppuRegisters, oam)
-        , m_vblankPpuMode(ppuRegisters)
         , m_currentMode(PPUModeType::OAM_Search)
         , m_bus(bus)
         , m_framebuffer(framebuffer)
@@ -71,11 +70,17 @@ void gbtest::PPUModeManager::tick()
             break;
 
         case PPUModeType::VBlank:
-            // Restart a frame
-            m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate = 0;
-            m_bus.setInterruptLineHigh(InterruptType::VBlank, false);
+            if (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate < 153) {
+                // We're still VBlanking
+                ++m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate;
+            }
+            else {
+                // Restart a frame
+                m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate = 0;
+                m_bus.setInterruptLineHigh(InterruptType::VBlank, false);
 
-            m_currentMode = PPUModeType::OAM_Search;
+                m_currentMode = PPUModeType::OAM_Search;
+            }
 
             break;
         }

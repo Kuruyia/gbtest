@@ -1,8 +1,7 @@
 #include "VBlankPPUMode.h"
 
-gbtest::VBlankPPUMode::VBlankPPUMode(PPURegisters& ppuRegisters)
-        : m_blankingLineCount(0)
-        , m_ppuRegisters(ppuRegisters)
+gbtest::VBlankPPUMode::VBlankPPUMode()
+        : m_blanking(true)
 {
 
 }
@@ -16,17 +15,15 @@ void gbtest::VBlankPPUMode::restart()
 {
     PPUMode::restart();
 
-    m_blankingLineCount = 0;
+    m_blanking = true;
 }
 
 void gbtest::VBlankPPUMode::executeMode()
 {
-    if (m_blankingLineCount < 10) {
-        // Blank for 10 lines
-        m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate = (144 + m_blankingLineCount);
-
-        m_cyclesToWait = 456;
-        ++m_blankingLineCount;
+    if (m_blanking) {
+        // Wait for a complete line worth of cycles
+        m_cyclesToWait = 455;
+        m_blanking = false;
     }
     else {
         m_finished = true;

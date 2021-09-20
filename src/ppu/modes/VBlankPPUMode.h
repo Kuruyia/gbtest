@@ -12,7 +12,7 @@ class VBlankPPUMode
         : public PPUMode {
 
 public:
-    explicit VBlankPPUMode(PPURegisters& ppuRegisters);
+    VBlankPPUMode();
     ~VBlankPPUMode() override = default;
 
     [[nodiscard]] static PPUModeType getModeType();
@@ -22,9 +22,7 @@ public:
     void executeMode() override;
 
 private:
-    unsigned m_blankingLineCount;
-
-    PPURegisters& m_ppuRegisters;
+    bool m_blanking;
 
 }; // class VBlankPPUMode
 
