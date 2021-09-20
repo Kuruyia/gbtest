@@ -1,7 +1,7 @@
 #ifndef GBTEST_PPUREGISTERS_H
 #define GBTEST_PPUREGISTERS_H
 
-#include <cinttypes>
+#include <cstdint>
 
 namespace gbtest {
 

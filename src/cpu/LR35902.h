@@ -2,7 +2,7 @@
 #define GBTEST_LR35902_H
 
 #include <array>
-#include <cinttypes>
+#include <cstdint>
 #include <functional>
 #include <vector>
 

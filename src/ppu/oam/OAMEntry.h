@@ -1,7 +1,7 @@
 #ifndef GBTEST_OAMENTRY_H
 #define GBTEST_OAMENTRY_H
 
-#include <cinttypes>
+#include <cstdint>
 
 namespace gbtest {
 
