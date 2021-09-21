@@ -1,4 +1,3 @@
-#include <bitset>
 #include <cassert>
 #include <iomanip>
 #include <iostream>
@@ -183,13 +182,13 @@ void gbtest::LR35902::handleInterrupt()
     if (!m_interruptController.isInterruptMasterEnabled()) { return; }
 
     // Check if an interrupt has been requested
-    const std::bitset<5> requestedInterrupts =
+    const uint8_t requestedInterrupts =
             m_interruptController.getInterruptRequest() & m_interruptController.getInterruptEnable();
     uint16_t vectorAddress;
     size_t i = 0;
 
     while (i < 5) {
-        if (requestedInterrupts.test(i)) {
+        if ((requestedInterrupts & (1 << i)) != 0) {
             vectorAddress = 0x0040 + (8 * i);
             break;
         }
@@ -202,7 +201,7 @@ void gbtest::LR35902::handleInterrupt()
 
     // Handle the requested interrupt
     // Start by resetting the request flag and the master enable
-    m_interruptController.setInterruptRequested(static_cast<InterruptType>(i), false);
+    m_interruptController.setInterruptRequested(static_cast<InterruptType>(1 << i), false);
     m_interruptController.setInterruptMasterEnable(false);
 
     // Call the interrupt vector

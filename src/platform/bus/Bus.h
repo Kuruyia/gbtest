@@ -1,7 +1,6 @@
 #ifndef GBTEST_BUS_H
 #define GBTEST_BUS_H
 
-#include <bitset>
 #include <cstdint>
 #include <vector>
 
@@ -15,7 +14,7 @@ namespace gbtest {
 class Bus {
 
 public:
-    Bus() = default;
+    Bus();
 
     [[nodiscard]] uint8_t read(uint16_t addr, BusRequestSource requestSource) const;
     void write(uint16_t addr, uint8_t val, BusRequestSource requestSource);
@@ -25,11 +24,11 @@ public:
 
     void setInterruptLineHigh(InterruptType interruptType, bool isHigh);
     [[nodiscard]] bool isInterruptLineHigh(InterruptType interruptType) const;
-    [[nodiscard]] const std::bitset<5>& getInterruptLines() const;
+    [[nodiscard]] uint8_t getInterruptLines() const;
 
 private:
     std::vector<BusProvider*> m_busProviders;
-    std::bitset<5> m_interruptLines;
+    uint8_t m_interruptLines;
 
 }; // class Bus
 

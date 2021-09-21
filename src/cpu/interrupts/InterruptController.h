@@ -1,8 +1,6 @@
 #ifndef GBTEST_INTERRUPTCONTROLLER_H
 #define GBTEST_INTERRUPTCONTROLLER_H
 
-#include <bitset>
-
 #include "InterruptType.h"
 #include "../../platform/bus/BusProvider.h"
 #include "../../platform/bus/Bus.h"
@@ -25,11 +23,11 @@ public:
 
     void setInterruptEnabled(InterruptType interruptType, bool enabled);
     [[nodiscard]] bool isInterruptEnabled(InterruptType interruptType) const;
-    [[nodiscard]] const std::bitset<5>& getInterruptEnable() const;
+    [[nodiscard]] uint8_t getInterruptEnable() const;
 
     void setInterruptRequested(InterruptType interruptType, bool requested);
     [[nodiscard]] bool isInterruptRequested(InterruptType interruptType) const;
-    [[nodiscard]] const std::bitset<5>& getInterruptRequest() const;
+    [[nodiscard]] uint8_t getInterruptRequest() const;
 
     void tick() override;
 
@@ -43,11 +41,11 @@ private:
     bool m_interruptMasterEnable;
     int m_delayedInterruptEnableCountdown;
 
-    std::bitset<5> m_interruptEnable;
-    std::bitset<5> m_interruptFlag;
+    uint8_t m_interruptEnable;
+    uint8_t m_interruptFlag;
 
     Bus& m_bus;
-    std::bitset<5> m_previousInterruptLines;
+    uint8_t m_previousInterruptLines;
 
 }; // class InterruptController
 

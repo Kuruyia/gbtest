@@ -5,6 +5,12 @@
 #include "../../exceptions/bus/BusLockedAddressException.h"
 #include "../../exceptions/bus/BusNoHandlerException.h"
 
+gbtest::Bus::Bus()
+        : m_interruptLines(0)
+{
+
+}
+
 uint8_t gbtest::Bus::read(uint16_t addr, BusRequestSource requestSource) const
 {
     // Variable declaration
@@ -60,15 +66,20 @@ void gbtest::Bus::unregisterBusProvider(BusProvider* busProvider)
 
 void gbtest::Bus::setInterruptLineHigh(gbtest::InterruptType interruptType, bool isHigh)
 {
-    m_interruptLines.set(static_cast<size_t>(interruptType), isHigh);
+    if (isHigh) {
+        m_interruptLines |= static_cast<uint8_t>(interruptType);
+    }
+    else {
+        m_interruptLines &= ~(static_cast<uint8_t>(interruptType));
+    }
 }
 
 bool gbtest::Bus::isInterruptLineHigh(gbtest::InterruptType interruptType) const
 {
-    return m_interruptLines.test(static_cast<size_t>(interruptType));
+    return (m_interruptLines & static_cast<uint8_t>(interruptType)) != 0;
 }
 
-const std::bitset<5>& gbtest::Bus::getInterruptLines() const
+uint8_t gbtest::Bus::getInterruptLines() const
 {
     return m_interruptLines;
 }
