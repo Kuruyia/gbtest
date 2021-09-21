@@ -1,12 +1,12 @@
 #include "Fetcher.h"
 
-gbtest::Fetcher::Fetcher(const PPURegisters& ppuRegisters, const VRAM& vram, std::deque<FIFOPixelData>& managedQueue)
+gbtest::Fetcher::Fetcher(const PPURegisters& ppuRegisters, const VRAM& vram, PixelFIFO& pixelFifo)
         : m_fetcherState(FetcherState::FetchTileMap)
         , m_paused(false)
         , m_cyclesToWait(0)
         , m_ppuRegisters(ppuRegisters)
         , m_vram(vram)
-        , m_managedQueue(managedQueue)
+        , m_pixelFifo(pixelFifo)
 {
 
 }

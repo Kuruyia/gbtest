@@ -1,9 +1,8 @@
 #ifndef GBTEST_BACKGROUNDFETCHER_H
 #define GBTEST_BACKGROUNDFETCHER_H
 
-#include <deque>
-
 #include "Fetcher.h"
+#include "PixelFIFO.h"
 
 #include "../PPURegisters.h"
 #include "../vram/VRAM.h"
@@ -14,7 +13,7 @@ class BackgroundFetcher
         : public Fetcher {
 
 public:
-    BackgroundFetcher(const PPURegisters& ppuRegisters, const VRAM& vram, std::deque<FIFOPixelData>& managedQueue);
+    BackgroundFetcher(const PPURegisters& ppuRegisters, const VRAM& vram, PixelFIFO& pixelFifo);
     ~BackgroundFetcher() override = default;
 
     void beginScanline() override;

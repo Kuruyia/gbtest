@@ -3,7 +3,7 @@
 #include "../ColorUtils.h"
 
 gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram)
-        : m_backgroundFetcher(ppuRegisters, vram, m_backgroundPixelQueue)
+        : m_backgroundFetcher(ppuRegisters, vram, m_pixelFifo)
         , m_currentXCoordinate(0)
         , m_framebuffer(framebuffer)
         , m_ppuRegisters(ppuRegisters)
@@ -40,7 +40,7 @@ void gbtest::DrawingPPUMode::restart()
     }
 
     // It should be empty, but just in case
-    m_backgroundPixelQueue.clear();
+    m_pixelFifo.clear();
 }
 
 void gbtest::DrawingPPUMode::executeMode()
@@ -62,11 +62,11 @@ void gbtest::DrawingPPUMode::executeMode()
 void gbtest::DrawingPPUMode::drawPixel()
 {
     // If the background pixel queue is empty, we can't do anything
-    if (m_backgroundPixelQueue.empty()) { return; }
+    if (m_pixelFifo.empty()) { return; }
 
     // Retrieve the background pixel
-    FIFOPixelData backgroundPixelData = std::move(m_backgroundPixelQueue.front());
-    m_backgroundPixelQueue.pop_front();
+    FIFOPixelData backgroundPixelData;
+    m_pixelFifo.pop(backgroundPixelData);
 
     // Only draw the pixel to the screen if it's not to be discarded
     if (m_pixelsToDiscard == 0) {

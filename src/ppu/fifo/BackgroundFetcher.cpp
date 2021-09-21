@@ -1,8 +1,8 @@
 #include "BackgroundFetcher.h"
 
 gbtest::BackgroundFetcher::BackgroundFetcher(const PPURegisters& ppuRegisters, const VRAM& vram,
-        std::deque<FIFOPixelData>& managedQueue)
-        : Fetcher(ppuRegisters, vram, managedQueue)
+        PixelFIFO& pixelFifo)
+        : Fetcher(ppuRegisters, vram, pixelFifo)
         , m_currentTileNumber(0)
         , m_currentTileData(0)
         , m_fetcherX(0)
@@ -76,18 +76,17 @@ void gbtest::BackgroundFetcher::executeState()
         break;
 
     case FetcherState::PushFIFO:
-        if (m_managedQueue.empty()) {
+        if (m_pixelFifo.empty()) {
             // Fill the queue with the fetched pixels
-            for (uint8_t i = 0; i < 8; ++i) {
+            for (uint8_t i = 8; i-- > 0;) {
                 const uint8_t lowBit = (m_currentTileData >> (8 + i)) & 0x1;
                 const uint8_t highBit = (m_currentTileData >> i) & 0x1;
 
-                m_managedQueue.emplace_front(
+                m_pixelFifo.push(FIFOPixelData(
                         (highBit << 1) | lowBit,
                         0,
                         0,
-                        0
-                );
+                        false));
             }
 
             ++m_fetcherX;

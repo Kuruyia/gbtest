@@ -8,6 +8,7 @@
 
 #include "../fifo/BackgroundFetcher.h"
 #include "../fifo/FIFOPixelData.h"
+#include "../fifo/PixelFIFO.h"
 #include "../framebuffer/Framebuffer.h"
 #include "../vram/VRAM.h"
 #include "../PPURegisters.h"
@@ -30,7 +31,7 @@ public:
     void executeMode() override;
 
 private:
-    std::deque<FIFOPixelData> m_backgroundPixelQueue;
+    PixelFIFO m_pixelFifo;
     BackgroundFetcher m_backgroundFetcher;
 
     unsigned m_currentXCoordinate;

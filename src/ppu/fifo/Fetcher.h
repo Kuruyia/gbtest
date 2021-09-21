@@ -1,10 +1,9 @@
 #ifndef GBTEST_FETCHER_H
 #define GBTEST_FETCHER_H
 
-#include <deque>
-
 #include "FetcherState.h"
 #include "FIFOPixelData.h"
+#include "PixelFIFO.h"
 
 #include "../vram/VRAM.h"
 #include "../PPURegisters.h"
@@ -16,7 +15,7 @@ class Fetcher
         : public Tickable {
 
 public:
-    Fetcher(const PPURegisters& ppuRegisters, const VRAM& vram, std::deque<FIFOPixelData>& managedQueue);
+    Fetcher(const PPURegisters& ppuRegisters, const VRAM& vram, PixelFIFO& pixelFifo);
     ~Fetcher() override = default;
 
     void setPaused(bool paused);
@@ -38,7 +37,7 @@ protected:
     const PPURegisters& m_ppuRegisters;
     const VRAM& m_vram;
 
-    std::deque<FIFOPixelData>& m_managedQueue;
+    PixelFIFO& m_pixelFifo;
 
 }; // class Fetcher
 

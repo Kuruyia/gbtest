@@ -23,6 +23,8 @@ set(SOURCE_FILES
         ppu/fifo/Fetcher.h
         ppu/fifo/FetcherState.h
         ppu/fifo/FIFOPixelData.h
+        ppu/fifo/PixelFIFO.cpp
+        ppu/fifo/PixelFIFO.h
         ppu/framebuffer/Framebuffer.cpp
         ppu/framebuffer/Framebuffer.h
         ppu/modes/DrawingPPUMode.cpp
@@ -55,8 +57,7 @@ set(SOURCE_FILES
         ppu/PPU.h
         ppu/PPURegisters.h
         utils/Tickable.h
-        main.cpp
-        )
+        main.cpp)
 
 # Dependencies
 find_package(Threads REQUIRED)
