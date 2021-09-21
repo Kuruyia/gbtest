@@ -184,6 +184,11 @@ void gbtest::LR35902::handleInterrupt()
     // Check if an interrupt has been requested
     const uint8_t requestedInterrupts =
             m_interruptController.getInterruptRequest() & m_interruptController.getInterruptEnable();
+
+    // Fast exit if there are no requested interrupts
+    if (requestedInterrupts == 0x00) { return; }
+
+    // Find what interrupt is to be serviced
     uint16_t vectorAddress;
     size_t i = 0;
 
