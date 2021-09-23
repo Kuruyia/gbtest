@@ -21,7 +21,7 @@ gbtest::PPUModeType gbtest::PPUModeManager::getCurrentMode() const
 void gbtest::PPUModeManager::reset()
 {
     // Go to the OAM Search mode
-    m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate = 0;
+    updateYLcdCoordinate(0);
     m_bus.setInterruptLineHigh(InterruptType::VBlank, false);
 
     m_currentMode = PPUModeType::OAM_Search;
@@ -53,7 +53,7 @@ void gbtest::PPUModeManager::tick()
 
         case PPUModeType::HBlank:
             // Increment the current line we're on
-            ++m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate;
+            updateYLcdCoordinate(m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate + 1);
 
             if (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate < 144) {
                 // We're still drawing to the LCD
@@ -72,11 +72,11 @@ void gbtest::PPUModeManager::tick()
         case PPUModeType::VBlank:
             if (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate < 153) {
                 // We're still VBlanking
-                ++m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate;
+                updateYLcdCoordinate(m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate + 1);
             }
             else {
                 // Restart a frame
-                m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate = 0;
+                updateYLcdCoordinate(0);
                 m_bus.setInterruptLineHigh(InterruptType::VBlank, false);
 
                 m_currentMode = PPUModeType::OAM_Search;
@@ -140,4 +140,12 @@ void gbtest::PPUModeManager::updateStatInterrupt()
                     || (lcdStatus.mode1InterruptSource && m_currentMode == PPUModeType::VBlank)
                     || (lcdStatus.mode2InterruptSource && m_currentMode == PPUModeType::OAM_Search)
                     || lcdStatus.lycEqualsLy);
+}
+
+void gbtest::PPUModeManager::updateYLcdCoordinate(uint8_t coordinate)
+{
+    // Set the coordinate and update the LYC == LY flag
+    m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate = coordinate;
+    m_ppuRegisters.lcdStatus.lycEqualsLy =
+            (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate == m_ppuRegisters.lcdPositionAndScrolling.lyCompare);
 }

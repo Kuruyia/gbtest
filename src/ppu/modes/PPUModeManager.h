@@ -45,6 +45,8 @@ private:
     void updateLcdStatusModeRegister();
     void updateStatInterrupt();
 
+    void updateYLcdCoordinate(uint8_t coordinate);
+
 }; // class PPUModeManager
 
 } // namespace gbtest
