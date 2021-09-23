@@ -150,6 +150,12 @@ bool gbtest::PPU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource 
 
     case 0xFF41: // [STAT] LCD Status
         m_ppuRegisters.lcdStatus.raw = (val & 0xF8);
+
+        if ((val & 0x78) != 0) {
+            // Notify the Mode manager that the STAT interrupt source changed
+            m_modeManager.notifyStatIntSourceChange();
+        }
+
         return true;
 
     case 0xFF42: // [SCY] BG Y scroll coordinate
@@ -166,10 +172,8 @@ bool gbtest::PPU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource 
     case 0xFF45: // [LYC] LY compare
         m_ppuRegisters.lcdPositionAndScrolling.lyCompare = val;
 
-        // Update the LYC == LY flag
-        m_ppuRegisters.lcdStatus.lycEqualsLy =
-                (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate
-                        == m_ppuRegisters.lcdPositionAndScrolling.lyCompare);
+        // Notify the Mode manager that the LYC register was written to
+        m_modeManager.notifyLycRegisterChange();
 
         return true;
 

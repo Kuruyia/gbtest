@@ -26,6 +26,9 @@ public:
 
     void reset();
 
+    void notifyLycRegisterChange();
+    void notifyStatIntSourceChange();
+
     void tick() override;
 
 private:
@@ -46,6 +49,7 @@ private:
     void updateStatInterrupt();
 
     void updateYLcdCoordinate(uint8_t coordinate);
+    void updateLycEqualsFlag();
 
 }; // class PPUModeManager
 

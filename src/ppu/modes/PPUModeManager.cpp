@@ -31,6 +31,19 @@ void gbtest::PPUModeManager::reset()
     updateStatInterrupt();
 }
 
+void gbtest::PPUModeManager::notifyLycRegisterChange()
+{
+    // Update the LYC == LY and STAT interrupt states when LYC was written to
+    updateLycEqualsFlag();
+    updateStatInterrupt();
+}
+
+void gbtest::PPUModeManager::notifyStatIntSourceChange()
+{
+    // Update the STAT interrupt state when its source changed
+    updateStatInterrupt();
+}
+
 void gbtest::PPUModeManager::tick()
 {
     // Tick the current instance
@@ -86,11 +99,11 @@ void gbtest::PPUModeManager::tick()
         }
 
         getCurrentModeInstance().restart();
-        updateLcdStatusModeRegister();
-    }
 
-    // Update the STAT interrupt on the bus
-    updateStatInterrupt();
+        // Update the STAT register and interrupt
+        updateLcdStatusModeRegister();
+        updateStatInterrupt();
+    }
 }
 
 gbtest::PPUMode& gbtest::PPUModeManager::getCurrentModeInstance()
@@ -146,6 +159,12 @@ void gbtest::PPUModeManager::updateYLcdCoordinate(uint8_t coordinate)
 {
     // Set the coordinate and update the LYC == LY flag
     m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate = coordinate;
+
+    updateLycEqualsFlag();
+}
+
+void gbtest::PPUModeManager::updateLycEqualsFlag()
+{
     m_ppuRegisters.lcdStatus.lycEqualsLy =
             (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate == m_ppuRegisters.lcdPositionAndScrolling.lyCompare);
 }
