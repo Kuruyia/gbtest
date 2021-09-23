@@ -7,21 +7,48 @@ gbtest::BackgroundFetcher::BackgroundFetcher(const PPURegisters& ppuRegisters, c
         , m_currentTileData(0)
         , m_fetcherX(0)
         , m_scanlineBeginSkip(true)
+        , m_fetchingWindow(false)
+        , m_windowLineCounter(0)
 {
 
+}
+
+void gbtest::BackgroundFetcher::startFetchingWindow()
+{
+    // Reset the state of the fetcher to start fetching the window
+    m_fetcherState = FetcherState::FetchTileMap;
+    m_fetcherX = 0;
+    m_fetchingWindow = true;
+}
+
+bool gbtest::BackgroundFetcher::isFetchingWindow() const
+{
+    return m_fetchingWindow;
 }
 
 void gbtest::BackgroundFetcher::beginScanline()
 {
     Fetcher::beginScanline();
 
+    if (m_fetchingWindow) {
+        // Previous scanline had a window, increment the window line counter
+        ++m_windowLineCounter;
+    }
+
     m_fetcherX = 0;
     m_scanlineBeginSkip = true;
+    m_fetchingWindow = false;
+}
+
+void gbtest::BackgroundFetcher::beginFrame()
+{
+    Fetcher::beginFrame();
+
+    m_windowLineCounter = 0;
 }
 
 void gbtest::BackgroundFetcher::executeState()
 {
-    // TODO: Support Window
     // The first fetch of a scanline is always wasted
     if (m_scanlineBeginSkip) {
         m_cyclesToWait = 6;
@@ -32,20 +59,12 @@ void gbtest::BackgroundFetcher::executeState()
 
     switch (m_fetcherState) {
     case FetcherState::FetchTileMap: {
-        // Get the correct tile map address
-        const uint8_t x = ((m_ppuRegisters.lcdPositionAndScrolling.xScroll / 8) + m_fetcherX) & 0x1F;
-        const uint8_t y =
-                (m_ppuRegisters.lcdPositionAndScrolling.yScroll + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate)
-                        & 0xFF;
-        const size_t offset = ((32 * (y / 8)) + x) & 0x3FF;
-
-        // Fetch the tile number
-        if (!m_vram.isReadBlocked()) {
-            m_currentTileNumber = m_vram.getVramTileMaps().getTileNumberFromTileMap(offset,
-                    m_ppuRegisters.lcdControl.bgTileMapArea);
+        // Fetch the tile map
+        if (!m_fetchingWindow) {
+            fetchBackgroundTileMap();
         }
         else {
-            m_currentTileNumber = 0xFF;
+            fetchWindowTileMap();
         }
 
         // Continue to the next state
@@ -56,17 +75,12 @@ void gbtest::BackgroundFetcher::executeState()
     }
 
     case FetcherState::FetchTileData:
-        // Emulation shortcut: Fetch both bytes during this step
-        if (m_ppuRegisters.lcdControl.bgAndWindowTileDataArea == 1) {
-            m_currentTileData = m_vram.getVramTileData().getTileLineUsingFirstMethod(m_currentTileNumber,
-                    (m_ppuRegisters.lcdPositionAndScrolling.yScroll
-                            + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
+        // Fetch the tile data
+        if (!m_fetchingWindow) {
+            fetchBackgroundTileData();
         }
         else {
-            m_currentTileData = m_vram.getVramTileData().getTileLineUsingSecondMethod(
-                    static_cast<int8_t>(m_currentTileNumber),
-                    (m_ppuRegisters.lcdPositionAndScrolling.yScroll
-                            + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
+            fetchWindowTileData();
         }
 
         // Continue to the next state
@@ -94,5 +108,71 @@ void gbtest::BackgroundFetcher::executeState()
         }
 
         break;
+    }
+}
+
+void gbtest::BackgroundFetcher::fetchBackgroundTileMap()
+{
+    // Get the correct tile map address
+    const uint8_t x = ((m_ppuRegisters.lcdPositionAndScrolling.xScroll / 8) + m_fetcherX) & 0x1F;
+    const uint8_t y =
+            (m_ppuRegisters.lcdPositionAndScrolling.yScroll + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate)
+                    & 0xFF;
+    const size_t offset = ((32 * (y / 8)) + x) & 0x3FF;
+
+    // Fetch the tile number
+    if (!m_vram.isReadBlocked()) {
+        m_currentTileNumber = m_vram.getVramTileMaps().getTileNumberFromTileMap(offset,
+                m_ppuRegisters.lcdControl.bgTileMapArea);
+    }
+    else {
+        m_currentTileNumber = 0xFF;
+    }
+}
+
+void gbtest::BackgroundFetcher::fetchBackgroundTileData()
+{
+    // Emulation shortcut: Fetch both bytes during this step
+    if (m_ppuRegisters.lcdControl.bgAndWindowTileDataArea == 1) {
+        m_currentTileData = m_vram.getVramTileData().getTileLineUsingFirstMethod(m_currentTileNumber,
+                (m_ppuRegisters.lcdPositionAndScrolling.yScroll
+                        + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
+    }
+    else {
+        m_currentTileData = m_vram.getVramTileData().getTileLineUsingSecondMethod(
+                static_cast<int8_t>(m_currentTileNumber),
+                (m_ppuRegisters.lcdPositionAndScrolling.yScroll
+                        + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
+    }
+}
+
+void gbtest::BackgroundFetcher::fetchWindowTileMap()
+{
+    // Get the correct tile map address
+    const uint8_t x = m_fetcherX;
+    const uint8_t y = m_windowLineCounter;
+    const size_t offset = ((32 * (y / 8)) + x) & 0x3FF;
+
+    // Fetch the tile number
+    if (!m_vram.isReadBlocked()) {
+        m_currentTileNumber = m_vram.getVramTileMaps().getTileNumberFromTileMap(offset,
+                m_ppuRegisters.lcdControl.windowTileMapArea);
+    }
+    else {
+        m_currentTileNumber = 0xFF;
+    }
+}
+
+void gbtest::BackgroundFetcher::fetchWindowTileData()
+{
+    // Emulation shortcut: Fetch both bytes during this step
+    if (m_ppuRegisters.lcdControl.bgAndWindowTileDataArea == 1) {
+        m_currentTileData = m_vram.getVramTileData().getTileLineUsingFirstMethod(m_currentTileNumber,
+                m_windowLineCounter % 8);
+    }
+    else {
+        m_currentTileData = m_vram.getVramTileData().getTileLineUsingSecondMethod(
+                static_cast<int8_t>(m_currentTileNumber),
+                m_windowLineCounter % 8);
     }
 }

@@ -3,12 +3,13 @@
 #include "../ColorUtils.h"
 
 gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram)
-        : m_backgroundFetcher(ppuRegisters, vram, m_pixelFifo)
+        : m_backgroundFetcher(ppuRegisters, vram, m_backgroundPixelFifo)
         , m_currentXCoordinate(0)
         , m_framebuffer(framebuffer)
         , m_ppuRegisters(ppuRegisters)
         , m_pixelsToDiscard(0)
         , m_tickCounter(0)
+        , m_reachedWindowLine(false)
 {
 
 }
@@ -31,6 +32,16 @@ void gbtest::DrawingPPUMode::restart()
     m_pixelsToDiscard = (m_ppuRegisters.lcdPositionAndScrolling.xScroll % 8);
     m_tickCounter = 0;
 
+    if (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate == 0) {
+        m_reachedWindowLine = false;
+    }
+
+    // Check if the window starts on the current line
+    if (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate
+            == m_ppuRegisters.lcdPositionAndScrolling.yWindowPosition) {
+        m_reachedWindowLine = true;
+    }
+
     // Tell the fetcher that a line/frame has started
     if (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate > 0) {
         m_backgroundFetcher.beginScanline();
@@ -40,7 +51,7 @@ void gbtest::DrawingPPUMode::restart()
     }
 
     // It should be empty, but just in case
-    m_pixelFifo.clear();
+    m_backgroundPixelFifo.clear();
 }
 
 void gbtest::DrawingPPUMode::executeMode()
@@ -50,6 +61,9 @@ void gbtest::DrawingPPUMode::executeMode()
 
     // Try to draw a pixel
     drawPixel();
+
+    // Check the window after shifting a pixel
+    checkWindow();
 
     // If we're on the 160th pixel, the scanline is finished
     if (m_currentXCoordinate == 160) {
@@ -62,11 +76,11 @@ void gbtest::DrawingPPUMode::executeMode()
 void gbtest::DrawingPPUMode::drawPixel()
 {
     // If the background pixel queue is empty, we can't do anything
-    if (m_pixelFifo.empty()) { return; }
+    if (m_backgroundPixelFifo.empty()) { return; }
 
     // Retrieve the background pixel
     FIFOPixelData backgroundPixelData;
-    m_pixelFifo.pop(backgroundPixelData);
+    m_backgroundPixelFifo.pop(backgroundPixelData);
 
     // Only draw the pixel to the screen if it's not to be discarded
     if (m_pixelsToDiscard == 0) {
@@ -92,4 +106,23 @@ void gbtest::DrawingPPUMode::drawPixel()
     else {
         --m_pixelsToDiscard;
     }
+}
+
+void gbtest::DrawingPPUMode::checkWindow()
+{
+    /*
+     * In order to fetch the window, we must check that:
+     *  - We reached the window line during the current frame (WY == LY at some point)
+     *  - The window is enabled in LCDC
+     *  - We reached the X window position (minus 7)
+     */
+    if (!m_reachedWindowLine || m_ppuRegisters.lcdControl.windowEnable == 0
+            || m_currentXCoordinate < m_ppuRegisters.lcdPositionAndScrolling.xWindowPosition - 7
+            || m_backgroundFetcher.isFetchingWindow()) {
+        return;
+    }
+
+    // Start fetching the window
+    m_backgroundFetcher.startFetchingWindow();
+    m_backgroundPixelFifo.clear();
 }

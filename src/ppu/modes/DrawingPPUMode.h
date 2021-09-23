@@ -31,17 +31,19 @@ public:
     void executeMode() override;
 
 private:
-    PixelFIFO m_pixelFifo;
+    PixelFIFO m_backgroundPixelFifo;
     BackgroundFetcher m_backgroundFetcher;
 
     unsigned m_currentXCoordinate;
     unsigned m_pixelsToDiscard;
     unsigned m_tickCounter;
+    bool m_reachedWindowLine;
 
     Framebuffer& m_framebuffer;
     const PPURegisters& m_ppuRegisters;
 
     void drawPixel();
+    void checkWindow();
 
 }; // class DrawingPPUMode
 
