@@ -16,6 +16,15 @@ union ColorRGBA8888 {
     };
     uint32_t raw;
 
+    ColorRGBA8888()
+            : r(0xFF)
+            , g(0xFF)
+            , b(0xFF)
+            , a(0xFF)
+    {
+
+    }
+
     constexpr ColorRGBA8888(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 0xFF)
             : r(r)
             , g(g)

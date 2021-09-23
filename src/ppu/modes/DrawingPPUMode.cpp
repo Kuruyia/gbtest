@@ -71,13 +71,20 @@ void gbtest::DrawingPPUMode::drawPixel()
     // Only draw the pixel to the screen if it's not to be discarded
     if (m_pixelsToDiscard == 0) {
         // Draw the pixel to the screen
-        ColorUtils::ColorRGBA8888 pixelColor = ColorUtils::dmgBGPaletteIndexToRGBA8888(
-                m_ppuRegisters.dmgPalettes.bgPaletteData,
-                backgroundPixelData.colorIndex);
+        ColorUtils::ColorRGBA8888 backgroundPixelColor;
+
+        if (m_ppuRegisters.lcdControl.bgAndWindowEnable == 1) {
+            backgroundPixelColor = ColorUtils::dmgBGPaletteIndexToRGBA8888(
+                    m_ppuRegisters.dmgPalettes.bgPaletteData,
+                    backgroundPixelData.colorIndex);
+        }
+        else {
+            backgroundPixelColor = ColorUtils::ColorRGBA8888(0xFF, 0xFF, 0xFF);
+        }
 
         // Set the pixel in the framebuffer
         m_framebuffer.setPixel(m_currentXCoordinate, m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate,
-                pixelColor.raw);
+                backgroundPixelColor.raw);
 
         // Go to the next pixel on the line
         ++m_currentXCoordinate;
