@@ -151,7 +151,7 @@ void gbtest::BackgroundFetcher::fetchWindowTileMap()
     // Get the correct tile map address
     const uint8_t x = m_fetcherX;
     const uint8_t y = m_windowLineCounter;
-    const size_t offset = ((32 * (y / 8)) + x) & 0x3FF;
+    const size_t offset = (32 * (y / 8)) + x;
 
     // Fetch the tile number
     if (!m_vram.isReadBlocked()) {
