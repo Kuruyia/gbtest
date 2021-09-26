@@ -7,6 +7,7 @@
 #include "PPUModeType.h"
 
 #include "../oam/OAM.h"
+#include "../oam/OAMEntry.h"
 #include "../PPURegisters.h"
 
 namespace gbtest {
@@ -20,7 +21,7 @@ public:
 
     [[nodiscard]] static PPUModeType getModeType();
 
-    [[nodiscard]] const std::array<uint8_t, 10>& getSpriteBuffer() const;
+    [[nodiscard]] const SpriteBuffer& getSpriteBuffer() const;
     [[nodiscard]] size_t getSpriteBufferSize() const;
 
     void restart() override;
@@ -28,7 +29,7 @@ public:
     void executeMode() override;
 
 private:
-    std::array<uint8_t, 10> m_spriteBuffer;
+    SpriteBuffer m_spriteBuffer;
     size_t m_spriteBufferSize;
     unsigned m_oamIdx;
 

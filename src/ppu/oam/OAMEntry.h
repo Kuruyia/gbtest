@@ -1,6 +1,7 @@
 #ifndef GBTEST_OAMENTRY_H
 #define GBTEST_OAMENTRY_H
 
+#include <array>
 #include <cstdint>
 
 namespace gbtest {
@@ -27,6 +28,9 @@ struct OAMEntry {
     uint8_t tileIndex;      // Index of the tile to use for drawing the sprite
     OAMEntryFlags flags;    // Sprite flags
 }; // struct OAMEntry
+
+// Sprite buffer for OAM search PPU mode
+using SpriteBuffer = std::array<OAMEntry, 10>;
 
 } // namespace gbtest
 

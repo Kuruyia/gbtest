@@ -12,6 +12,7 @@
 #include "../fifo/SpriteFetcher.h"
 #include "../framebuffer/Framebuffer.h"
 #include "../oam/OAM.h"
+#include "../oam/OAMEntry.h"
 #include "../vram/VRAM.h"
 #include "../PPURegisters.h"
 
@@ -22,7 +23,7 @@ class DrawingPPUMode
 
 public:
     DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram, const OAM& oam,
-            const std::array<uint8_t, 10>& spriteBuffer);
+            const SpriteBuffer& spriteBuffer);
     ~DrawingPPUMode() override = default;
 
     [[nodiscard]] static PPUModeType getModeType();
@@ -40,7 +41,7 @@ private:
     PixelFIFO m_backgroundPixelFifo;
     BackgroundFetcher m_backgroundFetcher;
 
-    const std::array<uint8_t, 10>& m_spriteBuffer;
+    const SpriteBuffer& m_spriteBuffer;
     PixelFIFO m_spritePixelFifo;
     SpriteFetcher m_spriteFetcher;
 

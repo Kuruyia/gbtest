@@ -1,3 +1,6 @@
+#include <algorithm>
+#include <iterator>
+
 #include "OAMSearchPPUMode.h"
 
 gbtest::OAMSearchPPUMode::OAMSearchPPUMode(const PPURegisters& ppuRegisters, const OAM& oam)
@@ -15,7 +18,7 @@ inline gbtest::PPUModeType gbtest::OAMSearchPPUMode::getModeType()
     return PPUModeType::OAM_Search;
 }
 
-const std::array<uint8_t, 10>& gbtest::OAMSearchPPUMode::getSpriteBuffer() const
+const gbtest::SpriteBuffer& gbtest::OAMSearchPPUMode::getSpriteBuffer() const
 {
     return m_spriteBuffer;
 }
@@ -48,6 +51,14 @@ void gbtest::OAMSearchPPUMode::executeMode()
     if (m_oamIdx == 40) {
         // There are no more sprites to check
         m_finished = true;
+
+        // Sort the sprite buffer by the sprite's X coordinate
+        auto iterEnd = m_spriteBuffer.begin();
+        std::advance(iterEnd, m_spriteBufferSize);
+
+        std::sort(m_spriteBuffer.begin(), iterEnd, [](const OAMEntry& a, const OAMEntry& b) {
+            return a.xPosition < b.xPosition;
+        });
     }
 }
 
@@ -64,7 +75,7 @@ void gbtest::OAMSearchPPUMode::checkCurrentSprite()
             && correctedYLcdCoordinate >= oamEntry.yPosition
             && correctedYLcdCoordinate < (oamEntry.yPosition + spriteHeight)) {
         // This sprite will be shown on this line, store it
-        m_spriteBuffer.at(m_spriteBufferSize) = m_oamIdx;
+        m_spriteBuffer.at(m_spriteBufferSize) = oamEntry;
         ++m_spriteBufferSize;
     }
 }

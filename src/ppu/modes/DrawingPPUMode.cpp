@@ -3,7 +3,7 @@
 #include "../ColorUtils.h"
 
 gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram,
-        const OAM& oam, const std::array<uint8_t, 10>& spriteBuffer)
+        const OAM& oam, const SpriteBuffer& spriteBuffer)
         : m_backgroundFetcher(ppuRegisters, vram, m_backgroundPixelFifo)
         , m_spriteBuffer(spriteBuffer)
         , m_spriteFetcher(ppuRegisters, vram, m_spritePixelFifo)
@@ -163,8 +163,8 @@ void gbtest::DrawingPPUMode::checkSprite()
      * In order to fetch a sprite, we must check that:
      *  - We reached the X position of any sprite (minus 8)
      */
-    for (const uint8_t spriteIdx: m_spriteBuffer) {
-        if (m_currentXCoordinate + 8 <= m_oam.getOamEntry(spriteIdx).xPosition) {
+    for (const auto& oamEntry: m_spriteBuffer) {
+        if (m_currentXCoordinate + 8 <= oamEntry.xPosition) {
             // Background fetched is paused and reset to step 1, pixel shifting is paused
             setSpriteFetchSuspend(true);
             m_backgroundFetcher.resetForSpriteFetch();
