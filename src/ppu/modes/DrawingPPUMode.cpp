@@ -3,13 +3,14 @@
 #include "../ColorUtils.h"
 
 gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram,
-        const std::array<uint8_t, 10>& spriteBuffer)
+        const OAM& oam, const std::array<uint8_t, 10>& spriteBuffer)
         : m_backgroundFetcher(ppuRegisters, vram, m_backgroundPixelFifo)
         , m_spriteBuffer(spriteBuffer)
         , m_spriteFetcher(ppuRegisters, vram, m_spritePixelFifo)
         , m_currentXCoordinate(0)
         , m_framebuffer(framebuffer)
         , m_ppuRegisters(ppuRegisters)
+        , m_oam(oam)
         , m_pixelsToDiscard(0)
         , m_tickCounter(0)
         , m_reachedWindowLine(false)
@@ -132,4 +133,18 @@ void gbtest::DrawingPPUMode::checkWindow()
     // Start fetching the window
     m_backgroundFetcher.startFetchingWindow();
     m_backgroundPixelFifo.clear();
+}
+
+void gbtest::DrawingPPUMode::checkSprite()
+{
+    /*
+     * In order to fetch a sprite, we must check that:
+     *  - We reached the X position of any sprite (minus 8)
+     */
+    for (const uint8_t spriteIdx: m_spriteBuffer) {
+        if (m_currentXCoordinate + 8 <= m_oam.getOamEntry(spriteIdx).xPosition) {
+            // TODO: Fetch the sprite
+            break;
+        }
+    }
 }
