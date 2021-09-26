@@ -6,10 +6,13 @@
 
 #include "platform/GameBoy.h"
 
+static constexpr unsigned TARGET_FPS = 60;
+static constexpr float FRAME_TIME = 1.f / TARGET_FPS;
+
 int main()
 {
     InitWindow(680, 616, "gbtest");
-    SetTargetFPS(60);
+    SetTargetFPS(TARGET_FPS);
 
     gbtest::GameBoy gameboy;
     gameboy.init();
@@ -55,8 +58,7 @@ int main()
     while (!WindowShouldClose()) {
         // Tick the CPU (if enabled)
         if (tickEnabled) {
-            // TODO: De-hardcode that
-            gameboy.update(16667);
+            gameboy.update(FRAME_TIME);
         }
 
         // Check if keys were pressed

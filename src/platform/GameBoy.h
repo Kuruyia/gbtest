@@ -14,11 +14,13 @@ class GameBoy
         : public Tickable {
 
 public:
+    static constexpr unsigned CLOCK_FREQUENCY_HZ = 4194304;
+
     GameBoy();
     ~GameBoy() override;
 
     void init();
-    void update(int64_t delta);
+    void update(float secondsToEmulate);
     void tick() override;
 
     [[nodiscard]] Bus& getBus();

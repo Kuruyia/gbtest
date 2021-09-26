@@ -1,7 +1,5 @@
 #include "GameBoy.h"
 
-#define CLOCK_FREQ_MHZ 4.194304
-
 gbtest::GameBoy::GameBoy()
         : m_cpu(m_bus)
         , m_wholeMemory(0x0000, 0x10000)
@@ -24,9 +22,9 @@ void gbtest::GameBoy::init()
     registerBusProviders();
 }
 
-void gbtest::GameBoy::update(int64_t delta)
+void gbtest::GameBoy::update(float secondsToEmulate)
 {
-    const int ticksToEmulate = delta * CLOCK_FREQ_MHZ;
+    const int ticksToEmulate = static_cast<int>(secondsToEmulate * CLOCK_FREQUENCY_HZ);
 //    std::cout << "Emulating " << ticksToEmulate << " ticks" << std::endl;
 
     for (unsigned i = 0; i < ticksToEmulate; ++i) {
