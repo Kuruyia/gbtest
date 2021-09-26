@@ -14,6 +14,7 @@ gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegist
         , m_pixelsToDiscard(0)
         , m_tickCounter(0)
         , m_reachedWindowLine(false)
+        , m_spriteFetchSuspend(false)
 {
 
 }
@@ -28,6 +29,16 @@ unsigned gbtest::DrawingPPUMode::getTickCounter() const
     return m_tickCounter;
 }
 
+void gbtest::DrawingPPUMode::setSpriteFetchSuspend(bool spriteFetchSuspend)
+{
+    m_spriteFetchSuspend = spriteFetchSuspend;
+}
+
+bool gbtest::DrawingPPUMode::isSpriteFetchSuspended() const
+{
+    return m_spriteFetchSuspend;
+}
+
 void gbtest::DrawingPPUMode::restart()
 {
     PPUMode::restart();
@@ -35,6 +46,7 @@ void gbtest::DrawingPPUMode::restart()
     m_currentXCoordinate = 0;
     m_pixelsToDiscard = (m_ppuRegisters.lcdPositionAndScrolling.xScroll % 8);
     m_tickCounter = 0;
+    m_spriteFetchSuspend = false;
 
     if (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate == 0) {
         m_reachedWindowLine = false;
@@ -64,18 +76,23 @@ void gbtest::DrawingPPUMode::restart()
 void gbtest::DrawingPPUMode::executeMode()
 {
     // Tick the fetchers
-    m_backgroundFetcher.tick();
     m_spriteFetcher.tick();
 
-    // Try to draw a pixel
-    drawPixel();
+    // Only do the rest if we're not suspended due to sprite fetching
+    if (!m_spriteFetchSuspend) {
+        m_backgroundFetcher.tick();
 
-    // Check the window after shifting a pixel
-    checkWindow();
+        // Try to draw a pixel
+        drawPixel();
 
-    // If we're on the 160th pixel, the scanline is finished
-    if (m_currentXCoordinate == 160) {
-        m_finished = true;
+        // Check the window and sprites after shifting a pixel
+        checkWindow();
+        checkSprite();
+
+        // If we're on the 160th pixel, the scanline is finished
+        if (m_currentXCoordinate == 160) {
+            m_finished = true;
+        }
     }
 
     ++m_tickCounter;
@@ -125,7 +142,7 @@ void gbtest::DrawingPPUMode::checkWindow()
      *  - We reached the X window position (minus 7)
      */
     if (!m_reachedWindowLine || m_ppuRegisters.lcdControl.windowEnable == 0
-            || m_currentXCoordinate < m_ppuRegisters.lcdPositionAndScrolling.xWindowPosition - 7
+            || m_currentXCoordinate + 7 < m_ppuRegisters.lcdPositionAndScrolling.xWindowPosition
             || m_backgroundFetcher.isFetchingWindow()) {
         return;
     }
@@ -143,7 +160,10 @@ void gbtest::DrawingPPUMode::checkSprite()
      */
     for (const uint8_t spriteIdx: m_spriteBuffer) {
         if (m_currentXCoordinate + 8 <= m_oam.getOamEntry(spriteIdx).xPosition) {
-            // TODO: Fetch the sprite
+            // Background fetched is paused and reset to step 1, pixel shifting is paused
+            setSpriteFetchSuspend(true);
+            m_backgroundFetcher.resetForSpriteFetch();
+
             break;
         }
     }

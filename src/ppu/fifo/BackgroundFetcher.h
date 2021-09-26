@@ -19,6 +19,8 @@ public:
     void startFetchingWindow();
     [[nodiscard]] bool isFetchingWindow() const;
 
+    void resetForSpriteFetch();
+
     void beginScanline() override;
 
     void executeState() override;

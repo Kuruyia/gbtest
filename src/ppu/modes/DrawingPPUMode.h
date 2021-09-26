@@ -29,6 +29,9 @@ public:
 
     [[nodiscard]] unsigned getTickCounter() const;
 
+    void setSpriteFetchSuspend(bool spriteFetchSuspend);
+    [[nodiscard]] bool isSpriteFetchSuspended() const;
+
     void restart() override;
 
     void executeMode() override;
@@ -45,6 +48,7 @@ private:
     unsigned m_pixelsToDiscard;
     unsigned m_tickCounter;
     bool m_reachedWindowLine;
+    bool m_spriteFetchSuspend;
 
     Framebuffer& m_framebuffer;
     const PPURegisters& m_ppuRegisters;

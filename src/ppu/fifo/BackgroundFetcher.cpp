@@ -26,6 +26,12 @@ bool gbtest::BackgroundFetcher::isFetchingWindow() const
     return m_fetchingWindow;
 }
 
+void gbtest::BackgroundFetcher::resetForSpriteFetch()
+{
+    // Reset to step 1
+    m_fetcherState = FetcherState::FetchTileMap;
+}
+
 void gbtest::BackgroundFetcher::beginScanline()
 {
     Fetcher::beginScanline();
