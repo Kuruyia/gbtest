@@ -32,9 +32,9 @@ public:
     void tick() override;
 
 private:
+    OAMSearchPPUMode m_oamSearchPpuMode;
     DrawingPPUMode m_drawingPpuMode;
     HBlankPPUMode m_hblankPpuMode;
-    OAMSearchPPUMode m_oamSearchPpuMode;
     VBlankPPUMode m_vblankPpuMode;
 
     PPUModeType m_currentMode;

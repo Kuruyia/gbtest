@@ -2,8 +2,10 @@
 
 #include "../ColorUtils.h"
 
-gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram)
+gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram,
+        const std::array<uint8_t, 10>& spriteBuffer)
         : m_backgroundFetcher(ppuRegisters, vram, m_backgroundPixelFifo)
+        , m_spriteBuffer(spriteBuffer)
         , m_spriteFetcher(ppuRegisters, vram, m_spritePixelFifo)
         , m_currentXCoordinate(0)
         , m_framebuffer(framebuffer)

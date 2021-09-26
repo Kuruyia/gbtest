@@ -20,7 +20,8 @@ class DrawingPPUMode
         : public PPUMode {
 
 public:
-    DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram);
+    DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram,
+            const std::array<uint8_t, 10>& spriteBuffer);
     ~DrawingPPUMode() override = default;
 
     [[nodiscard]] static PPUModeType getModeType();
@@ -35,6 +36,7 @@ private:
     PixelFIFO m_backgroundPixelFifo;
     BackgroundFetcher m_backgroundFetcher;
 
+    const std::array<uint8_t, 10>& m_spriteBuffer;
     PixelFIFO m_spritePixelFifo;
     SpriteFetcher m_spriteFetcher;
 

@@ -2,8 +2,8 @@
 
 gbtest::PPUModeManager::PPUModeManager(Bus& bus, Framebuffer& framebuffer, PPURegisters& ppuRegisters, const OAM& oam,
         const VRAM& vram)
-        : m_drawingPpuMode(framebuffer, ppuRegisters, vram)
-        , m_oamSearchPpuMode(ppuRegisters, oam)
+        : m_oamSearchPpuMode(ppuRegisters, oam)
+        , m_drawingPpuMode(framebuffer, ppuRegisters, vram, m_oamSearchPpuMode.getSpriteBuffer())
         , m_currentMode(PPUModeType::OAM_Search)
         , m_bus(bus)
         , m_framebuffer(framebuffer)
