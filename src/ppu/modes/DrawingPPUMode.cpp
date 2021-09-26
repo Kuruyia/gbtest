@@ -4,6 +4,7 @@
 
 gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram)
         : m_backgroundFetcher(ppuRegisters, vram, m_backgroundPixelFifo)
+        , m_spriteFetcher(ppuRegisters, vram, m_spritePixelFifo)
         , m_currentXCoordinate(0)
         , m_framebuffer(framebuffer)
         , m_ppuRegisters(ppuRegisters)
@@ -42,22 +43,26 @@ void gbtest::DrawingPPUMode::restart()
         m_reachedWindowLine = true;
     }
 
-    // Tell the fetcher that a line/frame has started
+    // Tell the fetchers that a line/frame has started
     if (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate > 0) {
         m_backgroundFetcher.beginScanline();
+        m_spriteFetcher.beginScanline();
     }
     else {
         m_backgroundFetcher.beginFrame();
+        m_spriteFetcher.beginFrame();
     }
 
-    // It should be empty, but just in case
+    // They should be empty, but just in case
     m_backgroundPixelFifo.clear();
+    m_spritePixelFifo.clear();
 }
 
 void gbtest::DrawingPPUMode::executeMode()
 {
-    // Tick the fetcher
+    // Tick the fetchers
     m_backgroundFetcher.tick();
+    m_spriteFetcher.tick();
 
     // Try to draw a pixel
     drawPixel();

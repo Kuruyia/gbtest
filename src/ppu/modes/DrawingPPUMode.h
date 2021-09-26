@@ -9,6 +9,7 @@
 #include "../fifo/BackgroundFetcher.h"
 #include "../fifo/FIFOPixelData.h"
 #include "../fifo/PixelFIFO.h"
+#include "../fifo/SpriteFetcher.h"
 #include "../framebuffer/Framebuffer.h"
 #include "../vram/VRAM.h"
 #include "../PPURegisters.h"
@@ -33,6 +34,9 @@ public:
 private:
     PixelFIFO m_backgroundPixelFifo;
     BackgroundFetcher m_backgroundFetcher;
+
+    PixelFIFO m_spritePixelFifo;
+    SpriteFetcher m_spriteFetcher;
 
     unsigned m_currentXCoordinate;
     unsigned m_pixelsToDiscard;

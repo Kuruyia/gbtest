@@ -25,6 +25,8 @@ set(SOURCE_FILES
         ppu/fifo/FIFOPixelData.h
         ppu/fifo/PixelFIFO.cpp
         ppu/fifo/PixelFIFO.h
+        ppu/fifo/SpriteFetcher.cpp
+        ppu/fifo/SpriteFetcher.h
         ppu/framebuffer/Framebuffer.cpp
         ppu/framebuffer/Framebuffer.h
         ppu/modes/DrawingPPUMode.cpp
