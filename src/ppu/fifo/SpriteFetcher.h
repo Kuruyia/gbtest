@@ -15,7 +15,15 @@ class SpriteFetcher
 public:
     SpriteFetcher(const PPURegisters& ppuRegisters, const VRAM& vram, PixelFIFO& pixelFifo);
 
+    void fetchSprite(uint8_t spriteIdx);
+    [[nodiscard]] bool isFetchingSprite() const;
+    [[nodiscard]] uint8_t getFetchedSpriteIdx() const;
+
     void executeState() override;
+
+private:
+    bool m_fetchingSprite;
+    uint8_t m_fetchedSpriteIdx;
 
 }; // class SpriteFetcher
 

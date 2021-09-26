@@ -78,6 +78,11 @@ void gbtest::DrawingPPUMode::executeMode()
     // Tick the fetchers
     m_spriteFetcher.tick();
 
+    if (m_spriteFetchSuspend && !m_spriteFetcher.isFetchingSprite()) {
+        // The sprite fetcher finished its work
+        setSpriteFetchSuspend(false);
+    }
+
     // Only do the rest if we're not suspended due to sprite fetching
     if (!m_spriteFetchSuspend) {
         m_backgroundFetcher.tick();
