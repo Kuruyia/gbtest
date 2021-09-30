@@ -29,9 +29,6 @@ struct OAMEntry {
     OAMEntryFlags flags;    // Sprite flags
 }; // struct OAMEntry
 
-// Sprite buffer for OAM search PPU mode
-using SpriteBuffer = std::array<OAMEntry, 10>;
-
 } // namespace gbtest
 
 #endif //GBTEST_OAMENTRY_H

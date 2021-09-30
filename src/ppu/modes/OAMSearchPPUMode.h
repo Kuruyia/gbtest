@@ -8,6 +8,7 @@
 
 #include "../oam/OAM.h"
 #include "../oam/OAMEntry.h"
+#include "../oam/SpriteBuffer.h"
 #include "../PPURegisters.h"
 
 namespace gbtest {
@@ -22,7 +23,6 @@ public:
     [[nodiscard]] static PPUModeType getModeType();
 
     [[nodiscard]] const SpriteBuffer& getSpriteBuffer() const;
-    [[nodiscard]] size_t getSpriteBufferSize() const;
 
     void restart() override;
 
@@ -30,7 +30,6 @@ public:
 
 private:
     SpriteBuffer m_spriteBuffer;
-    size_t m_spriteBufferSize;
     unsigned m_oamIdx;
 
     const PPURegisters& m_ppuRegisters;

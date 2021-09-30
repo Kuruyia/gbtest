@@ -47,6 +47,8 @@ set(SOURCE_FILES
         ppu/oam/OAMDMA.cpp
         ppu/oam/OAMDMA.h
         ppu/oam/OAMEntry.h
+        ppu/oam/SpriteBuffer.cpp
+        ppu/oam/SpriteBuffer.h
         ppu/vram/VRAM.cpp
         ppu/vram/VRAM.h
         ppu/vram/VRAMTileData.cpp
