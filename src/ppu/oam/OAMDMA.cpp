@@ -80,7 +80,7 @@ bool gbtest::OAMDMA::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSour
 bool gbtest::OAMDMA::busReadOverride(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
     // Override when a DMA transfer is in progress and the requested address is not in the HRAM region
-    if (m_transferring && (addr < 0xFF80 || addr > 0xFFFE)) {
+    if (m_transferring && (addr < 0xFF80 || addr > 0xFFFE) && requestSource != BusRequestSource::OAMDMA) {
         // "Read" the value as FFh
         val = 0xFF;
 
@@ -93,7 +93,7 @@ bool gbtest::OAMDMA::busReadOverride(uint16_t addr, uint8_t& val, gbtest::BusReq
 bool gbtest::OAMDMA::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusRequestSource requestSource)
 {
     // Override when a DMA transfer is in progress and the requested address is not in the HRAM region
-    if (m_transferring && (addr < 0xFF80 || addr > 0xFFFE)) {
+    if (m_transferring && (addr < 0xFF80 || addr > 0xFFFE) && requestSource != BusRequestSource::OAMDMA) {
         // Don't do anything
         return true;
     }
