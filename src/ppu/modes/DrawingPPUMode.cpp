@@ -1,12 +1,11 @@
 #include "DrawingPPUMode.h"
 
-#include "../ColorUtils.h"
-
 gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram,
         const OAM& oam, const SpriteBuffer& spriteBuffer)
         : m_backgroundFetcher(ppuRegisters, vram, m_backgroundPixelFifo)
         , m_spriteBuffer(spriteBuffer)
         , m_spriteFetcher(ppuRegisters, vram, m_spritePixelFifo)
+        , m_spriteToCheckIdx(0)
         , m_currentXCoordinate(0)
         , m_framebuffer(framebuffer)
         , m_ppuRegisters(ppuRegisters)
@@ -14,7 +13,6 @@ gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegist
         , m_pixelsToDiscard(0)
         , m_tickCounter(0)
         , m_reachedWindowLine(false)
-        , m_spriteFetchSuspend(false)
 {
 
 }
@@ -29,24 +27,14 @@ unsigned gbtest::DrawingPPUMode::getTickCounter() const
     return m_tickCounter;
 }
 
-void gbtest::DrawingPPUMode::setSpriteFetchSuspend(bool spriteFetchSuspend)
-{
-    m_spriteFetchSuspend = spriteFetchSuspend;
-}
-
-bool gbtest::DrawingPPUMode::isSpriteFetchSuspended() const
-{
-    return m_spriteFetchSuspend;
-}
-
 void gbtest::DrawingPPUMode::restart()
 {
     PPUMode::restart();
 
+    m_spriteToCheckIdx = 0;
     m_currentXCoordinate = 0;
     m_pixelsToDiscard = (m_ppuRegisters.lcdPositionAndScrolling.xScroll % 8);
     m_tickCounter = 0;
-    m_spriteFetchSuspend = false;
 
     if (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate == 0) {
         m_reachedWindowLine = false;
@@ -68,6 +56,9 @@ void gbtest::DrawingPPUMode::restart()
         m_spriteFetcher.beginFrame();
     }
 
+    // Stop the sprite fetcher
+    m_spriteFetcher.stopFetchingSprite();
+
     // They should be empty, but just in case
     m_backgroundPixelFifo.clear();
     m_spritePixelFifo.clear();
@@ -78,13 +69,8 @@ void gbtest::DrawingPPUMode::executeMode()
     // Tick the fetchers
     m_spriteFetcher.tick();
 
-    if (m_spriteFetchSuspend && !m_spriteFetcher.isFetchingSprite()) {
-        // The sprite fetcher finished its work
-        setSpriteFetchSuspend(false);
-    }
-
     // Only do the rest if we're not suspended due to sprite fetching
-    if (!m_spriteFetchSuspend) {
+    if (!m_spriteFetcher.isFetchingSprite()) {
         m_backgroundFetcher.tick();
 
         // Try to draw a pixel
@@ -114,27 +100,73 @@ void gbtest::DrawingPPUMode::drawPixel()
 
     // Only draw the pixel to the screen if it's not to be discarded
     if (m_pixelsToDiscard == 0) {
-        // Draw the pixel to the screen
-        ColorUtils::ColorRGBA8888 backgroundPixelColor;
+//        // Draw the pixel to the screen
+//        ColorUtils::ColorRGBA8888 backgroundPixelColor;
+//
+//        if (m_ppuRegisters.lcdControl.bgAndWindowEnable == 1) {
+//            backgroundPixelColor = ColorUtils::dmgBGPaletteIndexToRGBA8888(
+//                    m_ppuRegisters.dmgPalettes.bgPaletteData,
+//                    backgroundPixelData.colorIndex);
+//        }
+//        else {
+//            backgroundPixelColor = ColorUtils::ColorRGBA8888(0xFF, 0xFF, 0xFF);
+//        }
+//
+//        // Set the pixel in the framebuffer
+//        m_framebuffer.setPixel(m_currentXCoordinate, m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate,
+//                backgroundPixelColor.raw);
 
-        if (m_ppuRegisters.lcdControl.bgAndWindowEnable == 1) {
-            backgroundPixelColor = ColorUtils::dmgBGPaletteIndexToRGBA8888(
-                    m_ppuRegisters.dmgPalettes.bgPaletteData,
-                    backgroundPixelData.colorIndex);
+        // Retrieve the sprite pixel, if there is one
+        FIFOPixelData spritePixelData;
+
+        if (!m_spritePixelFifo.empty()) {
+            m_spritePixelFifo.pop(spritePixelData);
         }
-        else {
-            backgroundPixelColor = ColorUtils::ColorRGBA8888(0xFF, 0xFF, 0xFF);
-        }
+
+        // Mix both pixels
+        ColorUtils::ColorRGBA8888 mixedPixel;
+        mixPixels(backgroundPixelData, spritePixelData, mixedPixel);
 
         // Set the pixel in the framebuffer
         m_framebuffer.setPixel(m_currentXCoordinate, m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate,
-                backgroundPixelColor.raw);
+                mixedPixel.raw);
 
         // Go to the next pixel on the line
         ++m_currentXCoordinate;
     }
     else {
         --m_pixelsToDiscard;
+    }
+}
+
+void gbtest::DrawingPPUMode::mixPixels(const FIFOPixelData& backgroundPixelData, const FIFOPixelData& spritePixelData,
+        ColorUtils::ColorRGBA8888& mixedPixel)
+{
+    /*
+     * Choose the background pixel if:
+     *  - The sprite pixel color index == 0 (pixel considered transparent), or
+     *  - The background pixel has priority over the sprite pixel and its color index != 0, or
+     *  - Sprites are disabled
+     */
+    if (m_ppuRegisters.lcdControl.bgAndWindowEnable
+            && (spritePixelData.colorIndex == 0
+                    || (spritePixelData.backgroundPriority && backgroundPixelData.colorIndex != 0)
+                    || m_ppuRegisters.lcdControl.objEnable == 0)) {
+        // Use the background pixel
+        mixedPixel = ColorUtils::dmgBGPaletteIndexToRGBA8888(
+                m_ppuRegisters.dmgPalettes.bgPaletteData,
+                backgroundPixelData.colorIndex);
+    }
+    else if (m_ppuRegisters.lcdControl.objEnable == 1) {
+        // Use the sprite pixel
+        mixedPixel = ColorUtils::dmgBGPaletteIndexToRGBA8888(
+                (spritePixelData.palette == 0) ? m_ppuRegisters.dmgPalettes.objectPaletteData0
+                                               : m_ppuRegisters.dmgPalettes.objectPaletteData1,
+                spritePixelData.colorIndex);
+    }
+    else {
+        // Neither sprite nor background is enabled
+        mixedPixel = ColorUtils::ColorRGBA8888(0xFF, 0xFF, 0xFF);
     }
 }
 
@@ -162,14 +194,22 @@ void gbtest::DrawingPPUMode::checkSprite()
     /*
      * In order to fetch a sprite, we must check that:
      *  - We reached the X position of any sprite (minus 8)
+     *
+     *  We expect the sprite buffer to be sorted by the X position of the sprites it contains,
+     *  so we can just check one sprite each time instead of all of them.
      */
-    for (const auto& oamEntry: m_spriteBuffer) {
-        if (m_currentXCoordinate + 8 <= oamEntry.xPosition) {
-            // Background fetched is paused and reset to step 1, pixel shifting is paused
-            setSpriteFetchSuspend(true);
-            m_backgroundFetcher.resetForSpriteFetch();
+    if (m_spriteToCheckIdx == m_spriteBuffer.getSize()) { return; }
 
-            break;
-        }
+    const OAMEntry& spriteToCheck = m_spriteBuffer.at(m_spriteToCheckIdx);
+
+    if (spriteToCheck.xPosition <= m_currentXCoordinate + 8) {
+        // Background fetched is paused and reset to step 1, pixel shifting is paused
+        m_backgroundFetcher.resetForSpriteFetch();
+
+        // Fetch the sprite
+        m_spriteFetcher.fetchSprite(spriteToCheck);
+
+        // Next time, check the next sprite
+        ++m_spriteToCheckIdx;
     }
 }

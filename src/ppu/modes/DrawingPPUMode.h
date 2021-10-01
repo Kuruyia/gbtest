@@ -13,7 +13,9 @@
 #include "../framebuffer/Framebuffer.h"
 #include "../oam/OAM.h"
 #include "../oam/OAMEntry.h"
+#include "../oam/SpriteBuffer.h"
 #include "../vram/VRAM.h"
+#include "../ColorUtils.h"
 #include "../PPURegisters.h"
 
 namespace gbtest {
@@ -30,9 +32,6 @@ public:
 
     [[nodiscard]] unsigned getTickCounter() const;
 
-    void setSpriteFetchSuspend(bool spriteFetchSuspend);
-    [[nodiscard]] bool isSpriteFetchSuspended() const;
-
     void restart() override;
 
     void executeMode() override;
@@ -45,17 +44,20 @@ private:
     PixelFIFO m_spritePixelFifo;
     SpriteFetcher m_spriteFetcher;
 
+    size_t m_spriteToCheckIdx;
+
     unsigned m_currentXCoordinate;
     unsigned m_pixelsToDiscard;
     unsigned m_tickCounter;
     bool m_reachedWindowLine;
-    bool m_spriteFetchSuspend;
 
     Framebuffer& m_framebuffer;
     const PPURegisters& m_ppuRegisters;
     const OAM& m_oam;
 
     void drawPixel();
+    void mixPixels(const FIFOPixelData& backgroundPixelData, const FIFOPixelData& spritePixelData,
+            ColorUtils::ColorRGBA8888& mixedPixel);
 
     void checkWindow();
     void checkSprite();
