@@ -60,8 +60,8 @@ void gbtest::DrawingPPUMode::restart()
     m_spriteFetcher.stopFetchingSprite();
 
     // They should be empty, but just in case
-    m_backgroundPixelFifo.clear();
-    m_spritePixelFifo.clear();
+    m_backgroundPixelFifo = {};
+    m_spritePixelFifo = {};
 }
 
 void gbtest::DrawingPPUMode::executeMode()
@@ -95,8 +95,8 @@ void gbtest::DrawingPPUMode::drawPixel()
     if (m_backgroundPixelFifo.empty()) { return; }
 
     // Retrieve the background pixel
-    FIFOPixelData backgroundPixelData;
-    m_backgroundPixelFifo.pop(backgroundPixelData);
+    FIFOPixelData backgroundPixelData = m_backgroundPixelFifo.front();
+    m_backgroundPixelFifo.pop();
 
     // Only draw the pixel to the screen if it's not to be discarded
     if (m_pixelsToDiscard == 0) {
@@ -104,7 +104,8 @@ void gbtest::DrawingPPUMode::drawPixel()
         FIFOPixelData spritePixelData;
 
         if (!m_spritePixelFifo.empty()) {
-            m_spritePixelFifo.pop(spritePixelData);
+            spritePixelData = m_spritePixelFifo.front();
+            m_spritePixelFifo.pop();
         }
 
         // Mix both pixels
@@ -170,7 +171,7 @@ void gbtest::DrawingPPUMode::checkWindow()
 
     // Start fetching the window
     m_backgroundFetcher.startFetchingWindow();
-    m_backgroundPixelFifo.clear();
+    m_backgroundPixelFifo = {};
 }
 
 void gbtest::DrawingPPUMode::checkSprite()

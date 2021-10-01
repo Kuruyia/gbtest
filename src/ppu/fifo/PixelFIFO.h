@@ -1,14 +1,13 @@
 #ifndef GBTEST_PIXELFIFO_HPP
 #define GBTEST_PIXELFIFO_HPP
 
-#include <array>
+#include <queue>
 
 #include "FIFOPixelData.h"
-#include "../../utils/CircularBuffer.hpp"
 
 namespace gbtest {
 
-using PixelFIFO = CircularBuffer<FIFOPixelData, 8>;
+using PixelFIFO = std::queue<FIFOPixelData>;
 
 } // namespace gbtest
 

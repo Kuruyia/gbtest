@@ -59,7 +59,6 @@ set(SOURCE_FILES
         ppu/PPU.cpp
         ppu/PPU.h
         ppu/PPURegisters.h
-        utils/CircularBuffer.hpp
         utils/Tickable.h
         main.cpp)
 

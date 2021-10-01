@@ -67,7 +67,7 @@ void gbtest::SpriteFetcher::executeState()
     case FetcherState::PushFIFO:
         // Fill the queue with the fetched pixels
         // We start from "8 - m_pixelFifo.getSize()" to prevent overwriting any pixel already in the FIFO
-        for (uint8_t i = 8 - m_pixelFifo.getSize(); i-- > 0;) {
+        for (uint8_t i = 8 - m_pixelFifo.size(); i-- > 0;) {
             // Change the order on which we put pixels in the FIFO depending on the X flip flag
             uint8_t highBit, lowBit;
 
