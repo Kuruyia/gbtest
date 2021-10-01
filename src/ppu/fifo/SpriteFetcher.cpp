@@ -46,8 +46,17 @@ void gbtest::SpriteFetcher::executeState()
 
     case FetcherState::FetchTileData:
         // Fetch the tile data
-        m_currentTileData = m_vram.getVramTileData().getTileLineUsingFirstMethod(m_spriteToFetch.tileIndex,
-                m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate + 16 - m_spriteToFetch.yPosition);
+        uint8_t lineNumber;
+
+        // Select the line number depending on the Y flip flag
+        if (m_spriteToFetch.flags.yFlip == 0) {
+            lineNumber = m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate + 16 - m_spriteToFetch.yPosition;
+        }
+        else {
+            lineNumber = 7 - (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate + 16 - m_spriteToFetch.yPosition);
+        }
+
+        m_currentTileData = m_vram.getVramTileData().getTileLineUsingFirstMethod(m_spriteToFetch.tileIndex, lineNumber);
 
         // Continue to the next state
         m_fetcherState = FetcherState::PushFIFO;
@@ -59,8 +68,20 @@ void gbtest::SpriteFetcher::executeState()
         // Fill the queue with the fetched pixels
         // We start from "8 - m_pixelFifo.getSize()" to prevent overwriting any pixel already in the FIFO
         for (uint8_t i = 8 - m_pixelFifo.getSize(); i-- > 0;) {
-            const uint8_t lowBit = (m_currentTileData >> (8 + i)) & 0x1;
-            const uint8_t highBit = (m_currentTileData >> i) & 0x1;
+            // Change the order on which we put pixels in the FIFO depending on the X flip flag
+            uint8_t highBit, lowBit;
+
+            if (m_spriteToFetch.flags.xFlip == 0) {
+                lowBit = (m_currentTileData >> (8 + i)) & 0x1;
+                highBit = (m_currentTileData >> i) & 0x1;
+            }
+            else {
+                lowBit = (m_currentTileData >> (15 - i)) & 0x1;
+                highBit = (m_currentTileData >> (7 - i)) & 0x1;
+            }
+
+            highBit &= 0x01;
+            lowBit &= 0x01;
 
             m_pixelFifo.push(FIFOPixelData(
                     (highBit << 1) | lowBit,
