@@ -29,6 +29,11 @@ bool gbtest::PixelFIFO::empty() const
     return m_size == 0;
 }
 
+size_t gbtest::PixelFIFO::getSize() const
+{
+    return m_size;
+}
+
 void gbtest::PixelFIFO::clear()
 {
     m_size = 0;

@@ -5,6 +5,7 @@
 #include "PixelFIFO.h"
 
 #include "../PPURegisters.h"
+#include "../oam/OAMEntry.h"
 #include "../vram/VRAM.h"
 
 namespace gbtest {
@@ -15,15 +16,20 @@ class SpriteFetcher
 public:
     SpriteFetcher(const PPURegisters& ppuRegisters, const VRAM& vram, PixelFIFO& pixelFifo);
 
-    void fetchSprite(uint8_t spriteIdx);
+    void fetchSprite(const OAMEntry& spriteToFetch);
+    void stopFetchingSprite();
     [[nodiscard]] bool isFetchingSprite() const;
-    [[nodiscard]] uint8_t getFetchedSpriteIdx() const;
+    [[nodiscard]] const OAMEntry& getSpriteToFetch() const;
 
     void executeState() override;
 
+    void tick() override;
+
 private:
     bool m_fetchingSprite;
-    uint8_t m_fetchedSpriteIdx;
+    OAMEntry m_spriteToFetch;
+
+    uint16_t m_currentTileData;
 
 }; // class SpriteFetcher
 

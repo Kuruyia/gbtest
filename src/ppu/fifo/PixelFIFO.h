@@ -16,6 +16,7 @@ public:
     void pop(FIFOPixelData& pixelData);
 
     [[nodiscard]] bool empty() const;
+    [[nodiscard]] size_t getSize() const;
     void clear();
 
 private:
