@@ -23,7 +23,6 @@ set(SOURCE_FILES
         ppu/fifo/Fetcher.h
         ppu/fifo/FetcherState.h
         ppu/fifo/FIFOPixelData.h
-        ppu/fifo/PixelFIFO.cpp
         ppu/fifo/PixelFIFO.h
         ppu/fifo/SpriteFetcher.cpp
         ppu/fifo/SpriteFetcher.h
@@ -60,6 +59,7 @@ set(SOURCE_FILES
         ppu/PPU.cpp
         ppu/PPU.h
         ppu/PPURegisters.h
+        utils/CircularBuffer.hpp
         utils/Tickable.h
         main.cpp)
 

@@ -1,30 +1,15 @@
-#ifndef GBTEST_PIXELFIFO_H
-#define GBTEST_PIXELFIFO_H
+#ifndef GBTEST_PIXELFIFO_HPP
+#define GBTEST_PIXELFIFO_HPP
 
 #include <array>
 
 #include "FIFOPixelData.h"
+#include "../../utils/CircularBuffer.hpp"
 
 namespace gbtest {
 
-class PixelFIFO {
-
-public:
-    PixelFIFO();
-
-    void push(FIFOPixelData&& pixelData);
-    void pop(FIFOPixelData& pixelData);
-
-    [[nodiscard]] bool empty() const;
-    [[nodiscard]] size_t getSize() const;
-    void clear();
-
-private:
-    std::array<FIFOPixelData, 8> m_fifo;
-    size_t m_size;
-
-}; // class PixelFIFO
+using PixelFIFO = CircularBuffer<FIFOPixelData, 8>;
 
 } // namespace gbtest
 
-#endif //GBTEST_PIXELFIFO_H
+#endif //GBTEST_PIXELFIFO_HPP
