@@ -152,7 +152,7 @@ void gbtest::PPUModeManager::updateStatInterrupt()
             (lcdStatus.mode0InterruptSource && m_currentMode == PPUModeType::HBlank)
                     || (lcdStatus.mode1InterruptSource && m_currentMode == PPUModeType::VBlank)
                     || (lcdStatus.mode2InterruptSource && m_currentMode == PPUModeType::OAM_Search)
-                    || lcdStatus.lycEqualsLy);
+                    || (lcdStatus.lycEqualsLyInterruptSource && lcdStatus.lycEqualsLy));
 }
 
 void gbtest::PPUModeManager::updateYLcdCoordinate(uint8_t coordinate)

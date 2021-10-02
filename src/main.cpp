@@ -35,7 +35,7 @@ int main()
     bool tickEnabled = true;
 
     // Try to open a ROM file
-    if (FILE* gbRom = fopen("acid.bin", "rb"); gbRom != nullptr) {
+    if (FILE* gbRom = fopen("mealybug-tearoom-tests/m3_window_timing.gb", "rb"); gbRom != nullptr) {
         uint8_t currByte;
         unsigned offset = 0;
         while (fread(&currByte, sizeof(currByte), 0x1, gbRom) > 0) {
