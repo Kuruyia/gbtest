@@ -2,6 +2,9 @@
 
 gbtest::APU::APU()
         : m_soundControlRegisters()
+        , m_samples()
+        , m_sampleCount(0)
+        , m_sampleCountdown(SAMPLE_EVERY_X_TICK)
 {
 
 }
@@ -12,10 +15,36 @@ float gbtest::APU::sample() const
     return m_apuChannel2.sample();
 }
 
+const gbtest::APU::SampleBuffer& gbtest::APU::getSampleBuffer() const
+{
+    return m_samples;
+}
+
+bool gbtest::APU::isSampleBufferFull() const
+{
+    return m_sampleCount == m_samples.size();
+}
+
+void gbtest::APU::resetSampling()
+{
+    m_sampleCount = 0;
+    m_sampleCountdown = SAMPLE_EVERY_X_TICK;
+}
+
 void gbtest::APU::tick()
 {
     // Tick the channels
     m_apuChannel2.tick();
+
+    // Check if we have to sample
+    if (m_sampleCount < m_samples.size() && --m_sampleCountdown == 0) {
+        // Take a sample
+        m_samples[m_sampleCount] = sample();
+        ++m_sampleCount;
+
+        // Reset the countdown
+        m_sampleCountdown = SAMPLE_EVERY_X_TICK;
+    }
 }
 
 bool gbtest::APU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
