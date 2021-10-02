@@ -1,5 +1,12 @@
 # Source files
 set(SOURCE_FILES
+        apu/channels/APUChannel.cpp
+        apu/channels/APUChannel.h
+        apu/channels/APUChannel2.cpp
+        apu/channels/APUChannel2.h
+        apu/APU.cpp
+        apu/APU.h
+        apu/APURegisters.h
         cpu/interrupts/InterruptController.cpp
         cpu/interrupts/InterruptController.h
         cpu/interrupts/InterruptType.h

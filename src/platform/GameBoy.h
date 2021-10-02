@@ -3,6 +3,7 @@
 
 #include "bus/Bus.h"
 
+#include "../apu/APU.h"
 #include "../cpu/LR35902.h"
 #include "../joypad/Joypad.h"
 #include "../memory/Memory.h"
@@ -36,12 +37,16 @@ public:
     [[nodiscard]] Joypad& getJoypad();
     [[nodiscard]] const Joypad& getJoypad() const;
 
+    [[nodiscard]] APU& getApu();
+    [[nodiscard]] const APU& getApu() const;
+
 private:
     Bus m_bus;
     LR35902 m_cpu;
     Memory m_wholeMemory;
     PPU m_ppu;
     Joypad m_joypad;
+    APU m_apu;
 
     void resetCpuRegisters();
 

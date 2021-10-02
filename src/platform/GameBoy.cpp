@@ -78,6 +78,16 @@ const gbtest::Joypad& gbtest::GameBoy::getJoypad() const
     return m_joypad;
 }
 
+gbtest::APU& gbtest::GameBoy::getApu()
+{
+    return m_apu;
+}
+
+const gbtest::APU& gbtest::GameBoy::getApu() const
+{
+    return m_apu;
+}
+
 void gbtest::GameBoy::resetCpuRegisters()
 {
     // DMG registers
@@ -116,6 +126,7 @@ void gbtest::GameBoy::registerBusProviders()
     m_bus.registerBusProvider(&(m_cpu.getInterruptController()));
     m_bus.registerBusProvider(&m_ppu);
     m_bus.registerBusProvider(&m_joypad);
+    m_bus.registerBusProvider(&m_apu);
     m_bus.registerBusProvider(&m_wholeMemory);
 }
 
