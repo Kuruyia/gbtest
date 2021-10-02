@@ -4,6 +4,7 @@
 #include "bus/Bus.h"
 
 #include "../cpu/LR35902.h"
+#include "../joypad/Joypad.h"
 #include "../memory/Memory.h"
 #include "../ppu/PPU.h"
 #include "../utils/Tickable.h"
@@ -32,11 +33,15 @@ public:
     [[nodiscard]] PPU& getPpu();
     [[nodiscard]] const PPU& getPpu() const;
 
+    [[nodiscard]] Joypad& getJoypad();
+    [[nodiscard]] const Joypad& getJoypad() const;
+
 private:
     Bus m_bus;
     LR35902 m_cpu;
     Memory m_wholeMemory;
     PPU m_ppu;
+    Joypad m_joypad;
 
     void resetCpuRegisters();
 

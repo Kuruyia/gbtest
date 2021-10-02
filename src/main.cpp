@@ -32,10 +32,8 @@ int main()
                 UpdateTexture(lcdTex, &(framebuffer.front()));
             });
 
-    bool tickEnabled = true;
-
     // Try to open a ROM file
-    if (FILE* gbRom = fopen("mealybug-tearoom-tests/m3_window_timing.gb", "rb"); gbRom != nullptr) {
+    if (FILE* gbRom = fopen("tetris.bin", "rb"); gbRom != nullptr) {
         uint8_t currByte;
         unsigned offset = 0;
         while (fread(&currByte, sizeof(currByte), 0x1, gbRom) > 0) {
@@ -56,27 +54,20 @@ int main()
     }
 
     while (!WindowShouldClose()) {
-        // Tick the CPU (if enabled)
-        if (tickEnabled) {
-            gameboy.update(FRAME_TIME);
-        }
+        // Tick the gameboy
+        gameboy.update(FRAME_TIME);
 
-        // Check if keys were pressed
-        int keyPressed = 0;
-        while ((keyPressed = GetKeyPressed()) != 0) {
-            switch (keyPressed) {
-            case KEY_SPACE:
-                gameboy.tick();
-                break;
-
-            case KEY_P:
-                tickEnabled = !tickEnabled;
-                break;
-
-            default:
-                break;
-            }
-        }
+        // Update the joypad
+        gameboy.getJoypad().updateJoypadState(
+                IsKeyDown(KEY_RIGHT),
+                IsKeyDown(KEY_LEFT),
+                IsKeyDown(KEY_UP),
+                IsKeyDown(KEY_DOWN),
+                IsKeyDown(KEY_A),
+                IsKeyDown(KEY_S),
+                IsKeyDown(KEY_LEFT_SHIFT),
+                IsKeyDown(KEY_ENTER)
+        );
 
         // Draw the window
         BeginDrawing();

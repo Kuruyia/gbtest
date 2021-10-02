@@ -68,6 +68,16 @@ const gbtest::PPU& gbtest::GameBoy::getPpu() const
     return m_ppu;
 }
 
+gbtest::Joypad& gbtest::GameBoy::getJoypad()
+{
+    return m_joypad;
+}
+
+const gbtest::Joypad& gbtest::GameBoy::getJoypad() const
+{
+    return m_joypad;
+}
+
 void gbtest::GameBoy::resetCpuRegisters()
 {
     // DMG registers
@@ -105,6 +115,7 @@ void gbtest::GameBoy::registerBusProviders()
     // TODO: Have the real memory layout
     m_bus.registerBusProvider(&(m_cpu.getInterruptController()));
     m_bus.registerBusProvider(&m_ppu);
+    m_bus.registerBusProvider(&m_joypad);
     m_bus.registerBusProvider(&m_wholeMemory);
 }
 
@@ -112,5 +123,6 @@ void gbtest::GameBoy::unregisterBusProviders()
 {
     m_bus.unregisterBusProvider(&m_wholeMemory);
     m_bus.unregisterBusProvider(&m_ppu);
+    m_bus.unregisterBusProvider(&m_joypad);
     m_bus.unregisterBusProvider(&(m_cpu.getInterruptController()));
 }

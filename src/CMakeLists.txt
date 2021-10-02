@@ -9,6 +9,9 @@ set(SOURCE_FILES
         exceptions/bus/BusLockedAddressException.h
         exceptions/bus/BusNoHandlerException.cpp
         exceptions/bus/BusNoHandlerException.h
+        joypad/Joypad.cpp
+        joypad/Joypad.h
+        joypad/JoypadState.h
         memory/Memory.cpp
         memory/Memory.h
         platform/bus/Bus.cpp
