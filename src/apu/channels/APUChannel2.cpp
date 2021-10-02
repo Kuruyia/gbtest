@@ -1,9 +1,22 @@
+#include <cmath>
+
 #include "APUChannel2.h"
+
+gbtest::APUChannel2::APUChannel2()
+        : m_soundLengthWavePatternDuty()
+        , m_volumeEnvelope()
+        , m_frequencyLow()
+        , m_frequencyHigh()
+{
+
+}
 
 float gbtest::APUChannel2::sample() const
 {
     // TODO: Return a sample
-    return 0;
+    return std::sinf(
+            2 * static_cast<float>(M_PI) * (static_cast<float>(m_tickCount) / static_cast<float>(GAMEBOY_FREQUENCY))
+                    * 440);
 }
 
 bool gbtest::APUChannel2::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const

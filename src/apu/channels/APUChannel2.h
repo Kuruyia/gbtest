@@ -2,7 +2,9 @@
 #define GBTEST_APUCHANNEL2_H
 
 #include "APUChannel.h"
+
 #include "../APURegisters.h"
+#include "../../platform/GameBoyFrequencies.h"
 
 namespace gbtest {
 
@@ -10,10 +12,10 @@ class APUChannel2
         : public APUChannel {
 
 public:
-    APUChannel2() = default;
+    APUChannel2();
     ~APUChannel2() override = default;
 
-    float sample() const override;
+    [[nodiscard]] float sample() const override;
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;

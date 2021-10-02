@@ -13,11 +13,11 @@ public:
     APUChannel();
     ~APUChannel() override = default;
 
-    virtual float sample() const = 0;
+    [[nodiscard]] virtual float sample() const = 0;
 
     void tick() override;
 
-private:
+protected:
     unsigned m_tickCount;
 
 }; // class APUChannel
