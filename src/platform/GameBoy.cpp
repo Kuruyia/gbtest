@@ -24,7 +24,7 @@ void gbtest::GameBoy::init()
 
 void gbtest::GameBoy::update(float secondsToEmulate)
 {
-    const int ticksToEmulate = static_cast<int>(secondsToEmulate * CLOCK_FREQUENCY_HZ);
+    const int ticksToEmulate = static_cast<int>(secondsToEmulate * GAMEBOY_FREQUENCY);
 //    std::cout << "Emulating " << ticksToEmulate << " ticks" << std::endl;
 
     for (unsigned i = 0; i < ticksToEmulate; ++i) {
@@ -36,6 +36,7 @@ void gbtest::GameBoy::tick()
 {
     m_cpu.tick();
     m_ppu.tick();
+    m_apu.tick();
 }
 
 gbtest::Bus& gbtest::GameBoy::getBus()

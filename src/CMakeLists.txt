@@ -25,6 +25,7 @@ set(SOURCE_FILES
         platform/bus/Bus.h
         platform/GameBoy.cpp
         platform/GameBoy.h
+        platform/GameBoyFrequencies.h
         platform/bus/BusProvider.h
         platform/bus/BusRequestSource.h
         ppu/fifo/BackgroundFetcher.cpp

@@ -2,6 +2,7 @@
 #define GBTEST_GAMEBOY_H
 
 #include "bus/Bus.h"
+#include "GameBoyFrequencies.h"
 
 #include "../apu/APU.h"
 #include "../cpu/LR35902.h"
@@ -16,8 +17,6 @@ class GameBoy
         : public Tickable {
 
 public:
-    static constexpr unsigned CLOCK_FREQUENCY_HZ = 4194304;
-
     GameBoy();
     ~GameBoy() override;
 
