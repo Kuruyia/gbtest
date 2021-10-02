@@ -1,10 +1,10 @@
 #include "Joypad.h"
 
 gbtest::Joypad::Joypad()
-        : m_joypadState({.raw = 0xFF})
+        : m_joypadState()
         , m_selectedJoypadButtons(SelectedJoypadButtons::Joypad_Action)
 {
-
+    m_joypadState.raw = 0xFF;
 }
 
 void gbtest::Joypad::setRightButtonPressed(bool pressed)
