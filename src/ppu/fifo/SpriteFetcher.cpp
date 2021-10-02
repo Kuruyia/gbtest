@@ -44,7 +44,7 @@ void gbtest::SpriteFetcher::executeState()
         break;
     }
 
-    case FetcherState::FetchTileData:
+    case FetcherState::FetchTileData: {
         // Fetch the tile data
         uint8_t lineNumber;
 
@@ -53,16 +53,32 @@ void gbtest::SpriteFetcher::executeState()
             lineNumber = m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate + 16 - m_spriteToFetch.yPosition;
         }
         else {
-            lineNumber = 7 - (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate + 16 - m_spriteToFetch.yPosition);
+            // Where the sprite ends depends on the current object size flag
+            if (m_ppuRegisters.lcdControl.objSize == 0) {
+                lineNumber =
+                        7 - (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate + 16 - m_spriteToFetch.yPosition);
+            }
+            else {
+                lineNumber =
+                        15 - (m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate + 16 - m_spriteToFetch.yPosition);
+            }
         }
 
-        m_currentTileData = m_vram.getVramTileData().getTileLineUsingFirstMethod(m_spriteToFetch.tileIndex, lineNumber);
+        // Correct the tile index if needed
+        uint8_t tileIndex = m_spriteToFetch.tileIndex;
+
+        if (m_ppuRegisters.lcdControl.objSize == 1) {
+            tileIndex &= 0xFE;
+        }
+
+        m_currentTileData = m_vram.getVramTileData().getTileLineUsingFirstMethod(tileIndex, lineNumber);
 
         // Continue to the next state
         m_fetcherState = FetcherState::PushFIFO;
         m_cyclesToWait = 4;
 
         break;
+    }
 
     case FetcherState::PushFIFO:
         // Fill the queue with the fetched pixels
