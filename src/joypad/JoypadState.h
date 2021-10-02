@@ -20,6 +20,8 @@ union JoypadState {
     uint8_t raw;
 }; // union JoypadState
 
+static_assert(sizeof(JoypadState) == 1, "Joypad State structure size is incorrect");
+
 enum class SelectedJoypadButtons {
     Joypad_Direction,
     Joypad_Action,
