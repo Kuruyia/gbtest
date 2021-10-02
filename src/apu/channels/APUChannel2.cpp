@@ -14,7 +14,7 @@ gbtest::APUChannel2::APUChannel2()
 float gbtest::APUChannel2::sample() const
 {
     // TODO: Return a sample
-    return std::sinf(
+    return ::sinf(
             2 * static_cast<float>(M_PI) * (static_cast<float>(m_tickCount) / static_cast<float>(GAMEBOY_FREQUENCY))
                     * 440);
 }
