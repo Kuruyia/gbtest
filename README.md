@@ -34,6 +34,13 @@ A test GameBoy emulator written in C++ made for learning the inner workings of t
 
 - [hacktixme.ga/GBEDG/ppu](https://hacktixme.ga/GBEDG/ppu/) – Nicely written document about how the PPU works
 
+#### APU
+
+- [GbdevWiki - Gameboy sound hardware](https://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware) – More detailed page
+  about the sound hardware
+- [dspguide - The Fourier Series](https://www.dspguide.com/ch13/4.htm) – Fourier series equations for a bunch of
+  waveforms
+
 ### Libraries
 
 - [Raylib](https://www.raylib.com) – for the cross-platform video/input front-end
