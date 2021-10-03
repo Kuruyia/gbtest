@@ -4,6 +4,9 @@ set(SOURCE_FILES
         apu/channels/APUChannel.h
         apu/channels/APUChannel2.cpp
         apu/channels/APUChannel2.h
+        apu/units/AudioPulseWave.cpp
+        apu/units/AudioPulseWave.h
+        apu/units/PulseWavePatternDuty.h
         apu/APU.cpp
         apu/APU.h
         apu/APURegisters.h

@@ -3,7 +3,9 @@
 
 #include "APUChannel.h"
 
+#include "../units/AudioPulseWave.h"
 #include "../APURegisters.h"
+
 #include "../../platform/GameBoyFrequencies.h"
 
 namespace gbtest {
@@ -12,8 +14,6 @@ class APUChannel2
         : public APUChannel {
 
 public:
-    static constexpr unsigned NB_HARMONICS = 12;
-
     APUChannel2();
     ~APUChannel2() override = default;
 
@@ -30,6 +30,11 @@ public:
 
 private:
     Channel2Registers m_channel2Registers;
+
+    AudioPulseWave m_audioPulseWave;
+
+    void updateFrequency();
+    void updatePatternDuty();
 
 }; // class APUChannel2
 
