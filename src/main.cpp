@@ -20,15 +20,15 @@ void maDataCallback(ma_device* pDevice, void* pOutput, const void* pInput, ma_ui
     auto* ctx = static_cast<gbtest::GameBoy*>(pDevice->pUserData);
 
     // Consume the samples if there are enough available
-    if (ctx->getApu().getSampleCount() >= frameCount) {
-        ma_copy_pcm_frames(pOutput, ctx->getApu().getSampleBuffer().begin(), frameCount, ma_format_f32,
+    if (ctx->getApu().getFrameCount() >= frameCount) {
+        ma_copy_pcm_frames(pOutput, ctx->getApu().getFramebuffer().begin(), frameCount, ma_format_f32,
                 gbtest::APU::CHANNELS);
-        ctx->getApu().consumeSamples(frameCount);
+        ctx->getApu().consumeFrames(frameCount);
     }
 
 #ifdef SYNC_ON_AUDIO
     // Sync on audio
-    while (ctx->getApu().getSampleCount() < AUDIO_FRAMES_REQUIRED) {
+    while (ctx->getApu().getFrameCount() < AUDIO_FRAMES_REQUIRED) {
         ctx->tick();
     }
 #endif

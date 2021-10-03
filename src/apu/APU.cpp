@@ -4,8 +4,8 @@
 
 gbtest::APU::APU()
         : m_soundControlRegisters()
-        , m_samples()
-        , m_sampleCount(0)
+        , m_framebuffer()
+        , m_frameCount(0)
         , m_sampleCountdown(SAMPLE_EVERY_X_TICK)
 {
 
@@ -17,27 +17,27 @@ float gbtest::APU::sample() const
     return m_apuChannel2.sample();
 }
 
-const gbtest::APU::SampleBuffer& gbtest::APU::getSampleBuffer() const
+const gbtest::APU::AudioFramebuffer& gbtest::APU::getFramebuffer() const
 {
-    return m_samples;
+    return m_framebuffer;
 }
 
-bool gbtest::APU::isSampleBufferFull() const
+bool gbtest::APU::isFramebufferFull() const
 {
-    return m_sampleCount == m_samples.size();
+    return m_frameCount == m_framebuffer.size();
 }
 
-size_t gbtest::APU::getSampleCount() const
+size_t gbtest::APU::getFrameCount() const
 {
-    return m_sampleCount;
+    return m_frameCount;
 }
 
-void gbtest::APU::consumeSamples(size_t sampleCount)
+void gbtest::APU::consumeFrames(size_t frameCount)
 {
-    if (sampleCount <= m_sampleCount) {
+    if (frameCount <= m_frameCount) {
         // Move the extra samples to the beginning of the buffer
-        std::rotate(m_samples.begin(), m_samples.begin() + sampleCount, m_samples.begin() + m_sampleCount);
-        m_sampleCount -= sampleCount;
+        std::rotate(m_framebuffer.begin(), m_framebuffer.begin() + frameCount, m_framebuffer.begin() + m_frameCount);
+        m_frameCount -= frameCount;
     }
 }
 
@@ -47,10 +47,10 @@ void gbtest::APU::tick()
     m_apuChannel2.tick();
 
     // Check if we have to sample
-    if (m_sampleCount < m_samples.size() && --m_sampleCountdown == 0) {
+    if (m_frameCount < m_framebuffer.size() && --m_sampleCountdown == 0) {
         // Take a sample
-        m_samples[m_sampleCount] = sample();
-        ++m_sampleCount;
+        m_framebuffer[m_frameCount] = sample();
+        ++m_frameCount;
 
         // Reset the countdown
         m_sampleCountdown = SAMPLE_EVERY_X_TICK;
