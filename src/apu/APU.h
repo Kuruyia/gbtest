@@ -17,6 +17,7 @@ class APU
 public:
     static constexpr unsigned MAX_SAMPLE_COUNT = 1024;
     static constexpr unsigned SAMPLE_RATE = 44100;
+    static constexpr unsigned CHANNELS = 1;
     static constexpr unsigned SAMPLE_EVERY_X_TICK = GAMEBOY_FREQUENCY / SAMPLE_RATE;
 
     using SampleBuffer = std::array<float, MAX_SAMPLE_COUNT>;
@@ -28,7 +29,8 @@ public:
 
     [[nodiscard]] const SampleBuffer& getSampleBuffer() const;
     [[nodiscard]] bool isSampleBufferFull() const;
-    void resetSampling();
+    [[nodiscard]] size_t getSampleCount() const;
+    void consumeSamples(size_t sampleCount);
 
     void tick() override;
 

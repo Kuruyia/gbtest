@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "APU.h"
 
 gbtest::APU::APU()
@@ -25,10 +27,18 @@ bool gbtest::APU::isSampleBufferFull() const
     return m_sampleCount == m_samples.size();
 }
 
-void gbtest::APU::resetSampling()
+size_t gbtest::APU::getSampleCount() const
 {
-    m_sampleCount = 0;
-    m_sampleCountdown = SAMPLE_EVERY_X_TICK;
+    return m_sampleCount;
+}
+
+void gbtest::APU::consumeSamples(size_t sampleCount)
+{
+    if (sampleCount <= m_sampleCount) {
+        // Move the extra samples to the beginning of the buffer
+        std::rotate(m_samples.begin(), m_samples.begin() + sampleCount, m_samples.begin() + m_sampleCount);
+        m_sampleCount -= sampleCount;
+    }
 }
 
 void gbtest::APU::tick()
