@@ -51,10 +51,10 @@ static_assert(sizeof(FrequencyHigh) == 1, "Frequency High structure size is inco
 // [NR50] Channel control / ON-OFF / Volume
 union ChannelControl {
     struct {
-        uint8_t so1OutputVolume: 3;     // Output volume of the right channel
-        uint8_t so1OutputEnabled: 1;    // Output to the right channel (0: Disabled; 1: Enabled)
-        uint8_t so2OutputVolume: 3;     // Output volume of the left channel
-        uint8_t so2OutputEnabled: 1;    // Output to the left channel (0: Disabled; 1: Enabled)
+        uint8_t so1OutputVolume: 3; // Output volume of the right channel
+        uint8_t so1OutputVin: 1;    // Output Vin to the right channel (0: Disabled; 1: Enabled)
+        uint8_t so2OutputVolume: 3; // Output volume of the left channel
+        uint8_t so2OutputVin: 1;    // Output Vin to the left channel (0: Disabled; 1: Enabled)
     };
     uint8_t raw;
 }; // union ChannelControl

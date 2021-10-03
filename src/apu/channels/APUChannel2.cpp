@@ -22,9 +22,12 @@ const gbtest::Channel2Registers& gbtest::APUChannel2::getRegisters() const
 float gbtest::APUChannel2::sample() const
 {
     // TODO: Return a sample
+    const unsigned frequency = 131072
+            / (2048 - (m_channel2Registers.frequencyLow.raw | (m_channel2Registers.frequencyHigh.frequencyHigh << 8)));
+
     return ::sinf(
             2 * static_cast<float>(M_PI) * (static_cast<float>(m_tickCount) / static_cast<float>(GAMEBOY_FREQUENCY))
-                    * 440);
+                    * frequency);
 }
 
 bool gbtest::APUChannel2::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
