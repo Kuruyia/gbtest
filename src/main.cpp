@@ -21,7 +21,7 @@ void maDataCallback(ma_device* pDevice, void* pOutput, const void* pInput, ma_ui
 
     // Consume the samples if there are enough available
     if (ctx->getApu().getFrameCount() >= frameCount) {
-        ma_copy_pcm_frames(pOutput, ctx->getApu().getFramebuffer().begin(), frameCount, ma_format_f32,
+        ma_copy_pcm_frames(pOutput, ctx->getApu().getFramebuffer().data(), frameCount, ma_format_f32,
                 gbtest::APU::CHANNELS);
         ctx->getApu().consumeFrames(frameCount);
     }
@@ -123,7 +123,7 @@ int main()
 #ifdef SYNC_ON_AUDIO
         if (framebufferReady) {
             // Framebuffer was updated, copy its texture
-            UpdateTexture(lcdTex, gameboy->getPpu().getFramebuffer().getRawBuffer().begin());
+            UpdateTexture(lcdTex, gameboy->getPpu().getFramebuffer().getRawBuffer().data());
             framebufferReady = false;
         }
 #endif
