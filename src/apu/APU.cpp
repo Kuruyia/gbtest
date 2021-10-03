@@ -49,6 +49,16 @@ void gbtest::APU::consumeFrames(size_t frameCount)
     }
 }
 
+gbtest::SoundControlRegisters& gbtest::APU::getSoundControlRegisters()
+{
+    return m_soundControlRegisters;
+}
+
+const gbtest::SoundControlRegisters& gbtest::APU::getSoundControlRegisters() const
+{
+    return m_soundControlRegisters;
+}
+
 void gbtest::APU::tick()
 {
     // Tick the channels

@@ -32,6 +32,9 @@ public:
     [[nodiscard]] size_t getFrameCount() const;
     void consumeFrames(size_t frameCount);
 
+    [[nodiscard]] SoundControlRegisters& getSoundControlRegisters();
+    [[nodiscard]] const SoundControlRegisters& getSoundControlRegisters() const;
+
     void tick() override;
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;

@@ -94,7 +94,7 @@ void gbtest::GameBoy::resetCpuRegisters()
     // DMG registers
 
     // CPU
-    gbtest::LR35902Registers registers{};
+    LR35902Registers registers{};
     registers.af = 0x0180;
     registers.bc = 0x0013;
     registers.de = 0x00D8;
@@ -119,6 +119,13 @@ void gbtest::GameBoy::resetCpuRegisters()
     ppuRegisters.dmgPalettes.bgPaletteData.raw = 0xFC;
     ppuRegisters.dmgPalettes.objectPaletteData0.raw = 0xFF;
     ppuRegisters.dmgPalettes.objectPaletteData1.raw = 0xFF;
+
+    // APU
+    SoundControlRegisters& soundControlRegisters = m_apu.getSoundControlRegisters();
+
+    soundControlRegisters.channelControl.raw = 0x77;
+    soundControlRegisters.soundOutputTerminalSelection.raw = 0xF3;
+    soundControlRegisters.soundOnOff.raw = 0xF1;
 }
 
 void gbtest::GameBoy::registerBusProviders()
