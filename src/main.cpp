@@ -23,6 +23,7 @@ void maDataCallback(ma_device* pDevice, void* pOutput, const void* pInput, ma_ui
     if (ctx->getApu().getFrameCount() >= frameCount) {
         ma_copy_pcm_frames(pOutput, ctx->getApu().getFramebuffer().data(), frameCount, ma_format_f32,
                 gbtest::APU::CHANNELS);
+
         ctx->getApu().consumeFrames(frameCount);
     }
 

@@ -15,9 +15,9 @@ class APU
         : public BusProvider, public Tickable {
 
 public:
-    static constexpr unsigned MAX_FRAME_COUNT = 1024;
     static constexpr unsigned SAMPLE_RATE = 44100;
-    static constexpr unsigned CHANNELS = 1;
+    static constexpr unsigned CHANNELS = 2;
+    static constexpr unsigned MAX_FRAME_COUNT = 1024 * CHANNELS;
     static constexpr unsigned SAMPLE_EVERY_X_TICK = GAMEBOY_FREQUENCY / SAMPLE_RATE;
 
     using AudioFramebuffer = std::array<float, MAX_FRAME_COUNT>;
@@ -25,7 +25,7 @@ public:
     APU();
     ~APU() override = default;
 
-    [[nodiscard]] float sample() const;
+    void sample(float& sampleLeft, float& sampleRight) const;
 
     [[nodiscard]] const AudioFramebuffer& getFramebuffer() const;
     [[nodiscard]] bool isFramebufferFull() const;
@@ -46,7 +46,7 @@ private:
     APUChannel2 m_apuChannel2;
 
     AudioFramebuffer m_framebuffer;
-    size_t m_frameCount;
+    size_t m_sampleCount;
     unsigned m_sampleCountdown;
 
 }; // class APU

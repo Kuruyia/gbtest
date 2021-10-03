@@ -5,16 +5,23 @@
 gbtest::APU::APU()
         : m_soundControlRegisters()
         , m_framebuffer()
-        , m_frameCount(0)
+        , m_sampleCount(0)
         , m_sampleCountdown(SAMPLE_EVERY_X_TICK)
 {
 
 }
 
-float gbtest::APU::sample() const
+void gbtest::APU::sample(float& sampleLeft, float& sampleRight) const
 {
+    // Reset both samples
+    sampleLeft = 0.f;
+    sampleRight = 0.f;
+
     // TODO: Mix all channels
-    return m_apuChannel2.sample();
+    float channel2Sample = m_apuChannel2.sample();
+
+    sampleLeft += channel2Sample;
+    sampleRight += channel2Sample;
 }
 
 const gbtest::APU::AudioFramebuffer& gbtest::APU::getFramebuffer() const
@@ -24,20 +31,21 @@ const gbtest::APU::AudioFramebuffer& gbtest::APU::getFramebuffer() const
 
 bool gbtest::APU::isFramebufferFull() const
 {
-    return m_frameCount == m_framebuffer.size();
+    return m_sampleCount == m_framebuffer.size();
 }
 
 size_t gbtest::APU::getFrameCount() const
 {
-    return m_frameCount;
+    return m_sampleCount / CHANNELS;
 }
 
 void gbtest::APU::consumeFrames(size_t frameCount)
 {
-    if (frameCount <= m_frameCount) {
+    if ((frameCount * CHANNELS) <= m_sampleCount) {
         // Move the extra samples to the beginning of the buffer
-        std::rotate(m_framebuffer.begin(), m_framebuffer.begin() + frameCount, m_framebuffer.begin() + m_frameCount);
-        m_frameCount -= frameCount;
+        std::rotate(m_framebuffer.begin(), m_framebuffer.begin() + (frameCount * CHANNELS),
+                m_framebuffer.begin() + m_sampleCount);
+        m_sampleCount -= (frameCount * CHANNELS);
     }
 }
 
@@ -47,10 +55,10 @@ void gbtest::APU::tick()
     m_apuChannel2.tick();
 
     // Check if we have to sample
-    if (m_frameCount < m_framebuffer.size() && --m_sampleCountdown == 0) {
+    if (m_sampleCount < m_framebuffer.size() && --m_sampleCountdown == 0) {
         // Take a sample
-        m_framebuffer[m_frameCount] = sample();
-        ++m_frameCount;
+        sample(m_framebuffer[m_sampleCount], m_framebuffer[m_sampleCount + 1]);
+        m_sampleCount += 2;
 
         // Reset the countdown
         m_sampleCountdown = SAMPLE_EVERY_X_TICK;
