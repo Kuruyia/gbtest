@@ -12,6 +12,7 @@
 
 static constexpr unsigned TARGET_FPS = 60;
 static constexpr float FRAME_TIME = 1.f / TARGET_FPS;
+static constexpr size_t AUDIO_FRAMES_REQUIRED = 512;
 
 void maDataCallback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
 {
@@ -27,7 +28,9 @@ void maDataCallback(ma_device* pDevice, void* pOutput, const void* pInput, ma_ui
 
 #ifdef SYNC_ON_AUDIO
     // Sync on audio
-    ctx->update(static_cast<float>(frameCount) / gbtest::APU::SAMPLE_RATE);
+    while (ctx->getApu().getSampleCount() < AUDIO_FRAMES_REQUIRED) {
+        ctx->tick();
+    }
 #endif
 }
 
