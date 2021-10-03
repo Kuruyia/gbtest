@@ -31,8 +31,10 @@ float gbtest::APUChannel2::sample() const
      *  - t: Time when to compute the sample
      */
     float fourierSum = 0.f;
-    float k = 0.5f;
-    float t = static_cast<float>(m_tickCount) / static_cast<float>(GAMEBOY_FREQUENCY);
+    const float t = static_cast<float>(m_tickCount) / static_cast<float>(GAMEBOY_FREQUENCY);
+
+    const uint8_t wavePatternDuty = m_channel2Registers.soundLengthWavePatternDuty.wavePatternDuty;
+    const float k = (wavePatternDuty == 0 ? 1.f : 2.f * static_cast<float>(wavePatternDuty)) / 8.f;
 
     for (unsigned n = 1; n <= NB_HARMONICS; ++n) {
         fourierSum += (2.f / (static_cast<float>(n) * static_cast<float>(M_PI)))
