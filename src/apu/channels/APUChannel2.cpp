@@ -21,13 +21,26 @@ const gbtest::Channel2Registers& gbtest::APUChannel2::getRegisters() const
 
 float gbtest::APUChannel2::sample() const
 {
-    // TODO: Return a sample
+    // Compute the square wave frequency
     const unsigned frequency = 131072
             / (2048 - (m_channel2Registers.frequencyLow.raw | (m_channel2Registers.frequencyHigh.frequencyHigh << 8)));
 
-    return ::sinf(
-            2 * static_cast<float>(M_PI) * (static_cast<float>(m_tickCount) / static_cast<float>(GAMEBOY_FREQUENCY))
-                    * frequency);
+    /*
+     * Compute the Fourier series pulse wave:
+     *  - k: Pulse width (duty cycle)
+     *  - t: Time when to compute the sample
+     */
+    float fourierSum = 0.f;
+    float k = 0.5f;
+    float t = static_cast<float>(m_tickCount) / static_cast<float>(GAMEBOY_FREQUENCY);
+
+    for (unsigned n = 1; n <= NB_HARMONICS; ++n) {
+        fourierSum += (2.f / (static_cast<float>(n) * static_cast<float>(M_PI)))
+                * ::sinf(static_cast<float>(n) * static_cast<float>(M_PI) * k)
+                * ::cosf(2.f * static_cast<float>(n) * static_cast<float>(M_PI) * t * static_cast<float>(frequency));
+    }
+
+    return k + fourierSum;
 }
 
 bool gbtest::APUChannel2::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const

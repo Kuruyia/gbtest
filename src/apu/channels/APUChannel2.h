@@ -12,6 +12,8 @@ class APUChannel2
         : public APUChannel {
 
 public:
+    static constexpr unsigned NB_HARMONICS = 12;
+
     APUChannel2();
     ~APUChannel2() override = default;
 
