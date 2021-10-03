@@ -36,4 +36,5 @@ A test GameBoy emulator written in C++ made for learning the inner workings of t
 
 ### Libraries
 
-- [Raylib](https://www.raylib.com) – for the cross-platform front-end
+- [Raylib](https://www.raylib.com) – for the cross-platform video/input front-end
+- [miniaudio](https://miniaud.io/) – for the cross-platform audio front-end

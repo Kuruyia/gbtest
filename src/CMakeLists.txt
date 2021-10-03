@@ -71,6 +71,8 @@ set(SOURCE_FILES
         ppu/PPU.h
         ppu/PPURegisters.h
         utils/Tickable.h
+        miniaudio.cpp
+        miniaudio.h
         main.cpp)
 
 # Dependencies
