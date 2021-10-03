@@ -15,6 +15,9 @@ public:
     APUChannel2();
     ~APUChannel2() override = default;
 
+    [[nodiscard]] Channel2Registers& getRegisters();
+    [[nodiscard]] const Channel2Registers& getRegisters() const;
+
     [[nodiscard]] float sample() const override;
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
@@ -24,10 +27,7 @@ public:
     bool busWriteOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
 private:
-    SoundLengthWavePatternDuty m_soundLengthWavePatternDuty;
-    VolumeEnvelope m_volumeEnvelope;
-    FrequencyLow m_frequencyLow;
-    FrequencyHigh m_frequencyHigh;
+    Channel2Registers m_channel2Registers;
 
 }; // class APUChannel2
 

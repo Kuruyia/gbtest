@@ -4,12 +4,19 @@
 #include "APUChannel2.h"
 
 gbtest::APUChannel2::APUChannel2()
-        : m_soundLengthWavePatternDuty()
-        , m_volumeEnvelope()
-        , m_frequencyLow()
-        , m_frequencyHigh()
+        : m_channel2Registers()
 {
 
+}
+
+gbtest::Channel2Registers& gbtest::APUChannel2::getRegisters()
+{
+    return m_channel2Registers;
+}
+
+const gbtest::Channel2Registers& gbtest::APUChannel2::getRegisters() const
+{
+    return m_channel2Registers;
 }
 
 float gbtest::APUChannel2::sample() const
@@ -27,17 +34,17 @@ bool gbtest::APUChannel2::busRead(uint16_t addr, uint8_t& val, gbtest::BusReques
 
     switch (addr) {
     case 0xFF16:
-        val = m_soundLengthWavePatternDuty.raw;
+        val = m_channel2Registers.soundLengthWavePatternDuty.raw;
 
         break;
 
     case 0xFF17:
-        val = m_volumeEnvelope.raw;
+        val = m_channel2Registers.volumeEnvelope.raw;
 
         break;
 
     case 0xFF19:
-        val = m_frequencyHigh.raw;
+        val = m_channel2Registers.frequencyHigh.raw;
 
         break;
 
@@ -55,23 +62,23 @@ bool gbtest::APUChannel2::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
     switch (addr) {
     case 0xFF16:
-        m_soundLengthWavePatternDuty.raw = val;
+        m_channel2Registers.soundLengthWavePatternDuty.raw = val;
 
         break;
 
     case 0xFF17:
-        m_volumeEnvelope.raw = val;
+        m_channel2Registers.volumeEnvelope.raw = val;
 
         break;
 
     case 0xFF18:
-        m_frequencyLow.raw = val;
+        m_channel2Registers.frequencyLow.raw = val;
 
         break;
 
     case 0xFF19:
         // TODO: Handle write to Initial
-        m_frequencyHigh.raw = val;
+        m_channel2Registers.frequencyHigh.raw = val;
 
         break;
 

@@ -35,6 +35,9 @@ public:
     [[nodiscard]] SoundControlRegisters& getSoundControlRegisters();
     [[nodiscard]] const SoundControlRegisters& getSoundControlRegisters() const;
 
+    [[nodiscard]] APUChannel2& getChannel2();
+    [[nodiscard]] const APUChannel2& getChannel2() const;
+
     void tick() override;
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;

@@ -59,6 +59,16 @@ const gbtest::SoundControlRegisters& gbtest::APU::getSoundControlRegisters() con
     return m_soundControlRegisters;
 }
 
+gbtest::APUChannel2& gbtest::APU::getChannel2()
+{
+    return m_apuChannel2;
+}
+
+const gbtest::APUChannel2& gbtest::APU::getChannel2() const
+{
+    return m_apuChannel2;
+}
+
 void gbtest::APU::tick()
 {
     // Tick the channels

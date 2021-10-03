@@ -100,6 +100,14 @@ struct SoundControlRegisters {
     SoundOnOff soundOnOff;
 }; // struct SoundControlRegisters
 
+// Channel registers
+struct Channel2Registers {
+    SoundLengthWavePatternDuty soundLengthWavePatternDuty;
+    VolumeEnvelope volumeEnvelope;
+    FrequencyLow frequencyLow;
+    FrequencyHigh frequencyHigh;
+}; // struct Channel2Registers
+
 } // namespace gbtest
 
 #endif //GBTEST_APUREGISTERS_H
