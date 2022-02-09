@@ -45,7 +45,7 @@ jobs:
           buildPreset: ninja-multi-vcpkg-release
 
       - name: Install project
-        run: cmake --install '${{ github.workspace }}/builds/ninja-multi-vcpkg' --prefix '${{ github.workspace }}/out'
+        run: cmake --install '${{ github.workspace }}/builds/ninja-multi-vcpkg-release' --prefix '${{ github.workspace }}/out'
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2.2.4
