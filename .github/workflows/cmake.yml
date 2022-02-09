@@ -34,15 +34,15 @@ jobs:
 
       - uses: lukka/run-vcpkg@v10
         with:
-          setupOnly: true
+          vcpkgDirectory: '${{ runner.workspace }}/b/vcpkg'
           vcpkgGitCommitId: '${{ env.VCPKG_COMMIT }}'
+          vcpkgJsonGlob: '${{ github.workspace }}/vcpkg.json'
 
       - uses: lukka/run-cmake@v10
         with:
-          useVcpkgToolchainFile: true
-          cmakeGenerator: '${{ matrix.cmakeGenerator }}'
-          cmakeBuildType: 'Release'
-          buildDirectory: '${{ github.workspace }}/build'
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          configurePreset: ninja-multi-vcpkg
+          buildPreset: ninja-multi-vcpkg
 
       - name: Install project
         run: cmake --install '${{ github.workspace }}/build' --prefix '${{ github.workspace }}/out'
