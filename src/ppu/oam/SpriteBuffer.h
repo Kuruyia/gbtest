@@ -2,6 +2,7 @@
 #define GBTEST_SPRITEBUFFER_H
 
 #include <array>
+#include <cstddef>
 
 #include "OAMEntry.h"
 

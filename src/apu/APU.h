@@ -2,6 +2,7 @@
 #define GBTEST_APU_H
 
 #include <array>
+#include <cstddef>
 
 #include "channels/APUChannel2.h"
 

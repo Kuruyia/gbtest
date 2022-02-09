@@ -2,6 +2,7 @@
 #define GBTEST_OAM_H
 
 #include <array>
+#include <cstddef>
 
 #include "OAMEntry.h"
 #include "../../platform/bus/BusProvider.h"

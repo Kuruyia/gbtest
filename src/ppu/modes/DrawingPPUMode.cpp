@@ -7,12 +7,12 @@ gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegist
         , m_spriteFetcher(ppuRegisters, vram, m_spritePixelFifo)
         , m_spriteToCheckIdx(0)
         , m_currentXCoordinate(0)
-        , m_framebuffer(framebuffer)
-        , m_ppuRegisters(ppuRegisters)
-        , m_oam(oam)
         , m_pixelsToDiscard(0)
         , m_tickCounter(0)
         , m_reachedWindowLine(false)
+        , m_framebuffer(framebuffer)
+        , m_ppuRegisters(ppuRegisters)
+        , m_oam(oam)
 {
 
 }

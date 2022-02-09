@@ -2,6 +2,7 @@
 #define GBTEST_VRAMTILEMAPS_H
 
 #include <array>
+#include <cstddef>
 #include <cstdint>
 
 #include "../../platform/bus/BusProvider.h"

@@ -1,3 +1,5 @@
+#include <cstddef>
+
 #include "VRAMTileData.h"
 
 uint16_t gbtest::VRAMTileData::getTileLineUsingFirstMethod(uint8_t tileNumber, uint8_t lineNumber) const

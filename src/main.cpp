@@ -41,6 +41,31 @@ int main()
     std::unique_ptr<gbtest::GameBoy> gameboy = std::make_unique<gbtest::GameBoy>();
     gameboy->init();
 
+    // Try to open a ROM file
+    if (FILE* gbRom = fopen("individual/05.bin", "rb"); gbRom != nullptr) {
+        uint8_t currByte;
+        unsigned offset = 0;
+        while (fread(&currByte, sizeof(currByte), 0x1, gbRom) > 0) {
+            gameboy->getBus().write(offset, currByte, gbtest::BusRequestSource::Privileged);
+            ++offset;
+        }
+
+        fclose(gbRom);
+    }
+    else {
+        // LD A, 0xFF
+        gameboy->getBus().write(0x100, 0x3E, gbtest::BusRequestSource::Privileged);
+        gameboy->getBus().write(0x101, 0xFF, gbtest::BusRequestSource::Privileged);
+
+        // ADD A, 0x01
+        gameboy->getBus().write(0x102, 0xC6, gbtest::BusRequestSource::Privileged);
+        gameboy->getBus().write(0x103, 0x01, gbtest::BusRequestSource::Privileged);
+
+        // JR -1
+        gameboy->getBus().write(0x110, 0x18, gbtest::BusRequestSource::Privileged);
+        gameboy->getBus().write(0x111, -1, gbtest::BusRequestSource::Privileged);
+    }
+
     // Init the window
     InitWindow(680, 616, "gbtest");
     SetTargetFPS(TARGET_FPS);
@@ -81,27 +106,6 @@ int main()
     }
 
     ma_device_start(&device);
-
-    // Try to open a ROM file
-    if (FILE* gbRom = fopen("tetris.bin", "rb"); gbRom != nullptr) {
-        uint8_t currByte;
-        unsigned offset = 0;
-        while (fread(&currByte, sizeof(currByte), 0x1, gbRom) > 0) {
-            gameboy->getBus().write(offset++, currByte, gbtest::BusRequestSource::Privileged);
-        }
-
-        fclose(gbRom);
-    }
-    else {
-        gameboy->getBus().write(0x100, 0x3E, gbtest::BusRequestSource::Privileged); // LD A, 0xFF
-        gameboy->getBus().write(0x101, 0xFF, gbtest::BusRequestSource::Privileged);
-
-        gameboy->getBus().write(0x102, 0xC6, gbtest::BusRequestSource::Privileged); // ADD A, 0x01
-        gameboy->getBus().write(0x103, 0x01, gbtest::BusRequestSource::Privileged);
-
-        gameboy->getBus().write(0x110, 0x18, gbtest::BusRequestSource::Privileged); // JR -2
-        gameboy->getBus().write(0x111, -2, gbtest::BusRequestSource::Privileged);
-    }
 
     while (!WindowShouldClose()) {
 #ifndef SYNC_ON_AUDIO
