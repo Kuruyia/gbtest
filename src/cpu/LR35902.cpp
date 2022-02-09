@@ -297,7 +297,7 @@ void gbtest::LR35902::opcode08h()
 // ADD HL, BC
 void gbtest::LR35902::opcode09h()
 {
-    ADD_HL_r16(m_registers.bc);
+    ADD_HL_v16(m_registers.bc);
 }
 
 // LD A, (BC)
@@ -425,7 +425,7 @@ void gbtest::LR35902::opcode18h()
 // ADD HL, DE
 void gbtest::LR35902::opcode19h()
 {
-    ADD_HL_r16(m_registers.de);
+    ADD_HL_v16(m_registers.de);
 }
 
 // LD A, (DE)
@@ -582,7 +582,7 @@ void gbtest::LR35902::opcode28h()
 // ADD HL, HL
 void gbtest::LR35902::opcode29h()
 {
-    ADD_HL_r16(m_registers.hl);
+    ADD_HL_v16(m_registers.hl);
 }
 
 // LD A, (HL+)
@@ -734,7 +734,7 @@ void gbtest::LR35902::opcode38h()
 // ADD HL, SP
 void gbtest::LR35902::opcode39h()
 {
-    ADD_HL_r16(m_registers.sp);
+    ADD_HL_v16(m_registers.sp);
 }
 
 // LD A, (HL-)
@@ -2639,16 +2639,16 @@ void gbtest::LR35902::DEC_r8(uint8_t& reg)
     m_cyclesToWait = 4;
 }
 
-void gbtest::LR35902::ADD_HL_r16(const uint16_t& reg)
+void gbtest::LR35902::ADD_HL_v16(uint16_t value)
 {
     // Add the value of the specified register to HL
     uint16_t oldVal = m_registers.hl;
-    m_registers.hl += reg;
+    m_registers.hl += value;
 
     // Set the flags according to the result
     m_registers.f.n = 0;
-    m_registers.f.h = ((((oldVal & 0x0FFF) + (reg & 0x0FFF)) & 0x1000) == 0x1000);
-    m_registers.f.c = ((((oldVal & 0xFFFF) + (reg & 0xFFFF)) & 0x10000) == 0x10000);
+    m_registers.f.h = ((((oldVal & 0x0FFF) + (value & 0x0FFF)) & 0x1000) == 0x1000);
+    m_registers.f.c = ((((oldVal & 0xFFFF) + (value & 0xFFFF)) & 0x10000) == 0x10000);
 
     m_cyclesToWait = 8;
 }

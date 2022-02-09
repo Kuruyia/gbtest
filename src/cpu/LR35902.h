@@ -345,7 +345,7 @@ private:
     void INC_r8(uint8_t& reg);
     void DEC_r8(uint8_t& reg);
 
-    void ADD_HL_r16(const uint16_t& reg);
+    void ADD_HL_v16(uint16_t value);
 
 }; // class LR35902
 
