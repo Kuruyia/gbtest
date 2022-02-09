@@ -14,6 +14,20 @@
             "generator": "Ninja"
         },
         {
+            "name": "ninja-debug",
+            "inherits": "ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "ninja-release",
+            "inherits": "ninja",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
             "name": "ninja-multi-vcpkg",
             "displayName": "Ninja Multi-Config Configure Settings",
             "description": "Configure with vcpkg toolchain",
@@ -24,6 +38,20 @@
                     "type": "FILEPATH",
                     "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
                 }
+            }
+        },
+        {
+            "name": "ninja-multi-vcpkg-debug",
+            "inherits": "ninja-multi-vcpkg",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "ninja-multi-vcpkg-release",
+            "inherits": "ninja-multi-vcpkg",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
             }
         },
         {
@@ -42,6 +70,20 @@
                     "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
                 }
             }
+        },
+        {
+            "name": "msbuild-vcpkg-debug",
+            "inherits": "msbuild-vcpkg",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "msbuild-vcpkg-release",
+            "inherits": "msbuild-vcpkg",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
         }
     ],
     "buildPresets": [
@@ -52,16 +94,52 @@
             "description": "Build with Ninja"
         },
         {
+            "name": "ninja-debug",
+            "configurePreset": "ninja-debug",
+            "displayName": "Build with Ninja (Debug)",
+            "description": "Build with Ninja (Debug)"
+        },
+        {
+            "name": "ninja-release",
+            "configurePreset": "ninja-release",
+            "displayName": "Build with Ninja (Release)",
+            "description": "Build with Ninja (Release)"
+        },
+        {
             "name": "ninja-multi-vcpkg",
             "configurePreset": "ninja-multi-vcpkg",
             "displayName": "Build ninja-multi-vcpkg",
             "description": "Build ninja-multi-vcpkg Configurations"
         },
         {
+            "name": "ninja-multi-vcpkg-debug",
+            "configurePreset": "ninja-multi-vcpkg-debug",
+            "displayName": "Build ninja-multi-vcpkg (Debug)",
+            "description": "Build ninja-multi-vcpkg Configurations (Debug)"
+        },
+        {
+            "name": "ninja-multi-vcpkg-release",
+            "configurePreset": "ninja-multi-vcpkg-release",
+            "displayName": "Build ninja-multi-vcpkg (Release)",
+            "description": "Build ninja-multi-vcpkg Configurations (Release)"
+        },
+        {
             "name": "msbuild-vcpkg",
             "configurePreset": "msbuild-vcpkg",
             "displayName": "Build MSBuild",
             "description": "Build with MSBuild (VS)"
+        },
+        {
+            "name": "msbuild-vcpkg-debug",
+            "configurePreset": "msbuild-vcpkg-debug",
+            "displayName": "Build MSBuild (Debug)",
+            "description": "Build with MSBuild (VS / Debug)"
+        },
+        {
+            "name": "msbuild-vcpkg-release",
+            "configurePreset": "msbuild-vcpkg-release",
+            "displayName": "Build MSBuild (Release)",
+            "description": "Build with MSBuild (VS / Release)"
         }
     ]
 }

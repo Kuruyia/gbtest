@@ -41,8 +41,8 @@ jobs:
       - uses: lukka/run-cmake@v10
         with:
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
-          configurePreset: ninja-multi-vcpkg
-          buildPreset: ninja-multi-vcpkg
+          configurePreset: ninja-multi-vcpkg-release
+          buildPreset: ninja-multi-vcpkg-release
 
       - name: Install project
         run: cmake --install '${{ github.workspace }}/builds/ninja-multi-vcpkg' --prefix '${{ github.workspace }}/out'
