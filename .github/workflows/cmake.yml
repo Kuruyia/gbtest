@@ -2,7 +2,7 @@ name: CMake
 on: [ push ]
 
 env:
-  VCPKG_COMMIT: '4428702c1c56fdb7cb779584efdcba254d7b57ca'
+  VCPKG_COMMIT: '80ecdea4f9db9b22861075f14ef5d9394c3a0cf1'
 
 jobs:
   job:
@@ -32,20 +32,20 @@ jobs:
 
       - uses: lukka/get-cmake@latest
 
-      - uses: lukka/run-vcpkg@main
+      - uses: lukka/run-vcpkg@v10
         with:
-          setupOnly: true
+          vcpkgDirectory: '${{ runner.workspace }}/b/vcpkg'
           vcpkgGitCommitId: '${{ env.VCPKG_COMMIT }}'
+          vcpkgJsonGlob: '${{ github.workspace }}/vcpkg.json'
 
-      - uses: lukka/run-cmake@main
+      - uses: lukka/run-cmake@v10
         with:
-          useVcpkgToolchainFile: true
-          cmakeGenerator: '${{ matrix.cmakeGenerator }}'
-          cmakeBuildType: 'Release'
-          buildDirectory: '${{ github.workspace }}/build'
+          cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+          configurePreset: ninja-multi-vcpkg-release
+          buildPreset: ninja-multi-vcpkg-release
 
       - name: Install project
-        run: cmake --install '${{ github.workspace }}/build' --prefix '${{ github.workspace }}/out'
+        run: cmake --install '${{ github.workspace }}/builds/ninja-multi-vcpkg-release' --prefix '${{ github.workspace }}/out'
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2.2.4

@@ -1,4 +1,5 @@
-cmake-build-*
+cmake-build-*/
 build
-.idea
-vcpkg_installed
+.idea/
+vcpkg_installed/
+builds/
