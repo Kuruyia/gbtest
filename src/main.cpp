@@ -14,6 +14,8 @@ static constexpr unsigned TARGET_FPS = 60;
 static constexpr float FRAME_TIME = 1.f / TARGET_FPS;
 static constexpr size_t AUDIO_FRAMES_REQUIRED = 512;
 
+ma_lpf lpf;
+
 void maDataCallback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
 {
     // Grab the emulator core from user data
@@ -23,6 +25,7 @@ void maDataCallback(ma_device* pDevice, void* pOutput, const void* pInput, ma_ui
     if (ctx->getApu().getFrameCount() >= frameCount) {
         ma_copy_pcm_frames(pOutput, ctx->getApu().getFramebuffer().data(), frameCount, ma_format_f32,
                 gbtest::APU::CHANNELS);
+        ma_lpf_process_pcm_frames(&lpf, pOutput, pOutput, frameCount);
 
         ctx->getApu().consumeFrames(frameCount);
     }
@@ -41,8 +44,15 @@ int main()
     std::unique_ptr<gbtest::GameBoy> gameboy = std::make_unique<gbtest::GameBoy>();
     gameboy->init();
 
+    ma_lpf_config lpfConfig = ma_lpf_config_init(ma_format_f32, gbtest::APU::CHANNELS, gbtest::APU::SAMPLE_RATE,
+            gbtest::APU::SAMPLE_RATE / 2, 3);
+    ma_result result = ma_lpf_init(&lpfConfig, &lpf);
+    if (result != MA_SUCCESS) {
+        return -1;
+    }
+
     // Try to open a ROM file
-    if (FILE* gbRom = fopen("individual/05.bin", "rb"); gbRom != nullptr) {
+    if (FILE* gbRom = fopen("tetris.bin", "rb"); gbRom != nullptr) {
         uint8_t currByte;
         unsigned offset = 0;
         while (fread(&currByte, sizeof(currByte), 0x1, gbRom) > 0) {
