@@ -97,13 +97,15 @@
             "name": "ninja-debug",
             "configurePreset": "ninja-debug",
             "displayName": "Build with Ninja (Debug)",
-            "description": "Build with Ninja (Debug)"
+            "description": "Build with Ninja (Debug)",
+            "configuration": "Debug"
         },
         {
             "name": "ninja-release",
             "configurePreset": "ninja-release",
             "displayName": "Build with Ninja (Release)",
-            "description": "Build with Ninja (Release)"
+            "description": "Build with Ninja (Release)",
+            "configuration": "Release"
         },
         {
             "name": "ninja-multi-vcpkg",
@@ -115,13 +117,15 @@
             "name": "ninja-multi-vcpkg-debug",
             "configurePreset": "ninja-multi-vcpkg-debug",
             "displayName": "Build ninja-multi-vcpkg (Debug)",
-            "description": "Build ninja-multi-vcpkg Configurations (Debug)"
+            "description": "Build ninja-multi-vcpkg Configurations (Debug)",
+            "configuration": "Debug"
         },
         {
             "name": "ninja-multi-vcpkg-release",
             "configurePreset": "ninja-multi-vcpkg-release",
             "displayName": "Build ninja-multi-vcpkg (Release)",
-            "description": "Build ninja-multi-vcpkg Configurations (Release)"
+            "description": "Build ninja-multi-vcpkg Configurations (Release)",
+            "configuration": "Release"
         },
         {
             "name": "msbuild-vcpkg",
@@ -133,13 +137,15 @@
             "name": "msbuild-vcpkg-debug",
             "configurePreset": "msbuild-vcpkg-debug",
             "displayName": "Build MSBuild (Debug)",
-            "description": "Build with MSBuild (VS / Debug)"
+            "description": "Build with MSBuild (VS / Debug)",
+            "configuration": "Debug"
         },
         {
             "name": "msbuild-vcpkg-release",
             "configurePreset": "msbuild-vcpkg-release",
             "displayName": "Build MSBuild (Release)",
-            "description": "Build with MSBuild (VS / Release)"
+            "description": "Build with MSBuild (VS / Release)",
+            "configuration": "Release"
         }
     ]
 }
