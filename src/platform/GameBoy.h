@@ -1,10 +1,13 @@
 #ifndef GBTEST_GAMEBOY_H
 #define GBTEST_GAMEBOY_H
 
+#include <memory>
+
 #include "bus/Bus.h"
 #include "GameBoyFrequencies.h"
 
 #include "../apu/APU.h"
+#include "../cartridge/BaseCartridge.h"
 #include "../cpu/LR35902.h"
 #include "../joypad/Joypad.h"
 #include "../memory/Memory.h"
@@ -40,6 +43,13 @@ public:
     [[nodiscard]] APU& getApu();
     [[nodiscard]] const APU& getApu() const;
 
+    [[nodiscard]] Timer& getTimer();
+    [[nodiscard]] const Timer& getTimer() const;
+
+    void loadCartridge(std::unique_ptr<BaseCartridge> cartridge);
+    [[nodiscard]] BaseCartridge* getCartridge();
+    [[nodiscard]] const BaseCartridge* getCartridge() const;
+
 private:
     Bus m_bus;
     LR35902 m_cpu;
@@ -48,6 +58,7 @@ private:
     Joypad m_joypad;
     APU m_apu;
     Timer m_timer;
+    std::unique_ptr<BaseCartridge> m_cartridge;
 
     void resetCpuRegisters();
 

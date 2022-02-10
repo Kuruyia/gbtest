@@ -79,7 +79,7 @@ set(SOURCE_FILES
         utils/Tickable.h
         miniaudio.cpp
         miniaudio.h
-        main.cpp exceptions/ppu/UnknownPPUModeException.cpp exceptions/ppu/UnknownPPUModeException.h)
+        main.cpp exceptions/ppu/UnknownPPUModeException.cpp exceptions/ppu/UnknownPPUModeException.h cartridge/BaseCartridge.h cartridge/CartridgeNoMBC.cpp cartridge/CartridgeNoMBC.h cartridge/datasource/CartridgeDataSource.h cartridge/datasource/InMemoryCartridgeDataSource.h cartridge/BaseCartridge.cpp cartridge/datasource/InMemoryCartridgeDataSource.cpp)
 
 # Dependencies
 find_package(Threads REQUIRED)

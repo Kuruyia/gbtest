@@ -2,10 +2,13 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+#include <sys/stat.h>
 
 #include "miniaudio.h"
 #include <raylib.h>
 
+#include "cartridge/datasource/InMemoryCartridgeDataSource.h"
+#include "cartridge/CartridgeNoMBC.h"
 #include "platform/GameBoy.h"
 
 #define SYNC_ON_AUDIO
@@ -38,43 +41,40 @@ void maDataCallback(ma_device* pDevice, void* pOutput, const void* pInput, ma_ui
 #endif
 }
 
-int main()
+void loadROM(std::string_view filename, gbtest::InMemoryCartridgeDataSource& cartridgeDataSource)
 {
-    // Init the core emulator
-    std::unique_ptr<gbtest::GameBoy> gameboy = std::make_unique<gbtest::GameBoy>();
-    gameboy->init();
-
-    ma_lpf_config lpfConfig = ma_lpf_config_init(ma_format_f32, gbtest::APU::CHANNELS, gbtest::APU::SAMPLE_RATE,
-            gbtest::APU::SAMPLE_RATE / 2, 3);
-    ma_result result = ma_lpf_init(&lpfConfig, &lpf);
-    if (result != MA_SUCCESS) {
-        return -1;
-    }
-
-    // Try to open a ROM file
     if (FILE* gbRom = fopen("tetris.bin", "rb"); gbRom != nullptr) {
+        struct stat fileStats{};
+        fstat(fileno(gbRom), &fileStats);
+        cartridgeDataSource.getStorage().reserve(fileStats.st_size);
+
         uint8_t currByte;
         unsigned offset = 0;
+
         while (fread(&currByte, sizeof(currByte), 0x1, gbRom) > 0) {
-            gameboy->getBus().write(offset, currByte, gbtest::BusRequestSource::Privileged);
+            cartridgeDataSource.getStorage().push_back(currByte);
             ++offset;
         }
 
         fclose(gbRom);
     }
     else {
-        // LD A, 0xFF
-        gameboy->getBus().write(0x100, 0x3E, gbtest::BusRequestSource::Privileged);
-        gameboy->getBus().write(0x101, 0xFF, gbtest::BusRequestSource::Privileged);
-
-        // ADD A, 0x01
-        gameboy->getBus().write(0x102, 0xC6, gbtest::BusRequestSource::Privileged);
-        gameboy->getBus().write(0x103, 0x01, gbtest::BusRequestSource::Privileged);
-
-        // JR -1
-        gameboy->getBus().write(0x110, 0x18, gbtest::BusRequestSource::Privileged);
-        gameboy->getBus().write(0x111, -1, gbtest::BusRequestSource::Privileged);
+        std::cerr << "File " << filename << " not found!" << std::endl;
     }
+}
+
+int main()
+{
+    // Init the core emulator
+    std::unique_ptr<gbtest::GameBoy> gameboy = std::make_unique<gbtest::GameBoy>();
+    gameboy->init();
+
+    // Load a ROM file
+    gbtest::InMemoryCartridgeDataSource cartridgeDataSource;
+    loadROM("tetris.bin", cartridgeDataSource);
+
+    std::unique_ptr<gbtest::CartridgeNoMBC> cartridge = std::make_unique<gbtest::CartridgeNoMBC>(cartridgeDataSource);
+    gameboy->loadCartridge(std::move(cartridge));
 
     // Init the window
     InitWindow(680, 616, "gbtest");
@@ -103,6 +103,13 @@ int main()
             });
 
     // Init miniaudio
+    ma_lpf_config lpfConfig = ma_lpf_config_init(ma_format_f32, gbtest::APU::CHANNELS, gbtest::APU::SAMPLE_RATE,
+            gbtest::APU::SAMPLE_RATE / 2, 3);
+    ma_result result = ma_lpf_init(&lpfConfig, &lpf);
+    if (result != MA_SUCCESS) {
+        return -1;
+    }
+
     ma_device_config config = ma_device_config_init(ma_device_type_playback);
     config.playback.format = ma_format_f32;
     config.playback.channels = gbtest::APU::CHANNELS;

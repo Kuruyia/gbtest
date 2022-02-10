@@ -2,7 +2,7 @@
 
 gbtest::GameBoy::GameBoy()
         : m_cpu(m_bus)
-        , m_wholeMemory(0x0000, 0x10000)
+        , m_wholeMemory(0x8000, 0x8000)
         , m_ppu(m_bus)
         , m_timer(m_bus)
 {
@@ -91,6 +91,42 @@ const gbtest::APU& gbtest::GameBoy::getApu() const
     return m_apu;
 }
 
+gbtest::Timer& gbtest::GameBoy::getTimer()
+{
+    return m_timer;
+}
+
+const gbtest::Timer& gbtest::GameBoy::getTimer() const
+{
+    return m_timer;
+}
+
+void gbtest::GameBoy::loadCartridge(std::unique_ptr<BaseCartridge> cartridge)
+{
+    // Unregister the old cartridge from the bus
+    if (m_cartridge) {
+        m_bus.unregisterBusProvider(m_cartridge.get());
+    }
+
+    // Move in the new cartridge
+    m_cartridge = std::move(cartridge);
+
+    // Register the new cartridge to the bus
+    if (m_cartridge) {
+        m_bus.registerBusProvider(m_cartridge.get());
+    }
+}
+
+gbtest::BaseCartridge* gbtest::GameBoy::getCartridge()
+{
+    return m_cartridge.get();
+}
+
+const gbtest::BaseCartridge* gbtest::GameBoy::getCartridge() const
+{
+    return m_cartridge.get();
+}
+
 void gbtest::GameBoy::resetCpuRegisters()
 {
     // DMG registers
@@ -156,6 +192,10 @@ void gbtest::GameBoy::registerBusProviders()
 
 void gbtest::GameBoy::unregisterBusProviders()
 {
+    if (m_cartridge) {
+        m_bus.unregisterBusProvider(m_cartridge.get());
+    }
+
     m_bus.unregisterBusProvider(&m_wholeMemory);
     m_bus.unregisterBusProvider(&m_timer);
     m_bus.unregisterBusProvider(&m_apu);
