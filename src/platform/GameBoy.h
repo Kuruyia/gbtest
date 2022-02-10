@@ -9,6 +9,7 @@
 #include "../joypad/Joypad.h"
 #include "../memory/Memory.h"
 #include "../ppu/PPU.h"
+#include "../timer/Timer.h"
 #include "../utils/Tickable.h"
 
 namespace gbtest {
@@ -46,6 +47,7 @@ private:
     PPU m_ppu;
     Joypad m_joypad;
     APU m_apu;
+    Timer m_timer;
 
     void resetCpuRegisters();
 

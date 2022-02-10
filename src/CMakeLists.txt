@@ -73,6 +73,9 @@ set(SOURCE_FILES
         ppu/PPU.cpp
         ppu/PPU.h
         ppu/PPURegisters.h
+        timer/Timer.cpp
+        timer/Timer.h
+        timer/TimerRegisters.h
         utils/Tickable.h
         miniaudio.cpp
         miniaudio.h

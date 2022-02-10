@@ -4,6 +4,7 @@ gbtest::GameBoy::GameBoy()
         : m_cpu(m_bus)
         , m_wholeMemory(0x0000, 0x10000)
         , m_ppu(m_bus)
+        , m_timer(m_bus)
 {
 
 }
@@ -24,7 +25,7 @@ void gbtest::GameBoy::init()
 
 void gbtest::GameBoy::update(float secondsToEmulate)
 {
-    const int ticksToEmulate = static_cast<int>(secondsToEmulate * GAMEBOY_FREQUENCY);
+    const auto ticksToEmulate = static_cast<unsigned>(secondsToEmulate * GAMEBOY_FREQUENCY);
 //    std::cout << "Emulating " << ticksToEmulate << " ticks" << std::endl;
 
     for (unsigned i = 0; i < ticksToEmulate; ++i) {
@@ -34,6 +35,7 @@ void gbtest::GameBoy::update(float secondsToEmulate)
 
 void gbtest::GameBoy::tick()
 {
+    m_timer.tick();
     m_cpu.tick();
     m_ppu.tick();
     m_apu.tick();
@@ -104,6 +106,11 @@ void gbtest::GameBoy::resetCpuRegisters()
 
     m_cpu.setRegisters(registers);
 
+    // Timer
+    m_timer.getTimerCounterRegister().raw = 0x00;
+    m_timer.getTimerModuloRegister().raw = 0x00;
+    m_timer.getTimerControlRegister().raw = 0xF8;
+
     // PPU
     PPURegisters& ppuRegisters = m_ppu.getPpuRegisters();
 
@@ -143,13 +150,16 @@ void gbtest::GameBoy::registerBusProviders()
     m_bus.registerBusProvider(&m_ppu);
     m_bus.registerBusProvider(&m_joypad);
     m_bus.registerBusProvider(&m_apu);
+    m_bus.registerBusProvider(&m_timer);
     m_bus.registerBusProvider(&m_wholeMemory);
 }
 
 void gbtest::GameBoy::unregisterBusProviders()
 {
     m_bus.unregisterBusProvider(&m_wholeMemory);
-    m_bus.unregisterBusProvider(&m_ppu);
+    m_bus.unregisterBusProvider(&m_timer);
+    m_bus.unregisterBusProvider(&m_apu);
     m_bus.unregisterBusProvider(&m_joypad);
+    m_bus.unregisterBusProvider(&m_ppu);
     m_bus.unregisterBusProvider(&(m_cpu.getInterruptController()));
 }

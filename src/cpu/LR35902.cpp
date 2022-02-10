@@ -73,6 +73,7 @@ gbtest::LR35902::LR35902(Bus& bus)
                  [this] { opcodeF8h(); }, [this] { opcodeF9h(); }, [this] { opcodeFAh(); }, [this] { opcodeFBh(); },
                  [this] { opcodeFCh(); }, [this] { opcodeFDh(); }, [this] { opcodeFEh(); }, [this] { opcodeFFh(); }})
         , m_interruptController(bus)
+        , m_registers({})
         , m_cyclesToWait(0)
         , m_halted(false)
         , m_stopped(false)
