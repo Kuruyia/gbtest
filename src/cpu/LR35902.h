@@ -348,6 +348,9 @@ private:
 
     void ADD_HL_v16(uint16_t value);
 
+    uint16_t POP();
+    void PUSH(uint16_t value);
+
 }; // class LR35902
 
 } // namespace gbtest
