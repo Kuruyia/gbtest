@@ -84,7 +84,7 @@ void gbtest::SpriteFetcher::executeState()
         // Fill the queue with the fetched pixels
 
         // We subtract "m_pixelFifo.getSize()" to prevent overwriting any pixel already in the FIFO
-        uint8_t startPixel = 8 - m_pixelFifo.size();
+        uint8_t startPixel = 8 - (m_pixelFifo.size() & 0xFF);
 
         // If the sprite starts before the "beginning of the line", we need not push its pixels outside the viewport
         if (m_spriteToFetch.xPosition < 8) {

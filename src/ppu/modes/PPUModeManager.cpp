@@ -1,5 +1,7 @@
 #include "PPUModeManager.h"
 
+#include "../../exceptions/ppu/UnknownPPUModeException.h"
+
 gbtest::PPUModeManager::PPUModeManager(Bus& bus, Framebuffer& framebuffer, PPURegisters& ppuRegisters, const OAM& oam,
         const VRAM& vram)
         : m_oamSearchPpuMode(ppuRegisters, oam)
@@ -120,7 +122,11 @@ gbtest::PPUMode& gbtest::PPUModeManager::getCurrentModeInstance()
 
     case PPUModeType::VBlank:
         return m_vblankPpuMode;
+
+    default: break;
     }
+
+    throw gbtest::UnknownPPUModeException();
 }
 
 void gbtest::PPUModeManager::updateLcdStatusModeRegister()
@@ -141,6 +147,9 @@ void gbtest::PPUModeManager::updateLcdStatusModeRegister()
     case PPUModeType::VBlank:
         m_ppuRegisters.lcdStatus.mode = 1;
         break;
+
+    default:
+        throw gbtest::UnknownPPUModeException();
     }
 }
 

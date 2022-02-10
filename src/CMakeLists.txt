@@ -79,7 +79,7 @@ set(SOURCE_FILES
         utils/Tickable.h
         miniaudio.cpp
         miniaudio.h
-        main.cpp)
+        main.cpp exceptions/ppu/UnknownPPUModeException.cpp exceptions/ppu/UnknownPPUModeException.h)
 
 # Dependencies
 find_package(Threads REQUIRED)

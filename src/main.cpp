@@ -95,7 +95,7 @@ int main()
             [&](const gbtest::Framebuffer::FramebufferContainer& framebuffer) -> void {
 #ifndef SYNC_ON_AUDIO
                 // Copy the framebuffer for rendering
-                UpdateTexture(lcdTex, framebuffer.begin());
+                UpdateTexture(lcdTex, framebuffer.data());
 #else
                 // Mark the framebuffer ready
                 framebufferReady = true;

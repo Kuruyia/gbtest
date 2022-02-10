@@ -194,7 +194,7 @@ void gbtest::LR35902::handleInterrupt()
 
     // Find what interrupt is to be serviced
     uint16_t vectorAddress;
-    size_t i = 0;
+    uint16_t i = 0;
 
     while (i < 5) {
         if ((requestedInterrupts & (1 << i)) != 0) {
@@ -215,7 +215,7 @@ void gbtest::LR35902::handleInterrupt()
 
     // Call the interrupt vector
     m_bus.write(m_registers.sp - 1, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
-    m_bus.write(m_registers.sp - 2, m_registers.pc, gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.sp - 2, m_registers.pc & 0xFF, gbtest::BusRequestSource::CPU);
 
     m_registers.sp -= 2;
     m_registers.pc = vectorAddress;
@@ -289,7 +289,8 @@ void gbtest::LR35902::opcode07h()
 void gbtest::LR35902::opcode08h()
 {
     uint16_t addr = fetch() | (fetch() << 8);
-    m_bus.write(addr, m_registers.sp, gbtest::BusRequestSource::CPU);
+
+    m_bus.write(addr, m_registers.sp & 0xFF, gbtest::BusRequestSource::CPU);
     m_bus.write(addr + 1, m_registers.sp >> 8, gbtest::BusRequestSource::CPU);
 
     m_cyclesToWait = 20;
@@ -1696,7 +1697,7 @@ void gbtest::LR35902::opcodeC4h()
     }
 
     m_bus.write(m_registers.sp - 1, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
-    m_bus.write(m_registers.sp - 2, m_registers.pc, gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.sp - 2, m_registers.pc & 0xFF, gbtest::BusRequestSource::CPU);
 
     m_registers.sp -= 2;
     m_registers.pc = val;
@@ -1725,7 +1726,7 @@ void gbtest::LR35902::opcodeC6h()
 void gbtest::LR35902::opcodeC7h()
 {
     m_bus.write(m_registers.sp - 1, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
-    m_bus.write(m_registers.sp - 2, m_registers.pc, gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.sp - 2, m_registers.pc & 0xFF, gbtest::BusRequestSource::CPU);
 
     m_registers.sp -= 2;
     m_registers.pc = 0x00;
@@ -1860,7 +1861,7 @@ void gbtest::LR35902::opcodeCCh()
     }
 
     m_bus.write(m_registers.sp - 1, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
-    m_bus.write(m_registers.sp - 2, m_registers.pc, gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.sp - 2, m_registers.pc & 0xFF, gbtest::BusRequestSource::CPU);
 
     m_registers.sp -= 2;
     m_registers.pc = val;
@@ -1874,7 +1875,7 @@ void gbtest::LR35902::opcodeCDh()
     const uint16_t val = fetch() | (fetch() << 8);
 
     m_bus.write(m_registers.sp - 1, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
-    m_bus.write(m_registers.sp - 2, m_registers.pc, gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.sp - 2, m_registers.pc & 0xFF, gbtest::BusRequestSource::CPU);
 
     m_registers.sp -= 2;
     m_registers.pc = val;
@@ -1893,7 +1894,7 @@ void gbtest::LR35902::opcodeCEh()
 void gbtest::LR35902::opcodeCFh()
 {
     m_bus.write(m_registers.sp - 1, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
-    m_bus.write(m_registers.sp - 2, m_registers.pc, gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.sp - 2, m_registers.pc & 0xFF, gbtest::BusRequestSource::CPU);
 
     m_registers.sp -= 2;
     m_registers.pc = 0x08;
@@ -1956,7 +1957,7 @@ void gbtest::LR35902::opcodeD4h()
     }
 
     m_bus.write(m_registers.sp - 1, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
-    m_bus.write(m_registers.sp - 2, m_registers.pc, gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.sp - 2, m_registers.pc & 0xFF, gbtest::BusRequestSource::CPU);
 
     m_registers.sp -= 2;
     m_registers.pc = val;
@@ -1985,7 +1986,7 @@ void gbtest::LR35902::opcodeD6h()
 void gbtest::LR35902::opcodeD7h()
 {
     m_bus.write(m_registers.sp - 1, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
-    m_bus.write(m_registers.sp - 2, m_registers.pc, gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.sp - 2, m_registers.pc & 0xFF, gbtest::BusRequestSource::CPU);
 
     m_registers.sp -= 2;
     m_registers.pc = 0x10;
@@ -2049,7 +2050,7 @@ void gbtest::LR35902::opcodeDCh()
     }
 
     m_bus.write(m_registers.sp - 1, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
-    m_bus.write(m_registers.sp - 2, m_registers.pc, gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.sp - 2, m_registers.pc & 0xFF, gbtest::BusRequestSource::CPU);
 
     m_registers.sp -= 2;
     m_registers.pc = val;
@@ -2073,7 +2074,7 @@ void gbtest::LR35902::opcodeDEh()
 void gbtest::LR35902::opcodeDFh()
 {
     m_bus.write(m_registers.sp - 1, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
-    m_bus.write(m_registers.sp - 2, m_registers.pc, gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.sp - 2, m_registers.pc & 0xFF, gbtest::BusRequestSource::CPU);
 
     m_registers.sp -= 2;
     m_registers.pc = 0x18;
@@ -2142,7 +2143,7 @@ void gbtest::LR35902::opcodeE6h()
 void gbtest::LR35902::opcodeE7h()
 {
     m_bus.write(m_registers.sp - 1, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
-    m_bus.write(m_registers.sp - 2, m_registers.pc, gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.sp - 2, m_registers.pc & 0xFF, gbtest::BusRequestSource::CPU);
 
     m_registers.sp -= 2;
     m_registers.pc = 0x20;
@@ -2217,7 +2218,7 @@ void gbtest::LR35902::opcodeEEh()
 void gbtest::LR35902::opcodeEFh()
 {
     m_bus.write(m_registers.sp - 1, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
-    m_bus.write(m_registers.sp - 2, m_registers.pc, gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.sp - 2, m_registers.pc & 0xFF, gbtest::BusRequestSource::CPU);
 
     m_registers.sp -= 2;
     m_registers.pc = 0x28;
@@ -2265,7 +2266,7 @@ void gbtest::LR35902::opcodeF4h()
 void gbtest::LR35902::opcodeF5h()
 {
     m_bus.write(m_registers.sp - 1, m_registers.af >> 8, gbtest::BusRequestSource::CPU);
-    m_bus.write(m_registers.sp - 2, m_registers.af, gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.sp - 2, m_registers.af & 0xFF, gbtest::BusRequestSource::CPU);
 
     m_registers.sp -= 2;
     m_cyclesToWait = 16;
@@ -2288,7 +2289,7 @@ void gbtest::LR35902::opcodeF6h()
 void gbtest::LR35902::opcodeF7h()
 {
     m_bus.write(m_registers.sp - 1, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
-    m_bus.write(m_registers.sp - 2, m_registers.pc, gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.sp - 2, m_registers.pc & 0xFF, gbtest::BusRequestSource::CPU);
 
     m_registers.sp -= 2;
     m_registers.pc = 0x30;
@@ -2355,7 +2356,7 @@ void gbtest::LR35902::opcodeFEh()
 void gbtest::LR35902::opcodeFFh()
 {
     m_bus.write(m_registers.sp - 1, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
-    m_bus.write(m_registers.sp - 2, m_registers.pc, gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.sp - 2, m_registers.pc & 0xFF, gbtest::BusRequestSource::CPU);
 
     m_registers.sp -= 2;
     m_registers.pc = 0x38;
@@ -2499,7 +2500,7 @@ void gbtest::LR35902::ADD_A(const uint8_t& src)
     m_registers.f.h = ((((m_registers.a & 0x0F) + (src & 0x0F)) & 0x10) == 0x10);
 
     // Set the accumulator to the result
-    m_registers.a = res;
+    m_registers.a = (res & 0xFF);
 
     // Set the flags according to the result
     m_registers.f.z = (m_registers.a == 0);
@@ -2518,7 +2519,7 @@ void gbtest::LR35902::ADC_A(const uint8_t& src)
     m_registers.f.h = ((((m_registers.a & 0x0F) + (src & 0x0F) + (m_registers.f.c & 0x0F)) & 0x10) == 0x10);
 
     // Set the accumulator to the result
-    m_registers.a = res;
+    m_registers.a = (res & 0xFF);
 
     // Set the flags according to the result
     m_registers.f.z = (m_registers.a == 0);

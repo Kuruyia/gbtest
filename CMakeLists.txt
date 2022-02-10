@@ -5,7 +5,7 @@ project(gbtest)
 set(CMAKE_CXX_STANDARD 17)
 
 if (${CMAKE_CXX_COMPILER_ID} EQUAL MSVC)
-    add_compile_options(/Wall)
+    add_compile_options(/W3)
 else ()
     add_compile_options(-Wall -Wextra)
 endif ()
