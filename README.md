@@ -1,5 +1,6 @@
 # gbtest
 
+[![CMake](https://github.com/Kuruyia/gbtest/actions/workflows/cmake.yml/badge.svg?branch=master)](https://github.com/Kuruyia/gbtest/actions/workflows/cmake.yml)  
 A test GameBoy emulator written in C++ made for learning the inner workings of this console.
 
 ## What's working?
