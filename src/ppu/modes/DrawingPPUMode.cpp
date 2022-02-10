@@ -109,7 +109,7 @@ void gbtest::DrawingPPUMode::drawPixel()
         }
 
         // Mix both pixels
-        ColorUtils::ColorRGBA8888 mixedPixel;
+        ColorUtils::ColorRGBA8888 mixedPixel{};
         mixPixels(backgroundPixelData, spritePixelData, mixedPixel);
 
         // Set the pixel in the framebuffer
@@ -138,20 +138,22 @@ void gbtest::DrawingPPUMode::mixPixels(const FIFOPixelData& backgroundPixelData,
                     || (spritePixelData.backgroundPriority && backgroundPixelData.colorIndex != 0)
                     || m_ppuRegisters.lcdControl.objEnable == 0)) {
         // Use the background pixel
-        mixedPixel = ColorUtils::dmgBGPaletteIndexToRGBA8888(
+        ColorUtils::dmgBGPaletteIndexToRGBA8888(
                 m_ppuRegisters.dmgPalettes.bgPaletteData,
-                backgroundPixelData.colorIndex);
+                backgroundPixelData.colorIndex,
+                mixedPixel);
     }
     else if (m_ppuRegisters.lcdControl.objEnable == 1) {
         // Use the sprite pixel
-        mixedPixel = ColorUtils::dmgBGPaletteIndexToRGBA8888(
+        ColorUtils::dmgBGPaletteIndexToRGBA8888(
                 (spritePixelData.palette == 0) ? m_ppuRegisters.dmgPalettes.objectPaletteData0
-                                               : m_ppuRegisters.dmgPalettes.objectPaletteData1,
-                spritePixelData.colorIndex);
+                : m_ppuRegisters.dmgPalettes.objectPaletteData1,
+                spritePixelData.colorIndex,
+                mixedPixel);
     }
     else {
         // Neither sprite nor background is enabled
-        mixedPixel = ColorUtils::ColorRGBA8888(0xFF, 0xFF, 0xFF);
+        mixedPixel.raw = 0xFFFFFFFF;
     }
 }
 
