@@ -43,7 +43,8 @@ public:
     void step();
 
 private:
-    uint8_t fetch();
+    uint8_t fetch8();
+    uint16_t fetch16();
 
     Bus& m_bus;
 

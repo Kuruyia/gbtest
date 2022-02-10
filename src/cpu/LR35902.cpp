@@ -142,7 +142,7 @@ void gbtest::LR35902::tick()
         handleInterrupt();
 
         // Execute current instruction
-        const uint8_t opcode = fetch();
+        const uint8_t opcode = fetch8();
         try {
             m_opcodeLookup[opcode]();
         }
@@ -172,10 +172,18 @@ void gbtest::LR35902::step()
     tick();
 }
 
-uint8_t gbtest::LR35902::fetch()
+uint8_t gbtest::LR35902::fetch8()
 {
     uint8_t value = m_bus.read(m_registers.pc, gbtest::BusRequestSource::CPU);
     ++m_registers.pc;
+
+    return value;
+}
+
+uint16_t gbtest::LR35902::fetch16()
+{
+    uint16_t value = (fetch8() & 0xFF);
+    value |= (fetch8() << 8);
 
     return value;
 }
@@ -232,8 +240,8 @@ void gbtest::LR35902::opcode00h()
 // LD BC, d16
 void gbtest::LR35902::opcode01h()
 {
-    m_registers.c = fetch();
-    m_registers.b = fetch();
+    m_registers.c = fetch8();
+    m_registers.b = fetch8();
     m_cyclesToWait = 12;
 }
 
@@ -267,7 +275,7 @@ void gbtest::LR35902::opcode05h()
 // LD B, d8
 void gbtest::LR35902::opcode06h()
 {
-    m_registers.b = fetch();
+    m_registers.b = fetch8();
     m_cyclesToWait = 8;
 }
 
@@ -288,7 +296,7 @@ void gbtest::LR35902::opcode07h()
 // LD (a16), SP
 void gbtest::LR35902::opcode08h()
 {
-    uint16_t addr = fetch() | (fetch() << 8);
+    uint16_t addr = fetch16();
 
     m_bus.write(addr, m_registers.sp & 0xFF, gbtest::BusRequestSource::CPU);
     m_bus.write(addr + 1, m_registers.sp >> 8, gbtest::BusRequestSource::CPU);
@@ -332,7 +340,7 @@ void gbtest::LR35902::opcode0Dh()
 // LD C, d8
 void gbtest::LR35902::opcode0Eh()
 {
-    m_registers.c = fetch();
+    m_registers.c = fetch8();
     m_cyclesToWait = 8;
 }
 
@@ -363,8 +371,8 @@ void gbtest::LR35902::opcode10h()
 // LD DE, d16
 void gbtest::LR35902::opcode11h()
 {
-    m_registers.e = fetch();
-    m_registers.d = fetch();
+    m_registers.e = fetch8();
+    m_registers.d = fetch8();
     m_cyclesToWait = 12;
 }
 
@@ -398,7 +406,7 @@ void gbtest::LR35902::opcode15h()
 // LD D, d8
 void gbtest::LR35902::opcode16h()
 {
-    m_registers.d = fetch();
+    m_registers.d = fetch8();
     m_cyclesToWait = 8;
 }
 
@@ -420,7 +428,7 @@ void gbtest::LR35902::opcode17h()
 // JR r8
 void gbtest::LR35902::opcode18h()
 {
-    m_registers.pc += (int8_t) fetch();
+    m_registers.pc += (int8_t) fetch8();
     m_cyclesToWait = 12;
 }
 
@@ -460,7 +468,7 @@ void gbtest::LR35902::opcode1Dh()
 // LD E, d8
 void gbtest::LR35902::opcode1Eh()
 {
-    m_registers.e = fetch();
+    m_registers.e = fetch8();
     m_cyclesToWait = 8;
 }
 
@@ -482,7 +490,7 @@ void gbtest::LR35902::opcode1Fh()
 // JR NZ, r8
 void gbtest::LR35902::opcode20h()
 {
-    const auto val = (int8_t) fetch();
+    const auto val = (int8_t) fetch8();
 
     if (m_registers.f.z) {
         m_cyclesToWait = 8;
@@ -496,8 +504,8 @@ void gbtest::LR35902::opcode20h()
 // LD HL, d16
 void gbtest::LR35902::opcode21h()
 {
-    m_registers.l = fetch();
-    m_registers.h = fetch();
+    m_registers.l = fetch8();
+    m_registers.h = fetch8();
     m_cyclesToWait = 12;
 }
 
@@ -533,7 +541,7 @@ void gbtest::LR35902::opcode25h()
 // LD H, d8
 void gbtest::LR35902::opcode26h()
 {
-    m_registers.h = fetch();
+    m_registers.h = fetch8();
     m_cyclesToWait = 8;
 }
 
@@ -570,7 +578,7 @@ void gbtest::LR35902::opcode27h()
 // JR Z, r8
 void gbtest::LR35902::opcode28h()
 {
-    const auto val = (int8_t) fetch();
+    const auto val = (int8_t) fetch8();
 
     if (!m_registers.f.z) {
         m_cyclesToWait = 8;
@@ -619,7 +627,7 @@ void gbtest::LR35902::opcode2Dh()
 // LD L, d8
 void gbtest::LR35902::opcode2Eh()
 {
-    m_registers.l = fetch();
+    m_registers.l = fetch8();
     m_cyclesToWait = 8;
 }
 
@@ -637,7 +645,7 @@ void gbtest::LR35902::opcode2Fh()
 // JR NC, r8
 void gbtest::LR35902::opcode30h()
 {
-    const auto val = (int8_t) fetch();
+    const auto val = (int8_t) fetch8();
 
     if (m_registers.f.c) {
         m_cyclesToWait = 8;
@@ -651,7 +659,7 @@ void gbtest::LR35902::opcode30h()
 // LD SP, d16
 void gbtest::LR35902::opcode31h()
 {
-    m_registers.sp = fetch() | (fetch() << 8);
+    m_registers.sp = fetch16();
     m_cyclesToWait = 12;
 }
 
@@ -705,7 +713,7 @@ void gbtest::LR35902::opcode35h()
 // LD (HL), d8
 void gbtest::LR35902::opcode36h()
 {
-    m_bus.write(m_registers.hl, fetch(), gbtest::BusRequestSource::CPU);
+    m_bus.write(m_registers.hl, fetch8(), gbtest::BusRequestSource::CPU);
     m_cyclesToWait = 12;
 }
 
@@ -722,7 +730,7 @@ void gbtest::LR35902::opcode37h()
 // JR C, r8
 void gbtest::LR35902::opcode38h()
 {
-    const auto val = (int8_t) fetch();
+    const auto val = (int8_t) fetch8();
 
     if (!m_registers.f.c) {
         m_cyclesToWait = 8;
@@ -771,7 +779,7 @@ void gbtest::LR35902::opcode3Dh()
 // LD A, d8
 void gbtest::LR35902::opcode3Eh()
 {
-    m_registers.a = fetch();
+    m_registers.a = fetch8();
     m_cyclesToWait = 8;
 }
 
@@ -1668,7 +1676,7 @@ void gbtest::LR35902::opcodeC1h()
 // JP NZ, a16
 void gbtest::LR35902::opcodeC2h()
 {
-    const uint16_t val = fetch() | (fetch() << 8);
+    const uint16_t val = fetch16();
 
     if (m_registers.f.z) {
         m_cyclesToWait = 12;
@@ -1682,14 +1690,14 @@ void gbtest::LR35902::opcodeC2h()
 // JP a16
 void gbtest::LR35902::opcodeC3h()
 {
-    m_registers.pc = fetch() | (fetch() << 8);
+    m_registers.pc = fetch16();
     m_cyclesToWait = 16;
 }
 
 // CALL NZ, a16
 void gbtest::LR35902::opcodeC4h()
 {
-    const uint16_t val = fetch() | (fetch() << 8);
+    const uint16_t val = fetch16();
 
     if (m_registers.f.z) {
         m_cyclesToWait = 12;
@@ -1718,7 +1726,7 @@ void gbtest::LR35902::opcodeC5h()
 // ADD A, d8
 void gbtest::LR35902::opcodeC6h()
 {
-    ADD_A(fetch());
+    ADD_A(fetch8());
     m_cyclesToWait += 4;
 }
 
@@ -1762,7 +1770,7 @@ void gbtest::LR35902::opcodeC9h()
 // JP Z, a16
 void gbtest::LR35902::opcodeCAh()
 {
-    const uint16_t val = fetch() | (fetch() << 8);
+    const uint16_t val = fetch16();
 
     if (!m_registers.f.z) {
         m_cyclesToWait = 12;
@@ -1777,7 +1785,7 @@ void gbtest::LR35902::opcodeCAh()
 void gbtest::LR35902::opcodeCBh()
 {
     // Get the real opcode and the destination register/memory
-    const uint8_t opcode = fetch();
+    const uint8_t opcode = fetch8();
     uint8_t lowOpcode = opcode & 0x7;
 
     auto getRegisterByLowerBits = [&](const uint8_t& lowerBits, uint8_t& defaultDest) -> uint8_t& {
@@ -1853,7 +1861,7 @@ void gbtest::LR35902::opcodeCBh()
 // CALL Z, a16
 void gbtest::LR35902::opcodeCCh()
 {
-    const uint16_t val = fetch() | (fetch() << 8);
+    const uint16_t val = fetch16();
 
     if (!m_registers.f.z) {
         m_cyclesToWait = 12;
@@ -1872,7 +1880,7 @@ void gbtest::LR35902::opcodeCCh()
 // CALL a16
 void gbtest::LR35902::opcodeCDh()
 {
-    const uint16_t val = fetch() | (fetch() << 8);
+    const uint16_t val = fetch16();
 
     m_bus.write(m_registers.sp - 1, m_registers.pc >> 8, gbtest::BusRequestSource::CPU);
     m_bus.write(m_registers.sp - 2, m_registers.pc & 0xFF, gbtest::BusRequestSource::CPU);
@@ -1886,7 +1894,7 @@ void gbtest::LR35902::opcodeCDh()
 // ADC A, d8
 void gbtest::LR35902::opcodeCEh()
 {
-    ADC_A(fetch());
+    ADC_A(fetch8());
     m_cyclesToWait += 4;
 }
 
@@ -1930,7 +1938,7 @@ void gbtest::LR35902::opcodeD1h()
 // JP NC, a16
 void gbtest::LR35902::opcodeD2h()
 {
-    const uint16_t val = fetch() | (fetch() << 8);
+    const uint16_t val = fetch16();
 
     if (m_registers.f.c) {
         m_cyclesToWait = 12;
@@ -1949,7 +1957,7 @@ void gbtest::LR35902::opcodeD3h()
 // CALL NC, a16
 void gbtest::LR35902::opcodeD4h()
 {
-    const uint16_t val = fetch() | (fetch() << 8);
+    const uint16_t val = fetch16();
 
     if (m_registers.f.c) {
         m_cyclesToWait = 12;
@@ -1978,7 +1986,7 @@ void gbtest::LR35902::opcodeD5h()
 // SUB A, d8
 void gbtest::LR35902::opcodeD6h()
 {
-    SUB_A(fetch());
+    SUB_A(fetch8());
     m_cyclesToWait += 4;
 }
 
@@ -2023,7 +2031,7 @@ void gbtest::LR35902::opcodeD9h()
 // JP C, a16
 void gbtest::LR35902::opcodeDAh()
 {
-    const uint16_t val = fetch() | (fetch() << 8);
+    const uint16_t val = fetch16();
 
     if (!m_registers.f.c) {
         m_cyclesToWait = 12;
@@ -2042,7 +2050,7 @@ void gbtest::LR35902::opcodeDBh()
 // CALL C, a16
 void gbtest::LR35902::opcodeDCh()
 {
-    const uint16_t val = fetch() | (fetch() << 8);
+    const uint16_t val = fetch16();
 
     if (!m_registers.f.c) {
         m_cyclesToWait = 12;
@@ -2066,7 +2074,7 @@ void gbtest::LR35902::opcodeDDh()
 // SBC A, d8
 void gbtest::LR35902::opcodeDEh()
 {
-    SBC_A(fetch());
+    SBC_A(fetch8());
     m_cyclesToWait += 4;
 }
 
@@ -2085,7 +2093,7 @@ void gbtest::LR35902::opcodeDFh()
 // LDH (a8), A
 void gbtest::LR35902::opcodeE0h()
 {
-    m_bus.write(0xFF00 | fetch(), m_registers.a, gbtest::BusRequestSource::CPU);
+    m_bus.write(0xFF00 | fetch8(), m_registers.a, gbtest::BusRequestSource::CPU);
     m_cyclesToWait = 12;
 }
 
@@ -2129,7 +2137,7 @@ void gbtest::LR35902::opcodeE5h()
 // AND A, d8
 void gbtest::LR35902::opcodeE6h()
 {
-    m_registers.a &= fetch();
+    m_registers.a &= fetch8();
 
     m_registers.f.z = m_registers.a == 0;
     m_registers.f.n = 0;
@@ -2155,7 +2163,7 @@ void gbtest::LR35902::opcodeE7h()
 void gbtest::LR35902::opcodeE8h()
 {
     // First compute the final result
-    const int8_t immediateValue = (int8_t) fetch();
+    const int8_t immediateValue = (int8_t) fetch8();
     const uint32_t res = m_registers.sp + immediateValue;
 
     // Set the half-carry before doing anything as we need the current value in register A
@@ -2182,7 +2190,7 @@ void gbtest::LR35902::opcodeE9h()
 // LD (a16), A
 void gbtest::LR35902::opcodeEAh()
 {
-    m_bus.write(fetch() | (fetch() << 8), m_registers.a, gbtest::BusRequestSource::CPU);
+    m_bus.write(fetch16(), m_registers.a, gbtest::BusRequestSource::CPU);
     m_cyclesToWait = 16;
 }
 
@@ -2204,7 +2212,7 @@ void gbtest::LR35902::opcodeEDh()
 // XOR A, d8
 void gbtest::LR35902::opcodeEEh()
 {
-    m_registers.a ^= fetch();
+    m_registers.a ^= fetch8();
 
     m_registers.f.z = m_registers.a == 0;
     m_registers.f.n = 0;
@@ -2229,7 +2237,7 @@ void gbtest::LR35902::opcodeEFh()
 // LDH A, (a8)
 void gbtest::LR35902::opcodeF0h()
 {
-    m_registers.a = m_bus.read(0xFF00 | fetch(), gbtest::BusRequestSource::CPU);
+    m_registers.a = m_bus.read(0xFF00 | fetch8(), gbtest::BusRequestSource::CPU);
     m_cyclesToWait = 12;
 }
 
@@ -2275,7 +2283,7 @@ void gbtest::LR35902::opcodeF5h()
 // OR A, d8
 void gbtest::LR35902::opcodeF6h()
 {
-    m_registers.a |= fetch();
+    m_registers.a |= fetch8();
 
     m_registers.f.z = m_registers.a == 0;
     m_registers.f.n = 0;
@@ -2300,7 +2308,7 @@ void gbtest::LR35902::opcodeF7h()
 // LD HL, SP + r8
 void gbtest::LR35902::opcodeF8h()
 {
-    auto a = (int8_t) fetch();
+    auto a = (int8_t) fetch8();
     m_registers.hl = m_registers.sp + a;
 
     m_registers.f.z = 0;
@@ -2321,7 +2329,7 @@ void gbtest::LR35902::opcodeF9h()
 // LD A, (a16)
 void gbtest::LR35902::opcodeFAh()
 {
-    m_registers.a = m_bus.read(fetch() | (fetch() << 8), gbtest::BusRequestSource::CPU);
+    m_registers.a = m_bus.read(fetch16(), gbtest::BusRequestSource::CPU);
     m_cyclesToWait = 16;
 }
 
@@ -2346,7 +2354,7 @@ void gbtest::LR35902::opcodeFDh()
 // CP A, d8
 void gbtest::LR35902::opcodeFEh()
 {
-    const uint8_t val = fetch();
+    const uint8_t val = fetch8();
     CP_A(val);
 
     m_cyclesToWait += 4;
