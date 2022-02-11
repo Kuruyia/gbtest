@@ -4,10 +4,10 @@
 namespace gbtest {
 
 enum class PulseWavePatternDuty {
-    Duty_125 = 1,   // 12.5% Duty cycle
-    Duty_25 = 2,   //   25% Duty cycle
-    Duty_50 = 4,   //   50% Duty cycle
-    Duty_75 = 6,   //   75% Duty cycle
+    Duty_12_5,  // 12.5% Duty cycle
+    Duty_25,    //   25% Duty cycle
+    Duty_50,    //   50% Duty cycle
+    Duty_75,    //   75% Duty cycle
 }; // enum class PulseWavePatternDuty
 
 } // namespace gbtest

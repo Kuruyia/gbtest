@@ -8,8 +8,6 @@ namespace gbtest {
 class AudioPulseWave {
 
 public:
-    static constexpr unsigned NB_HARMONICS = 12;
-
     AudioPulseWave();
 
     void setFrequency(unsigned frequency);

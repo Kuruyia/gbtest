@@ -115,7 +115,7 @@ inline void gbtest::APUChannel2::updatePatternDuty()
 {
     switch (m_channel2Registers.soundLengthWavePatternDuty.wavePatternDuty) {
     case 0:
-        m_audioPulseWave.setPulseWavePatternDuty(PulseWavePatternDuty::Duty_125);
+        m_audioPulseWave.setPulseWavePatternDuty(PulseWavePatternDuty::Duty_12_5);
         break;
 
     case 1:
