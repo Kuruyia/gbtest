@@ -48,6 +48,8 @@ public:
     bool busWriteOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
 private:
+    unsigned m_tickCount;
+
     SoundControlRegisters m_soundControlRegisters;
 
     APUChannel2 m_apuChannel2;

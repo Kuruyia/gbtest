@@ -1,6 +1,8 @@
 #ifndef GBTEST_APUCHANNEL_H
 #define GBTEST_APUCHANNEL_H
 
+#include "../units/FrameSequencer.h"
+
 #include "../../platform/bus/BusProvider.h"
 #include "../../utils/Tickable.h"
 
@@ -10,15 +12,15 @@ class APUChannel
         : public BusProvider, public Tickable {
 
 public:
-    APUChannel();
+    APUChannel() = default;
     ~APUChannel() override = default;
 
-    [[nodiscard]] virtual float sample() const = 0;
+    [[nodiscard]] virtual float sample(float t) const = 0;
 
     void tick() override;
 
 protected:
-    unsigned m_tickCount;
+    FrameSequencer m_frameSequencer;
 
 }; // class APUChannel
 

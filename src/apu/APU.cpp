@@ -3,7 +3,8 @@
 #include "APU.h"
 
 gbtest::APU::APU()
-        : m_soundControlRegisters()
+        : m_tickCount(0)
+        , m_soundControlRegisters()
         , m_framebuffer()
         , m_sampleCount(0)
         , m_sampleCountdown(SAMPLE_EVERY_X_TICK)
@@ -18,7 +19,8 @@ void gbtest::APU::sample(float& sampleLeft, float& sampleRight) const
     sampleRight = 0.f;
 
     // TODO: Mix all channels
-    float channel2Sample = m_apuChannel2.sample();
+    float channel2Sample = m_apuChannel2.sample(
+            static_cast<float>(m_tickCount) / static_cast<float>(GAMEBOY_FREQUENCY));
 
     sampleLeft += channel2Sample;
     sampleRight += channel2Sample;
@@ -71,6 +73,9 @@ const gbtest::APUChannel2& gbtest::APU::getChannel2() const
 
 void gbtest::APU::tick()
 {
+    // Increment the tick counter
+    ++m_tickCount;
+
     // Tick the channels
     m_apuChannel2.tick();
 

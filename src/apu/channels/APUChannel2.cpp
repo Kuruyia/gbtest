@@ -16,10 +16,10 @@ const gbtest::Channel2Registers& gbtest::APUChannel2::getRegisters() const
     return m_channel2Registers;
 }
 
-float gbtest::APUChannel2::sample() const
+float gbtest::APUChannel2::sample(float t) const
 {
     // TODO: Implement all the units!
-    return m_audioPulseWave.sample(static_cast<float>(m_tickCount) / static_cast<float>(GAMEBOY_FREQUENCY));
+    return m_audioPulseWave.sample(t);
 }
 
 bool gbtest::APUChannel2::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const

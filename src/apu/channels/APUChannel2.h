@@ -6,8 +6,6 @@
 #include "../units/AudioPulseWave.h"
 #include "../APURegisters.h"
 
-#include "../../platform/GameBoyFrequencies.h"
-
 namespace gbtest {
 
 class APUChannel2
@@ -20,7 +18,7 @@ public:
     [[nodiscard]] Channel2Registers& getRegisters();
     [[nodiscard]] const Channel2Registers& getRegisters() const;
 
-    [[nodiscard]] float sample() const override;
+    [[nodiscard]] float sample(float t) const override;
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;

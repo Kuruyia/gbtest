@@ -6,10 +6,20 @@ set(SOURCE_FILES
         apu/channels/APUChannel2.h
         apu/units/AudioPulseWave.cpp
         apu/units/AudioPulseWave.h
+        apu/units/APUUnit.h
+        apu/units/FrameSequencer.cpp
+        apu/units/FrameSequencer.h
         apu/units/PulseWavePatternDuty.h
         apu/APU.cpp
         apu/APU.h
         apu/APURegisters.h
+        cartridge/datasource/CartridgeDataSource.h
+        cartridge/datasource/InMemoryCartridgeDataSource.cpp
+        cartridge/datasource/InMemoryCartridgeDataSource.h
+        cartridge/BaseCartridge.cpp
+        cartridge/BaseCartridge.h
+        cartridge/CartridgeNoMBC.cpp
+        cartridge/CartridgeNoMBC.h
         cpu/interrupts/InterruptController.cpp
         cpu/interrupts/InterruptController.h
         cpu/interrupts/InterruptType.h
@@ -19,6 +29,8 @@ set(SOURCE_FILES
         exceptions/bus/BusLockedAddressException.h
         exceptions/bus/BusNoHandlerException.cpp
         exceptions/bus/BusNoHandlerException.h
+        exceptions/ppu/UnknownPPUModeException.cpp
+        exceptions/ppu/UnknownPPUModeException.h
         joypad/Joypad.cpp
         joypad/Joypad.h
         joypad/JoypadState.h
@@ -79,7 +91,7 @@ set(SOURCE_FILES
         utils/Tickable.h
         miniaudio.cpp
         miniaudio.h
-        main.cpp exceptions/ppu/UnknownPPUModeException.cpp exceptions/ppu/UnknownPPUModeException.h cartridge/BaseCartridge.h cartridge/CartridgeNoMBC.cpp cartridge/CartridgeNoMBC.h cartridge/datasource/CartridgeDataSource.h cartridge/datasource/InMemoryCartridgeDataSource.h cartridge/BaseCartridge.cpp cartridge/datasource/InMemoryCartridgeDataSource.cpp)
+        main.cpp)
 
 # Dependencies
 find_package(Threads REQUIRED)
