@@ -1,15 +1,15 @@
-#ifndef GBIT_LR35902REGISTERS_H
-#define GBIT_LR35902REGISTERS_H
+#ifndef GBTEST_LR35902REGISTERS_H
+#define GBTEST_LR35902REGISTERS_H
 
 namespace gbtest {
 
 struct LR35902Registers {
-  union // Accumulator & Flags
-  {
-    uint16_t af;
-    struct {
-      struct // Flags
-      {
+    union // Accumulator & Flags
+    {
+        uint16_t af;
+        struct {
+            struct // Flags
+            {
         uint8_t unused: 4; // Unused
         uint8_t c: 1; // Carry Flag
         uint8_t h: 1; // Half Carry Flag
@@ -54,4 +54,4 @@ struct LR35902Registers {
 
 }
 
-#endif //GBIT_LR35902REGISTERS_H
+#endif //GBTEST_LR35902REGISTERS_H
