@@ -48,7 +48,7 @@ public:
     bool busWriteOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
 private:
-    unsigned m_tickCount;
+    float m_tickProgress;
 
     SoundControlRegisters m_soundControlRegisters;
 

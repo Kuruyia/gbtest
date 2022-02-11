@@ -4,6 +4,7 @@
 namespace gbtest {
 
 static constexpr unsigned GAMEBOY_FREQUENCY = 4194304;
+static constexpr float GAMEBOY_FREQUENCY_INV = 1.f / GAMEBOY_FREQUENCY;
 
 } // namespace gbtest
 

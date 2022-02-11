@@ -35,9 +35,7 @@ float gbtest::AudioPulseWave::sample(float t) const
     t *= (float) m_frequency;
 
     // Only keep the fractional part of the time
-    float integral;
-    t = modff(t, &integral);
-    t = abs(t);
+    t -= static_cast<long>(t);
 
     // Deliver the sample, depending on the duty cycle
     switch (m_pulseWavePatternDuty) {
