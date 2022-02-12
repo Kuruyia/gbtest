@@ -1,5 +1,3 @@
-#include <cmath>
-
 #include "AudioPulseWave.h"
 
 #include "../../platform/GameBoyFrequencies.h"
@@ -15,13 +13,13 @@ gbtest::AudioPulseWave::AudioPulseWave()
 
 }
 
-void gbtest::AudioPulseWave::setFrequency(unsigned int frequency)
+void gbtest::AudioPulseWave::setFrequency(uint16_t frequency)
 {
     m_frequency = frequency;
     updateRealFrequency();
 }
 
-unsigned gbtest::AudioPulseWave::getFrequency() const
+uint16_t gbtest::AudioPulseWave::getFrequency() const
 {
     return m_frequency;
 }

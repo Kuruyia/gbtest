@@ -2,6 +2,7 @@
 
 gbtest::APUChannel1::APUChannel1()
         : m_channel1Registers()
+        , m_sweep(m_audioPulseWave)
 {
 
 }
@@ -72,6 +73,11 @@ bool gbtest::APUChannel1::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
     switch (addr) {
     case 0xFF10:
         m_channel1Registers.sweep.raw = val;
+
+        // Update the sweep
+        m_sweep.setPeriod(m_channel1Registers.sweep.sweepTime);
+        m_sweep.setIncreasing(m_channel1Registers.sweep.sweepDirection);
+        m_sweep.setSweepShift(m_channel1Registers.sweep.nbSweepShift);
 
         break;
 
@@ -152,12 +158,16 @@ void gbtest::APUChannel1::tick()
     if (unitsToTick & static_cast<uint8_t>(APUUnit::VolumeEnvelope)) {
         m_volumeEnvelope.tick();
     }
+
+    if (unitsToTick & static_cast<uint8_t>(APUUnit::Sweep)) {
+        m_sweep.tick();
+    }
 }
 
 inline void gbtest::APUChannel1::updateFrequency()
 {
-    m_audioPulseWave.setFrequency(131072
-            / (2048 - (m_channel1Registers.frequencyLow.raw | (m_channel1Registers.frequencyHigh.frequencyHigh << 8))));
+    m_audioPulseWave.setFrequency(
+            m_channel1Registers.frequencyLow.raw | (m_channel1Registers.frequencyHigh.frequencyHigh << 8));
 }
 
 inline void gbtest::APUChannel1::updatePatternDuty()

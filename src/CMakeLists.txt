@@ -14,6 +14,8 @@ set(SOURCE_FILES
         apu/units/LengthCounter.cpp
         apu/units/LengthCounter.h
         apu/units/PulseWavePatternDuty.h
+        apu/units/Sweep.cpp
+        apu/units/Sweep.h
         apu/units/VolumeEnvelope.cpp
         apu/units/VolumeEnvelope.h
         apu/APU.cpp

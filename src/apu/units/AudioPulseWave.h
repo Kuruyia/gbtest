@@ -14,8 +14,8 @@ public:
     AudioPulseWave();
     ~AudioPulseWave() override = default;
 
-    void setFrequency(unsigned frequency);
-    [[nodiscard]] unsigned getFrequency() const;
+    void setFrequency(uint16_t frequency);
+    [[nodiscard]] uint16_t getFrequency() const;
 
     [[nodiscard]] unsigned getRealFrequency() const;
 
@@ -29,7 +29,7 @@ public:
 private:
     void updateRealFrequency();
 
-    unsigned m_frequency;
+    uint16_t m_frequency;
     unsigned m_realFrequency;
     PulseWavePatternDuty m_pulseWavePatternDuty;
 
