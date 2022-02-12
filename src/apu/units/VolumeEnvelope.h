@@ -23,6 +23,8 @@ public:
     void setPeriod(uint8_t period);
     [[nodiscard]] uint8_t getPeriod() const;
 
+    void doTrigger(uint8_t volume, uint8_t period);
+
     void tick() override;
 
 private:

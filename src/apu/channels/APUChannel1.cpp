@@ -29,7 +29,7 @@ float gbtest::APUChannel1::sample() const
 
 bool gbtest::APUChannel1::isChannelDisabled() const
 {
-    return m_lengthCounter.isChannelDisabled();
+    return (m_lengthCounter.isChannelDisabled() || m_sweep.isChannelDisabled());
 }
 
 bool gbtest::APUChannel1::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
@@ -111,7 +111,6 @@ bool gbtest::APUChannel1::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
         break;
 
     case 0xFF14:
-        // TODO: Handle write to Initial
         m_channel1Registers.frequencyHigh.raw = val;
 
         // Update the generator frequency
@@ -119,6 +118,12 @@ bool gbtest::APUChannel1::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         // Update the length counter enabled state
         m_lengthCounter.setEnabled(m_channel1Registers.frequencyHigh.counterConsecutiveSelection);
+
+        // Handle the trigger
+        if (m_channel1Registers.frequencyHigh.trigger) {
+            m_channel1Registers.frequencyHigh.trigger = 0;
+            doTrigger();
+        }
 
         break;
 
@@ -192,4 +197,13 @@ inline void gbtest::APUChannel1::updatePatternDuty()
     default:
         break;
     }
+}
+
+void gbtest::APUChannel1::doTrigger()
+{
+    // Dispatch the trigger event to the units
+    m_lengthCounter.doTrigger();
+    m_sweep.doTrigger(m_channel1Registers.sweep.sweepTime);
+    m_volumeEnvelope.doTrigger(m_channel1Registers.volumeEnvelope.envelopeInitialVolume,
+            m_channel1Registers.volumeEnvelope.nbEnvelopeSweep);
 }

@@ -95,7 +95,6 @@ bool gbtest::APUChannel2::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
         break;
 
     case 0xFF19:
-        // TODO: Handle write to Initial
         m_channel2Registers.frequencyHigh.raw = val;
 
         // Update the generator frequency
@@ -103,6 +102,12 @@ bool gbtest::APUChannel2::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         // Update the length counter enabled state
         m_lengthCounter.setEnabled(m_channel2Registers.frequencyHigh.counterConsecutiveSelection);
+
+        // Handle the trigger
+        if (m_channel2Registers.frequencyHigh.trigger) {
+            m_channel2Registers.frequencyHigh.trigger = 0;
+            doTrigger();
+        }
 
         break;
 
@@ -172,4 +177,12 @@ inline void gbtest::APUChannel2::updatePatternDuty()
     default:
         break;
     }
+}
+
+void gbtest::APUChannel2::doTrigger()
+{
+    // Dispatch the trigger event to the units
+    m_lengthCounter.doTrigger();
+    m_volumeEnvelope.doTrigger(m_channel2Registers.volumeEnvelope.envelopeInitialVolume,
+            m_channel2Registers.volumeEnvelope.nbEnvelopeSweep);
 }

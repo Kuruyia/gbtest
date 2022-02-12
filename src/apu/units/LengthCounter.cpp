@@ -32,6 +32,14 @@ bool gbtest::LengthCounter::isChannelDisabled() const
     return (m_enabled && m_countdown == 0);
 }
 
+void gbtest::LengthCounter::doTrigger()
+{
+    // Reload the countdown if necessary
+    if (m_countdown == 0) {
+        m_countdown = 64;
+    }
+}
+
 void gbtest::LengthCounter::tick()
 {
     // Decrease the countdown if necessary

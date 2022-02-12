@@ -54,7 +54,7 @@ union FrequencyHigh {
         uint8_t frequencyHigh: 3;               // Higher 3 bits of the frequency
         uint8_t unused: 3;
         uint8_t counterConsecutiveSelection: 1; // 1: Stop output when length in NR11/NR21 expires
-        uint8_t initial: 1;                     // 1: Restart sound
+        uint8_t trigger: 1;                     // 1: Restart sound
     };
     uint8_t raw;
 }; // union FrequencyHigh

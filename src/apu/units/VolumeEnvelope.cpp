@@ -38,6 +38,13 @@ uint8_t gbtest::VolumeEnvelope::getPeriod() const
     return m_period;
 }
 
+void gbtest::VolumeEnvelope::doTrigger(uint8_t volume, uint8_t period)
+{
+    // Reload the volume and the period
+    m_volume = volume;
+    m_period = period;
+}
+
 void gbtest::VolumeEnvelope::tick()
 {
     // Update the volume if the period is not zero and the volume is > 0 and < 15

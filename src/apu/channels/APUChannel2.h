@@ -42,6 +42,8 @@ private:
     void updateFrequency();
     void updatePatternDuty();
 
+    void doTrigger();
+
 }; // class APUChannel2
 
 } // namespace gbtest

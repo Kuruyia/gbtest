@@ -22,6 +22,8 @@ public:
 
     [[nodiscard]] bool isChannelDisabled() const;
 
+    void doTrigger();
+
     void tick() override;
 
 private:

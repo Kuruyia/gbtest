@@ -17,7 +17,7 @@ public:
 
     [[nodiscard]] unsigned getShadowFrequency() const;
 
-    [[nodiscard]] bool isEnabled() const;
+    [[nodiscard]] bool isChannelDisabled() const;
 
     void setPeriod(uint8_t period);
     [[nodiscard]] uint8_t getPeriod() const;
@@ -25,8 +25,10 @@ public:
     void setIncreasing(bool increasing);
     [[nodiscard]] bool isIncreasing() const;
 
-    void setSweepShift(uint8_t sweepTime);
+    void setSweepShift(uint8_t sweepShift);
     [[nodiscard]] uint8_t getSweepShift() const;
+
+    void doTrigger(uint8_t period);
 
     void tick() override;
 
@@ -34,7 +36,7 @@ private:
     AudioPulseWave& m_audioPulseWave;
 
     unsigned m_shadowFrequency;
-    bool m_enabled;
+    bool m_channelDisabled;
 
     uint8_t m_period;
     bool m_increasing;

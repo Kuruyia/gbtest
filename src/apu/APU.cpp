@@ -23,10 +23,13 @@ void gbtest::APU::sample(float& sampleLeft, float& sampleRight) const
     sampleLeft += channel1Sample;
     sampleRight += channel1Sample;
 
-//    float channel2Sample = m_apuChannel2.sample();
-//
-//    sampleLeft += channel2Sample;
-//    sampleRight += channel2Sample;
+    float channel2Sample = m_apuChannel2.sample();
+
+    sampleLeft += channel2Sample;
+    sampleRight += channel2Sample;
+
+    sampleLeft /= 2.f;
+    sampleRight /= 2.f;
 }
 
 const gbtest::APU::AudioFramebuffer& gbtest::APU::getFramebuffer() const
