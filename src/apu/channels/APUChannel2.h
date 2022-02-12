@@ -4,6 +4,7 @@
 #include "APUChannel.h"
 
 #include "../units/AudioPulseWave.h"
+#include "../units/LengthCounter.h"
 #include "../APURegisters.h"
 
 namespace gbtest {
@@ -20,6 +21,8 @@ public:
 
     [[nodiscard]] float sample() const override;
 
+    [[nodiscard]] bool isChannelDisabled() const override;
+
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
@@ -32,6 +35,7 @@ private:
     Channel2Registers m_channel2Registers;
 
     AudioPulseWave m_audioPulseWave;
+    LengthCounter m_lengthCounter;
 
     void updateFrequency();
     void updatePatternDuty();

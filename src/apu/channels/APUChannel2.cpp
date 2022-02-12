@@ -18,8 +18,18 @@ const gbtest::Channel2Registers& gbtest::APUChannel2::getRegisters() const
 
 float gbtest::APUChannel2::sample() const
 {
+    // If the channel is disabled, return 0
+    if (isChannelDisabled()) {
+        return 0.f;
+    }
+
     // TODO: Implement all the units!
     return m_audioPulseWave.getSample();
+}
+
+bool gbtest::APUChannel2::isChannelDisabled() const
+{
+    return m_lengthCounter.isChannelDisabled();
 }
 
 bool gbtest::APUChannel2::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
@@ -62,6 +72,9 @@ bool gbtest::APUChannel2::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
         // Update the generator pattern duty
         updatePatternDuty();
 
+        // Update the length counter
+        m_lengthCounter.setCountdown(m_channel2Registers.soundLengthWavePatternDuty.soundLengthData);
+
         break;
 
     case 0xFF17:
@@ -83,6 +96,9 @@ bool gbtest::APUChannel2::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         // Update the generator frequency
         updateFrequency();
+
+        // Update the length counter enabled state
+        m_lengthCounter.setEnabled(m_channel2Registers.frequencyHigh.counterConsecutiveSelection);
 
         break;
 
@@ -142,4 +158,10 @@ void gbtest::APUChannel2::tick()
 
     // Tick the units
     m_audioPulseWave.tick();
+
+    uint8_t unitsToTick = m_frameSequencer.getUnitsToTick();
+
+    if (unitsToTick & static_cast<uint8_t>(APUUnit::LengthCounter)) {
+        m_lengthCounter.tick();
+    }
 }

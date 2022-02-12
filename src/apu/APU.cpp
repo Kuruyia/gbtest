@@ -107,7 +107,11 @@ bool gbtest::APU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource 
             break;
 
         case 0xFF26:
-            val = m_soundControlRegisters.soundOnOff.raw;
+            val = (m_soundControlRegisters.soundOnOff.raw & 0xF0);
+
+            // Set channel statuses
+            // TODO: Do that for all 4 channels
+            val |= (m_apuChannel2.isChannelDisabled()) << 1;
 
             break;
 

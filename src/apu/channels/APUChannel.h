@@ -17,6 +17,8 @@ public:
 
     [[nodiscard]] virtual float sample() const = 0;
 
+    [[nodiscard]] virtual bool isChannelDisabled() const = 0;
+
     void tick() override;
 
 protected:
