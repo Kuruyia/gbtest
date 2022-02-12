@@ -17,6 +17,8 @@ public:
     void setFrequency(unsigned frequency);
     [[nodiscard]] unsigned getFrequency() const;
 
+    [[nodiscard]] unsigned getRealFrequency() const;
+
     void setPulseWavePatternDuty(PulseWavePatternDuty pulseWavePatternDuty);
     [[nodiscard]] const PulseWavePatternDuty& getPulseWavePatternDuty() const;
 
@@ -25,7 +27,10 @@ public:
     void tick() override;
 
 private:
+    void updateRealFrequency();
+
     unsigned m_frequency;
+    unsigned m_realFrequency;
     PulseWavePatternDuty m_pulseWavePatternDuty;
 
     float m_currentSample;

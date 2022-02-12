@@ -146,8 +146,8 @@ void gbtest::APUChannel2::tick()
 
 inline void gbtest::APUChannel2::updateFrequency()
 {
-    m_audioPulseWave.setFrequency(131072
-            / (2048 - (m_channel2Registers.frequencyLow.raw | (m_channel2Registers.frequencyHigh.frequencyHigh << 8))));
+    m_audioPulseWave.setFrequency(
+            m_channel2Registers.frequencyLow.raw | (m_channel2Registers.frequencyHigh.frequencyHigh << 8));
 }
 
 inline void gbtest::APUChannel2::updatePatternDuty()
