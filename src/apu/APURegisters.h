@@ -17,16 +17,16 @@ union SoundLengthWavePatternDuty {
 static_assert(sizeof(SoundLengthWavePatternDuty) == 1, "Sound Length/Wave Pattern Duty structure size is incorrect");
 
 // [NR12/NR22] Channel 1/2 Volume Envelope
-union VolumeEnvelope {
+union VolumeEnvelopeReg {
     struct {
         uint8_t nbEnvelopeSweep: 3;         // Number of envelope sweep (0: Stop operation)
         uint8_t envelopeDirection: 1;       // Envelope direction (0: Decrease; 1: Increase)
         uint8_t envelopeInitialVolume: 4;   // Initial volume of envelope (0: No sound)
     };
     uint8_t raw;
-}; // union VolumeEnvelope
+}; // union VolumeEnvelopeReg
 
-static_assert(sizeof(VolumeEnvelope) == 1, "Volume Envelope structure size is incorrect");
+static_assert(sizeof(VolumeEnvelopeReg) == 1, "Volume Envelope structure size is incorrect");
 
 // [NR13/23] Channel 1/2 Frequency Low
 union FrequencyLow {
@@ -103,7 +103,7 @@ struct SoundControlRegisters {
 // Channel registers
 struct Channel2Registers {
     SoundLengthWavePatternDuty soundLengthWavePatternDuty;
-    VolumeEnvelope volumeEnvelope;
+    VolumeEnvelopeReg volumeEnvelope;
     FrequencyLow frequencyLow;
     FrequencyHigh frequencyHigh;
 }; // struct Channel2Registers

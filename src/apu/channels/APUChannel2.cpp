@@ -23,8 +23,7 @@ float gbtest::APUChannel2::sample() const
         return 0.f;
     }
 
-    // TODO: Implement all the units!
-    return m_audioPulseWave.getSample();
+    return (m_audioPulseWave.getSample() * (static_cast<float>(m_volumeEnvelope.getVolume()) / 15.f));
 }
 
 bool gbtest::APUChannel2::isChannelDisabled() const
@@ -79,6 +78,11 @@ bool gbtest::APUChannel2::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
     case 0xFF17:
         m_channel2Registers.volumeEnvelope.raw = val;
+
+        // Update the volume envelope
+        m_volumeEnvelope.setVolume(m_channel2Registers.volumeEnvelope.envelopeInitialVolume);
+        m_volumeEnvelope.setIncreasing(m_channel2Registers.volumeEnvelope.envelopeDirection);
+        m_volumeEnvelope.setPeriod(m_channel2Registers.volumeEnvelope.nbEnvelopeSweep);
 
         break;
 
@@ -163,5 +167,9 @@ void gbtest::APUChannel2::tick()
 
     if (unitsToTick & static_cast<uint8_t>(APUUnit::LengthCounter)) {
         m_lengthCounter.tick();
+    }
+
+    if (unitsToTick & static_cast<uint8_t>(APUUnit::VolumeEnvelope)) {
+        m_volumeEnvelope.tick();
     }
 }

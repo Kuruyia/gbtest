@@ -5,6 +5,7 @@
 
 #include "../units/AudioPulseWave.h"
 #include "../units/LengthCounter.h"
+#include "../units/VolumeEnvelope.h"
 #include "../APURegisters.h"
 
 namespace gbtest {
@@ -36,6 +37,7 @@ private:
 
     AudioPulseWave m_audioPulseWave;
     LengthCounter m_lengthCounter;
+    VolumeEnvelope m_volumeEnvelope;
 
     void updateFrequency();
     void updatePatternDuty();
