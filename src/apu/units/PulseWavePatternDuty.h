@@ -1,6 +1,8 @@
 #ifndef GBTEST_PULSEWAVEPATTERNDUTY_H
 #define GBTEST_PULSEWAVEPATTERNDUTY_H
 
+#include <cstdint>
+
 namespace gbtest {
 
 enum class PulseWavePatternDuty {
