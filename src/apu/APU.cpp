@@ -18,10 +18,15 @@ void gbtest::APU::sample(float& sampleLeft, float& sampleRight) const
     sampleRight = 0.f;
 
     // TODO: Mix all channels
-    float channel2Sample = m_apuChannel2.sample();
+    float channel1Sample = m_apuChannel1.sample();
 
-    sampleLeft += channel2Sample;
-    sampleRight += channel2Sample;
+    sampleLeft += channel1Sample;
+    sampleRight += channel1Sample;
+
+//    float channel2Sample = m_apuChannel2.sample();
+//
+//    sampleLeft += channel2Sample;
+//    sampleRight += channel2Sample;
 }
 
 const gbtest::APU::AudioFramebuffer& gbtest::APU::getFramebuffer() const
@@ -59,6 +64,16 @@ const gbtest::SoundControlRegisters& gbtest::APU::getSoundControlRegisters() con
     return m_soundControlRegisters;
 }
 
+gbtest::APUChannel1& gbtest::APU::getChannel1()
+{
+    return m_apuChannel1;
+}
+
+const gbtest::APUChannel1& gbtest::APU::getChannel1() const
+{
+    return m_apuChannel1;
+}
+
 gbtest::APUChannel2& gbtest::APU::getChannel2()
 {
     return m_apuChannel2;
@@ -72,6 +87,7 @@ const gbtest::APUChannel2& gbtest::APU::getChannel2() const
 void gbtest::APU::tick()
 {
     // Tick the channels
+    m_apuChannel1.tick();
     m_apuChannel2.tick();
 
     // Check if we have to sample
@@ -91,6 +107,9 @@ bool gbtest::APU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource 
     if (addr < 0xFF10 || addr > 0xFF3F) { return false; }
 
     // TODO: Dispatch to all the channels
+    if (addr >= 0xFF10 && addr <= 0xFF14) {
+        m_apuChannel1.busRead(addr, val, requestSource);
+    }
     if (addr >= 0xFF16 && addr <= 0xFF19) {
         m_apuChannel2.busRead(addr, val, requestSource);
     }
@@ -111,6 +130,7 @@ bool gbtest::APU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource 
 
             // Set channel statuses
             // TODO: Do that for all 4 channels
+            val |= (m_apuChannel1.isChannelDisabled()) << 0;
             val |= (m_apuChannel2.isChannelDisabled()) << 1;
 
             break;
@@ -129,6 +149,9 @@ bool gbtest::APU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource 
     if (addr < 0xFF10 || addr > 0xFF3F) { return false; }
 
     // TODO: Dispatch to all the channels
+    if (addr >= 0xFF10 && addr <= 0xFF14) {
+        m_apuChannel1.busWrite(addr, val, requestSource);
+    }
     if (addr >= 0xFF16 && addr <= 0xFF19) {
         m_apuChannel2.busWrite(addr, val, requestSource);
     }

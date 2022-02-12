@@ -5,6 +5,19 @@
 
 namespace gbtest {
 
+// [NR10] Channel 1 Sweep register
+union SweepReg {
+    struct {
+        uint8_t nbSweepShift: 3;    // Number of sweep shift
+        uint8_t sweepDirection: 1;  // Sweep direction (0: Decrease; 1: Increase)
+        uint8_t sweepTime: 3;       // Sweep time
+        uint8_t unused: 1;
+    };
+    uint8_t raw;
+};
+
+static_assert(sizeof(SweepReg) == 1, "Sweep register structure size is incorrect");
+
 // [NR11/NR21] Channel 1/2 Sound Length/Wave Pattern Duty register
 union SoundLengthWavePatternDuty {
     struct {
@@ -26,7 +39,7 @@ union VolumeEnvelopeReg {
     uint8_t raw;
 }; // union VolumeEnvelopeReg
 
-static_assert(sizeof(VolumeEnvelopeReg) == 1, "Volume Envelope structure size is incorrect");
+static_assert(sizeof(VolumeEnvelopeReg) == 1, "Volume Envelope register structure size is incorrect");
 
 // [NR13/23] Channel 1/2 Frequency Low
 union FrequencyLow {
@@ -101,6 +114,14 @@ struct SoundControlRegisters {
 }; // struct SoundControlRegisters
 
 // Channel registers
+struct Channel1Registers {
+    SweepReg sweep;
+    SoundLengthWavePatternDuty soundLengthWavePatternDuty;
+    VolumeEnvelopeReg volumeEnvelope;
+    FrequencyLow frequencyLow;
+    FrequencyHigh frequencyHigh;
+}; // struct Channel1Registers
+
 struct Channel2Registers {
     SoundLengthWavePatternDuty soundLengthWavePatternDuty;
     VolumeEnvelopeReg volumeEnvelope;

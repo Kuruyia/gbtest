@@ -4,6 +4,7 @@
 #include <array>
 #include <cstddef>
 
+#include "channels/APUChannel1.h"
 #include "channels/APUChannel2.h"
 
 #include "../platform/bus/BusProvider.h"
@@ -36,6 +37,9 @@ public:
     [[nodiscard]] SoundControlRegisters& getSoundControlRegisters();
     [[nodiscard]] const SoundControlRegisters& getSoundControlRegisters() const;
 
+    [[nodiscard]] APUChannel1& getChannel1();
+    [[nodiscard]] const APUChannel1& getChannel1() const;
+
     [[nodiscard]] APUChannel2& getChannel2();
     [[nodiscard]] const APUChannel2& getChannel2() const;
 
@@ -50,6 +54,7 @@ public:
 private:
     SoundControlRegisters m_soundControlRegisters;
 
+    APUChannel1 m_apuChannel1;
     APUChannel2 m_apuChannel2;
 
     AudioFramebuffer m_framebuffer;

@@ -125,6 +125,25 @@ bool gbtest::APUChannel2::busWriteOverride(uint16_t addr, uint8_t val, gbtest::B
     return false;
 }
 
+void gbtest::APUChannel2::tick()
+{
+    // Tick the base class
+    APUChannel::tick();
+
+    // Tick the units
+    m_audioPulseWave.tick();
+
+    uint8_t unitsToTick = m_frameSequencer.getUnitsToTick();
+
+    if (unitsToTick & static_cast<uint8_t>(APUUnit::LengthCounter)) {
+        m_lengthCounter.tick();
+    }
+
+    if (unitsToTick & static_cast<uint8_t>(APUUnit::VolumeEnvelope)) {
+        m_volumeEnvelope.tick();
+    }
+}
+
 inline void gbtest::APUChannel2::updateFrequency()
 {
     m_audioPulseWave.setFrequency(131072
@@ -152,24 +171,5 @@ inline void gbtest::APUChannel2::updatePatternDuty()
 
     default:
         break;
-    }
-}
-
-void gbtest::APUChannel2::tick()
-{
-    // Tick the base class
-    APUChannel::tick();
-
-    // Tick the units
-    m_audioPulseWave.tick();
-
-    uint8_t unitsToTick = m_frameSequencer.getUnitsToTick();
-
-    if (unitsToTick & static_cast<uint8_t>(APUUnit::LengthCounter)) {
-        m_lengthCounter.tick();
-    }
-
-    if (unitsToTick & static_cast<uint8_t>(APUUnit::VolumeEnvelope)) {
-        m_volumeEnvelope.tick();
     }
 }
