@@ -16,10 +16,10 @@ const gbtest::Channel2Registers& gbtest::APUChannel2::getRegisters() const
     return m_channel2Registers;
 }
 
-float gbtest::APUChannel2::sample(float t) const
+float gbtest::APUChannel2::sample() const
 {
     // TODO: Implement all the units!
-    return m_audioPulseWave.sample(t);
+    return m_audioPulseWave.getSample();
 }
 
 bool gbtest::APUChannel2::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
@@ -133,4 +133,13 @@ inline void gbtest::APUChannel2::updatePatternDuty()
     default:
         break;
     }
+}
+
+void gbtest::APUChannel2::tick()
+{
+    // Tick the base class
+    APUChannel::tick();
+
+    // Tick the units
+    m_audioPulseWave.tick();
 }

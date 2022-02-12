@@ -48,8 +48,6 @@ public:
     bool busWriteOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
 private:
-    float m_tickProgress;
-
     SoundControlRegisters m_soundControlRegisters;
 
     APUChannel2 m_apuChannel2;

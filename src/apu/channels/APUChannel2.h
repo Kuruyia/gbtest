@@ -18,13 +18,15 @@ public:
     [[nodiscard]] Channel2Registers& getRegisters();
     [[nodiscard]] const Channel2Registers& getRegisters() const;
 
-    [[nodiscard]] float sample(float t) const override;
+    [[nodiscard]] float sample() const override;
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
     bool busReadOverride(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWriteOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
+
+    void tick() override;
 
 private:
     Channel2Registers m_channel2Registers;

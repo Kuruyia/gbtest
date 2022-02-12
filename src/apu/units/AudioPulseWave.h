@@ -3,12 +3,16 @@
 
 #include "PulseWavePatternDuty.h"
 
+#include "../../utils/Tickable.h"
+
 namespace gbtest {
 
-class AudioPulseWave {
+class AudioPulseWave
+        : public Tickable {
 
 public:
     AudioPulseWave();
+    ~AudioPulseWave() override = default;
 
     void setFrequency(unsigned frequency);
     [[nodiscard]] unsigned getFrequency() const;
@@ -16,11 +20,18 @@ public:
     void setPulseWavePatternDuty(PulseWavePatternDuty pulseWavePatternDuty);
     [[nodiscard]] const PulseWavePatternDuty& getPulseWavePatternDuty() const;
 
-    [[nodiscard]] float sample(float t) const;
+    [[nodiscard]] float getSample() const;
+
+    void tick() override;
 
 private:
     unsigned m_frequency;
     PulseWavePatternDuty m_pulseWavePatternDuty;
+
+    float m_currentSample;
+
+    int m_tickCountdown;
+    uint8_t m_currentStep;
 
 }; // class AudioPulseWave
 

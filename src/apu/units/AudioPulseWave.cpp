@@ -2,9 +2,14 @@
 
 #include "AudioPulseWave.h"
 
+#include "../../platform/GameBoyFrequencies.h"
+
 gbtest::AudioPulseWave::AudioPulseWave()
         : m_frequency(0)
         , m_pulseWavePatternDuty()
+        , m_currentSample(0.f)
+        , m_tickCountdown(GAMEBOY_FREQUENCY / 8)
+        , m_currentStep(0)
 {
 
 }
@@ -29,44 +34,30 @@ const gbtest::PulseWavePatternDuty& gbtest::AudioPulseWave::getPulseWavePatternD
     return m_pulseWavePatternDuty;
 }
 
-float gbtest::AudioPulseWave::sample(float t) const
+float gbtest::AudioPulseWave::getSample() const
 {
-    // Multiply the time by the frequency
-    t *= (float) m_frequency;
+    return m_currentSample;
+}
 
-    // Only keep the fractional part of the time
-    t -= static_cast<long>(t);
+void gbtest::AudioPulseWave::tick()
+{
+    // Decrease the tick countdown by the frequency
+    m_tickCountdown -= (int) m_frequency;
 
-    // Deliver the sample, depending on the duty cycle
-    switch (m_pulseWavePatternDuty) {
-    case PulseWavePatternDuty::Duty_12_5:
-        if (t >= 0.125f) {
-            return 0.f;
+    // Check if we have to update the sample
+    if (m_tickCountdown <= 0) {
+        // Reset the tick countdown
+        m_tickCountdown = (GAMEBOY_FREQUENCY / 8);
+
+        // Increase the step
+        ++m_currentStep;
+
+        if (m_currentStep >= 8) {
+            m_currentStep = 0;
         }
 
-        break;
-
-    case PulseWavePatternDuty::Duty_25:
-        if (t >= 0.25f) {
-            return 0.f;
-        }
-
-        break;
-
-    case PulseWavePatternDuty::Duty_50:
-        if (t >= 0.50f) {
-            return 0.f;
-        }
-
-        break;
-
-    case PulseWavePatternDuty::Duty_75:
-        if (t >= 0.75f) {
-            return 0.f;
-        }
-
-        break;
+        // Update the sample
+        m_currentSample = PULSE_WAVE_PATTERN_WAVEFORMS[(8 * static_cast<unsigned>(m_pulseWavePatternDuty))
+                + m_currentStep];
     }
-
-    return 1.f;
 }

@@ -15,7 +15,7 @@ public:
     APUChannel() = default;
     ~APUChannel() override = default;
 
-    [[nodiscard]] virtual float sample(float t) const = 0;
+    [[nodiscard]] virtual float sample() const = 0;
 
     void tick() override;
 
