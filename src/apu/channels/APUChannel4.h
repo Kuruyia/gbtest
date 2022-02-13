@@ -3,6 +3,7 @@
 
 #include "APUChannel.h"
 
+#include "../units/AudioNoise.h"
 #include "../units/LengthCounter.h"
 #include "../units/VolumeEnvelope.h"
 #include "../APURegisters.h"
@@ -34,6 +35,7 @@ public:
 private:
     Channel4Registers m_channel4Registers;
 
+    AudioNoise m_audioNoise;
     LengthCounter m_lengthCounter;
     VolumeEnvelope m_volumeEnvelope;
 

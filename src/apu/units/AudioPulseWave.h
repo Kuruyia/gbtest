@@ -1,6 +1,8 @@
 #ifndef GBTEST_AUDIOPULSEWAVE_H
 #define GBTEST_AUDIOPULSEWAVE_H
 
+#include <cstdint>
+
 #include "PulseWavePatternDuty.h"
 
 #include "../../utils/Tickable.h"

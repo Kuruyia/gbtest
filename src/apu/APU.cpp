@@ -107,7 +107,6 @@ void gbtest::APU::tick()
     // Tick the channels
     m_apuChannel1.tick();
     m_apuChannel2.tick();
-    m_apuChannel4.tick();
 
     // Check if we have to sample
     if (m_sampleCount < m_framebuffer.size() && --m_sampleCountdown == 0) {
@@ -118,6 +117,8 @@ void gbtest::APU::tick()
         // Reset the countdown
         m_sampleCountdown = SAMPLE_EVERY_X_TICK;
     }
+
+    m_apuChannel4.tick();
 }
 
 bool gbtest::APU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const

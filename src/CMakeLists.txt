@@ -8,6 +8,8 @@ set(SOURCE_FILES
         apu/channels/APUChannel2.h
         apu/channels/APUChannel4.cpp
         apu/channels/APUChannel4.h
+        apu/units/AudioNoise.cpp
+        apu/units/AudioNoise.h
         apu/units/AudioPulseWave.cpp
         apu/units/AudioPulseWave.h
         apu/units/APUUnit.h

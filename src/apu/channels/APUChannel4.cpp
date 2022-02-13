@@ -18,8 +18,12 @@ const gbtest::Channel4Registers& gbtest::APUChannel4::getRegisters() const
 
 float gbtest::APUChannel4::sample() const
 {
-    // TODO: Implement that
-    return 0.f;
+    // If the channel is disabled, return 0
+    if (isChannelDisabled()) {
+        return 0.f;
+    }
+
+    return (m_audioNoise.getSample() * (static_cast<float>(m_volumeEnvelope.getVolume()) / 15.f));
 }
 
 bool gbtest::APUChannel4::isChannelDisabled() const
@@ -82,6 +86,11 @@ bool gbtest::APUChannel4::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
     case 0xFF22:
         m_channel4Registers.polynomialCounter.raw = val;
 
+        // Update the noise generator
+        m_audioNoise.setDivideRatio(m_channel4Registers.polynomialCounter.dividingRatio);
+        m_audioNoise.setHalfWidth(m_channel4Registers.polynomialCounter.counterWidth);
+        m_audioNoise.setShiftClockFrequency(m_channel4Registers.polynomialCounter.shiftClockFrequency);
+
         break;
 
     case 0xFF23:
@@ -123,6 +132,8 @@ void gbtest::APUChannel4::tick()
     APUChannel::tick();
 
     // Tick the units
+    m_audioNoise.tick();
+
     uint8_t unitsToTick = m_frameSequencer.getUnitsToTick();
 
     if (unitsToTick & static_cast<uint8_t>(APUUnit::LengthCounter)) {
@@ -137,6 +148,7 @@ void gbtest::APUChannel4::tick()
 void gbtest::APUChannel4::doTrigger()
 {
     // Dispatch the trigger event to the units
+    m_audioNoise.doTrigger();
     m_lengthCounter.doTrigger();
     m_volumeEnvelope.doTrigger(m_channel4Registers.volumeEnvelope.envelopeInitialVolume,
             m_channel4Registers.volumeEnvelope.nbEnvelopeSweep);
