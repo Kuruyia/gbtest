@@ -17,29 +17,29 @@ void gbtest::APU::sample(float& sampleLeft, float& sampleRight) const
     sampleLeft = 0.f;
     sampleRight = 0.f;
 
-    // TODO: Mix all channels
-//    float channel1Sample = m_apuChannel1.sample();
-//
-//    sampleLeft += channel1Sample;
-//    sampleRight += channel1Sample;
-//
-//    float channel2Sample = m_apuChannel2.sample();
-//
-//    sampleLeft += channel2Sample;
-//    sampleRight += channel2Sample;
+    // Mix all channels
+    float channel1Sample = m_apuChannel1.sample();
+
+    sampleLeft += channel1Sample;
+    sampleRight += channel1Sample;
+
+    float channel2Sample = m_apuChannel2.sample();
+
+    sampleLeft += channel2Sample;
+    sampleRight += channel2Sample;
 
     float channel3Sample = m_apuChannel3.sample();
 
     sampleLeft += channel3Sample;
     sampleRight += channel3Sample;
 
-//    float channel4Sample = m_apuChannel4.sample();
-//
-//    sampleLeft += channel4Sample;
-//    sampleRight += channel4Sample;
-//
-//    sampleLeft /= 3.f;
-//    sampleRight /= 3.f;
+    float channel4Sample = m_apuChannel4.sample();
+
+    sampleLeft += channel4Sample;
+    sampleRight += channel4Sample;
+
+    sampleLeft /= 4.f;
+    sampleRight /= 4.f;
 }
 
 const gbtest::APU::AudioFramebuffer& gbtest::APU::getFramebuffer() const
@@ -145,7 +145,7 @@ bool gbtest::APU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource 
     // APU is in memory area from FF10h to FF3Fh
     if (addr < 0xFF10 || addr > 0xFF3F) { return false; }
 
-    // TODO: Dispatch to all the channels
+    // Dispatch to the channels or the APU registers
     if (addr >= 0xFF10 && addr <= 0xFF14) {
         m_apuChannel1.busRead(addr, val, requestSource);
     }
@@ -174,7 +174,6 @@ bool gbtest::APU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource 
             val = (m_soundControlRegisters.soundOnOff.raw & 0xF0);
 
             // Set channel statuses
-            // TODO: Do that for all 4 channels
             val |= (m_apuChannel1.isChannelDisabled()) << 0;
             val |= (m_apuChannel2.isChannelDisabled()) << 1;
             val |= (m_apuChannel3.isChannelDisabled()) << 2;
@@ -195,7 +194,7 @@ bool gbtest::APU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource 
     // APU is in memory area from FF10h to FF3Fh
     if (addr < 0xFF10 || addr > 0xFF3F) { return false; }
 
-    // TODO: Dispatch to all the channels
+    // Dispatch to the channels or the APU registers
     if (addr >= 0xFF10 && addr <= 0xFF14) {
         m_apuChannel1.busWrite(addr, val, requestSource);
     }

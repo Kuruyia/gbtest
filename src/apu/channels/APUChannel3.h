@@ -3,8 +3,8 @@
 
 #include "APUChannel.h"
 
+#include "../units/AudioWave.h"
 #include "../units/LengthCounter.h"
-#include "../units/VolumeEnvelope.h"
 #include "../APURegisters.h"
 
 namespace gbtest {
@@ -34,8 +34,8 @@ public:
 private:
     Channel3Registers m_channel3Registers;
 
+    AudioWave m_audioWave;
     LengthCounter m_lengthCounter;
-    VolumeEnvelope m_volumeEnvelope;
 
     void updateFrequency();
 

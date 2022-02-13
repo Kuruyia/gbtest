@@ -75,7 +75,7 @@ static_assert(sizeof(WaveSoundOnOffReg) == 1, "Sound on/off register structure s
 // [NR31] Channel 3 Sound Length
 union WaveSoundLengthReg {
     struct {
-        uint8_t soundLength: 8; // Length of the sound
+        uint8_t soundLengthData: 8; // Length of the sound
     };
     uint8_t raw;
 };
@@ -200,7 +200,7 @@ struct Channel2Registers {
 
 struct Channel3Registers {
     WaveSoundOnOffReg soundOnOff;
-    NoiseSoundLengthReg soundLength;
+    WaveSoundLengthReg soundLength;
     SelectOutputLevelReg selectOutputLevel;
     FrequencyLow frequencyLow;
     FrequencyHigh frequencyHigh;

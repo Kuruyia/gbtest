@@ -2,6 +2,7 @@
 
 gbtest::APUChannel1::APUChannel1()
         : m_channel1Registers()
+        , m_lengthCounter(64)
         , m_sweep(m_audioPulseWave)
 {
 

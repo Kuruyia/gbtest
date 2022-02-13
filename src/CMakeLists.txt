@@ -13,6 +13,8 @@ set(SOURCE_FILES
         apu/units/AudioNoise.h
         apu/units/AudioPulseWave.cpp
         apu/units/AudioPulseWave.h
+        apu/units/AudioWave.cpp
+        apu/units/AudioWave.h
         apu/units/APUUnit.h
         apu/units/FrameSequencer.cpp
         apu/units/FrameSequencer.h

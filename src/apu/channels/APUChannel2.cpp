@@ -2,6 +2,7 @@
 
 gbtest::APUChannel2::APUChannel2()
         : m_channel2Registers()
+        , m_lengthCounter(64)
 {
 
 }

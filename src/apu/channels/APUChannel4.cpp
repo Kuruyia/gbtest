@@ -2,6 +2,7 @@
 
 gbtest::APUChannel4::APUChannel4()
         : m_channel4Registers()
+        , m_lengthCounter(64)
 {
 
 }

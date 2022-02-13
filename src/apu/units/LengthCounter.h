@@ -11,11 +11,11 @@ class LengthCounter
         : public Tickable {
 
 public:
-    LengthCounter();
+    explicit LengthCounter(uint16_t countdownReloadValue);
     ~LengthCounter() override = default;
 
-    void setCountdown(uint8_t countdown);
-    [[nodiscard]] uint8_t getCountDown() const;
+    void setCountdown(uint16_t countdown);
+    [[nodiscard]] uint16_t getCountDown() const;
 
     void setEnabled(bool enabled);
     [[nodiscard]] bool isEnabled() const;
@@ -27,7 +27,9 @@ public:
     void tick() override;
 
 private:
-    uint8_t m_countdown;
+    const uint16_t m_countdownReloadValue;
+
+    uint16_t m_countdown;
     bool m_enabled;
 
 }; // class LengthCounter

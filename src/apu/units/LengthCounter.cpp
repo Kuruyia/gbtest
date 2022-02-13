@@ -1,18 +1,19 @@
 #include "LengthCounter.h"
 
-gbtest::LengthCounter::LengthCounter()
-        : m_countdown(0)
+gbtest::LengthCounter::LengthCounter(uint16_t countdownReloadValue)
+        : m_countdownReloadValue(countdownReloadValue)
+        , m_countdown(0)
         , m_enabled(false)
 {
 
 }
 
-void gbtest::LengthCounter::setCountdown(uint8_t countdown)
+void gbtest::LengthCounter::setCountdown(uint16_t countdown)
 {
     m_countdown = countdown;
 }
 
-uint8_t gbtest::LengthCounter::getCountDown() const
+uint16_t gbtest::LengthCounter::getCountDown() const
 {
     return m_countdown;
 }
@@ -36,7 +37,7 @@ void gbtest::LengthCounter::doTrigger()
 {
     // Reload the countdown if necessary
     if (m_countdown == 0) {
-        m_countdown = 64;
+        m_countdown = m_countdownReloadValue;
     }
 }
 

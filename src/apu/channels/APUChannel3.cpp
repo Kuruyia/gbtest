@@ -2,6 +2,7 @@
 
 gbtest::APUChannel3::APUChannel3()
         : m_channel3Registers()
+        , m_lengthCounter(256)
 {
 
 }
@@ -19,14 +20,10 @@ const gbtest::Channel3Registers& gbtest::APUChannel3::getRegisters() const
 void gbtest::APUChannel3::tickUnits(uint8_t unitsToTick)
 {
     // Tick the units
-    // TODO: Tick the wave unit
+    m_audioWave.tick();
 
     if (unitsToTick & static_cast<uint8_t>(APUUnit::LengthCounter)) {
         m_lengthCounter.tick();
-    }
-
-    if (unitsToTick & static_cast<uint8_t>(APUUnit::VolumeEnvelope)) {
-        m_volumeEnvelope.tick();
     }
 }
 
@@ -37,19 +34,24 @@ float gbtest::APUChannel3::sample() const
         return 0.f;
     }
 
-    // TODO: Return the wave sample
-    return 0.f;
+    return m_audioWave.getSample();
 }
 
 bool gbtest::APUChannel3::isChannelDisabled() const
 {
-    return m_lengthCounter.isChannelDisabled();
+    return (m_lengthCounter.isChannelDisabled() || m_audioWave.isChannelDisabled());
 }
 
 bool gbtest::APUChannel3::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
     // APU Channel 3 is in memory area from FF1Ah to FF1Eh and FF30h to FF3Fh
     if ((addr < 0xFF1A || addr > 0xFF1E) && (addr < 0xFF30 || addr > 0xFF3F)) { return false; }
+
+    // Check if the read request is for the wave pattern data
+    if (addr >= 0xFF30 && addr <= 0xFF3F) {
+        val = m_audioWave.readWavePatternData(addr - 0xFF30);
+        return true;
+    }
 
     switch (addr) {
     case 0xFF1A:
@@ -79,9 +81,18 @@ bool gbtest::APUChannel3::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
     // APU Channel 3 is in memory area from FF1Ah to FF1Eh and FF30h to FF3Fh
     if ((addr < 0xFF1A || addr > 0xFF1E) && (addr < 0xFF30 || addr > 0xFF3F)) { return false; }
 
+    // Check if the write request is for the wave pattern data
+    if (addr >= 0xFF30 && addr <= 0xFF3F) {
+        m_audioWave.writeWavePatternData(addr - 0xFF30, val);
+        return true;
+    }
+
     switch (addr) {
     case 0xFF1A:
         m_channel3Registers.soundOnOff.raw = val;
+
+        // Update the wave unit
+        m_audioWave.setEnabled(m_channel3Registers.soundOnOff.soundOff);
 
         break;
 
@@ -95,6 +106,9 @@ bool gbtest::APUChannel3::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
     case 0xFF1C:
         m_channel3Registers.selectOutputLevel.raw = val;
+
+        // Update the wave unit
+        m_audioWave.setVolume(m_channel3Registers.selectOutputLevel.selectOutputLevel);
 
         break;
 
@@ -144,13 +158,13 @@ bool gbtest::APUChannel3::busWriteOverride(uint16_t addr, uint8_t val, gbtest::B
 
 void gbtest::APUChannel3::updateFrequency()
 {
-    // TODO: Update the wave frequency
+    m_audioWave.setFrequency(
+            m_channel3Registers.frequencyLow.raw | (m_channel3Registers.frequencyHigh.frequencyHigh << 8));
 }
 
 void gbtest::APUChannel3::doTrigger()
 {
     // Dispatch the trigger event to the units
-    // TODO: Dispatch the event to the wave unit
+    m_audioWave.doTrigger();
     m_lengthCounter.doTrigger();
-    m_volumeEnvelope.doTrigger();
 }
