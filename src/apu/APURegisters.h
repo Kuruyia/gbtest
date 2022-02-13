@@ -29,7 +29,7 @@ union SoundLengthWavePatternDuty {
 
 static_assert(sizeof(SoundLengthWavePatternDuty) == 1, "Sound Length/Wave Pattern Duty structure size is incorrect");
 
-// [NR12/NR22] Channel 1/2 Volume Envelope
+// [NR12/NR22/42] Channel 1/2/4 Volume Envelope
 union VolumeEnvelopeReg {
     struct {
         uint8_t nbEnvelopeSweep: 3;         // Number of envelope sweep (0: Stop operation)
@@ -60,6 +60,42 @@ union FrequencyHigh {
 }; // union FrequencyHigh
 
 static_assert(sizeof(FrequencyHigh) == 1, "Frequency High structure size is incorrect");
+
+// [NR41] Channel 4 Sound Length
+union SoundLengthReg {
+    struct {
+        uint8_t soundLengthData: 6; // Length of the sound
+        uint8_t unused: 2;
+    };
+    uint8_t raw;
+}; // union SoundLengthReg
+
+static_assert(sizeof(SoundLengthReg) == 1, "Sound length register structure size is incorrect");
+
+// [NR43] Channel 4 Polynomial Counter
+union PolynomialCounterReg {
+    struct {
+        uint8_t dividingRatio: 3;       // Divide ratio of the timer
+        uint8_t counterWidth: 1;        // Width of the shift register (0: 15 bits; 1: 7 bits)
+        uint8_t shiftClockFrequency: 4; // Frequency of the shift clock
+    };
+    uint8_t raw;
+}; // union PolynomialCounterReg
+
+static_assert(sizeof(PolynomialCounterReg) == 1, "Polynomial counter register structure size is incorrect");
+
+// [NR44] Channel 4 Counter/consecutive; Initial
+union CounterConsecutiveAndInitialReg {
+    struct {
+        uint8_t unused: 6;
+        uint8_t counterConsecutiveSelection: 1; // 1: Stop output when length in NR11/NR21 expires
+        uint8_t trigger: 1;                     // 1: Restart sound
+    };
+    uint8_t raw;
+}; // union CounterConsecutiveAndInitialReg
+
+static_assert(sizeof(CounterConsecutiveAndInitialReg) == 1,
+        "Counter/consecutive and initial register structure size is incorrect");
 
 // [NR50] Channel control / ON-OFF / Volume
 union ChannelControl {
@@ -128,6 +164,13 @@ struct Channel2Registers {
     FrequencyLow frequencyLow;
     FrequencyHigh frequencyHigh;
 }; // struct Channel2Registers
+
+struct Channel4Registers {
+    SoundLengthReg soundLength;
+    VolumeEnvelopeReg volumeEnvelope;
+    PolynomialCounterReg polynomialCounter;
+    CounterConsecutiveAndInitialReg counterConsecutiveAndInitial;
+}; // struct Channel4Registers
 
 } // namespace gbtest
 

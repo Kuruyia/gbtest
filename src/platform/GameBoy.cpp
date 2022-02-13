@@ -186,6 +186,14 @@ void gbtest::GameBoy::resetCpuRegisters()
     channel2Registers.volumeEnvelope.raw = 0x00;
     channel2Registers.frequencyLow.raw = 0xFF;
     channel2Registers.frequencyHigh.raw = 0xBF;
+
+    // APU Channel 4
+    Channel4Registers& channel4Registers = m_apu.getChannel4().getRegisters();
+
+    channel4Registers.soundLength.raw = 0xFF;
+    channel4Registers.volumeEnvelope.raw = 0x00;
+    channel4Registers.polynomialCounter.raw = 0x00;
+    channel4Registers.counterConsecutiveAndInitial.raw = 0xBF;
 }
 
 void gbtest::GameBoy::registerBusProviders()

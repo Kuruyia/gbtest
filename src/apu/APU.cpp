@@ -18,18 +18,23 @@ void gbtest::APU::sample(float& sampleLeft, float& sampleRight) const
     sampleRight = 0.f;
 
     // TODO: Mix all channels
-    float channel1Sample = m_apuChannel1.sample();
+//    float channel1Sample = m_apuChannel1.sample();
+//
+//    sampleLeft += channel1Sample;
+//    sampleRight += channel1Sample;
+//
+//    float channel2Sample = m_apuChannel2.sample();
+//
+//    sampleLeft += channel2Sample;
+//    sampleRight += channel2Sample;
 
-    sampleLeft += channel1Sample;
-    sampleRight += channel1Sample;
+    float channel4Sample = m_apuChannel4.sample();
 
-    float channel2Sample = m_apuChannel2.sample();
+    sampleLeft += channel4Sample;
+    sampleRight += channel4Sample;
 
-    sampleLeft += channel2Sample;
-    sampleRight += channel2Sample;
-
-    sampleLeft /= 2.f;
-    sampleRight /= 2.f;
+//    sampleLeft /= 2.f;
+//    sampleRight /= 2.f;
 }
 
 const gbtest::APU::AudioFramebuffer& gbtest::APU::getFramebuffer() const
@@ -87,11 +92,22 @@ const gbtest::APUChannel2& gbtest::APU::getChannel2() const
     return m_apuChannel2;
 }
 
+gbtest::APUChannel4& gbtest::APU::getChannel4()
+{
+    return m_apuChannel4;
+}
+
+const gbtest::APUChannel4& gbtest::APU::getChannel4() const
+{
+    return m_apuChannel4;
+}
+
 void gbtest::APU::tick()
 {
     // Tick the channels
     m_apuChannel1.tick();
     m_apuChannel2.tick();
+    m_apuChannel4.tick();
 
     // Check if we have to sample
     if (m_sampleCount < m_framebuffer.size() && --m_sampleCountdown == 0) {
@@ -113,8 +129,11 @@ bool gbtest::APU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource 
     if (addr >= 0xFF10 && addr <= 0xFF14) {
         m_apuChannel1.busRead(addr, val, requestSource);
     }
-    if (addr >= 0xFF16 && addr <= 0xFF19) {
+    else if (addr >= 0xFF16 && addr <= 0xFF19) {
         m_apuChannel2.busRead(addr, val, requestSource);
+    }
+    else if (addr >= 0xFF20 && addr <= 0xFF23) {
+        m_apuChannel4.busRead(addr, val, requestSource);
     }
     else if (addr >= 0xFF24 && addr <= 0xFF26) {
         switch (addr) {
@@ -135,6 +154,7 @@ bool gbtest::APU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource 
             // TODO: Do that for all 4 channels
             val |= (m_apuChannel1.isChannelDisabled()) << 0;
             val |= (m_apuChannel2.isChannelDisabled()) << 1;
+            val |= (m_apuChannel4.isChannelDisabled()) << 3;
 
             break;
 
@@ -155,8 +175,11 @@ bool gbtest::APU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource 
     if (addr >= 0xFF10 && addr <= 0xFF14) {
         m_apuChannel1.busWrite(addr, val, requestSource);
     }
-    if (addr >= 0xFF16 && addr <= 0xFF19) {
+    else if (addr >= 0xFF16 && addr <= 0xFF19) {
         m_apuChannel2.busWrite(addr, val, requestSource);
+    }
+    else if (addr >= 0xFF20 && addr <= 0xFF23) {
+        m_apuChannel4.busWrite(addr, val, requestSource);
     }
     else if (addr >= 0xFF24 && addr <= 0xFF26) {
         switch (addr) {

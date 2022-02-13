@@ -39,6 +39,8 @@ A test GameBoy emulator written in C++ made for learning the inner workings of t
 
 - [GbdevWiki - Gameboy sound hardware](https://gbdev.gg8.se/wiki/articles/Gameboy_sound_hardware) – More detailed page
   about the sound hardware
+- [Nintendo(TM) Gameboy sound system (PAPU) guide - GBSOUND.txt](http://www.devrs.com/gb/files/hosted/GBSOUND.txt) –
+  Another great document about the sound hardware
 - [dspguide - The Fourier Series](https://www.dspguide.com/ch13/4.htm) – Fourier series equations for a bunch of
   waveforms
 
