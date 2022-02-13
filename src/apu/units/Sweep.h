@@ -42,6 +42,8 @@ private:
     bool m_increasing;
     uint8_t m_sweepShift;
 
+    [[nodiscard]] bool calculateNewFrequency(unsigned& newFrequency) const;
+
 }; // class Sweep
 
 } // namespace gbtest

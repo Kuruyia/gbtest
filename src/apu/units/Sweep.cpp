@@ -64,18 +64,8 @@ void gbtest::Sweep::doTrigger(uint8_t period)
 
     if (m_sweepShift != 0) {
         // Calculate a new frequency
-        unsigned shiftedFrequency = (m_shadowFrequency >> m_sweepShift);
-
-        if (!m_increasing) {
-            shiftedFrequency = -shiftedFrequency;
-        }
-
-        unsigned newFrequency = (m_shadowFrequency + shiftedFrequency);
-
-        // Do the overflow check
-        if (newFrequency > 2047) {
-            m_channelDisabled = true;
-        }
+        unsigned newFrequency = 0;
+        m_channelDisabled = calculateNewFrequency(newFrequency);
     }
 }
 
@@ -90,17 +80,10 @@ void gbtest::Sweep::tick()
     --m_period;
 
     // Calculate the new frequency
-    unsigned shiftedFrequency = (m_shadowFrequency >> m_sweepShift);
+    unsigned newFrequency = 0;
+    m_channelDisabled = calculateNewFrequency(newFrequency);
 
-    if (!m_increasing) {
-        shiftedFrequency = -shiftedFrequency;
-    }
-
-    unsigned newFrequency = (m_shadowFrequency + shiftedFrequency);
-
-    // Do the overflow check
-    if (newFrequency > 2047) {
-        m_channelDisabled = true;
+    if (m_channelDisabled) {
         return;
     }
 
@@ -109,7 +92,13 @@ void gbtest::Sweep::tick()
     m_shadowFrequency = newFrequency;
 
     // Calculate a new frequency again
-    shiftedFrequency = (m_shadowFrequency >> m_sweepShift);
+    m_channelDisabled = calculateNewFrequency(newFrequency);
+}
+
+bool gbtest::Sweep::calculateNewFrequency(unsigned int& newFrequency) const
+{
+    // Calculate the new frequency
+    int shiftedFrequency = (static_cast<int>(m_shadowFrequency) >> m_sweepShift);
 
     if (!m_increasing) {
         shiftedFrequency = -shiftedFrequency;
@@ -117,8 +106,12 @@ void gbtest::Sweep::tick()
 
     newFrequency = (m_shadowFrequency + shiftedFrequency);
 
-    // Do the overflow check again
+    // Do the overflow check
+    bool channelDisabled = false;
+
     if (newFrequency > 2047) {
-        m_channelDisabled = true;
+        channelDisabled = true;
     }
+
+    return channelDisabled;
 }
