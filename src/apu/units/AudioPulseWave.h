@@ -35,7 +35,7 @@ private:
 
     float m_currentSample;
 
-    int m_tickCountdown;
+    unsigned m_tickCountdown;
     uint8_t m_currentStep;
 
 }; // class AudioPulseWave

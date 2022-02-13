@@ -4,10 +4,10 @@
 
 gbtest::AudioPulseWave::AudioPulseWave()
         : m_frequency(0)
-        , m_realFrequency(0)
+        , m_realFrequency(1)
         , m_pulseWavePatternDuty()
         , m_currentSample(0.f)
-        , m_tickCountdown(GAMEBOY_FREQUENCY / 8)
+        , m_tickCountdown(GAMEBOY_FREQUENCY / (8 * m_realFrequency))
         , m_currentStep(0)
 {
 
@@ -46,13 +46,13 @@ float gbtest::AudioPulseWave::getSample() const
 
 void gbtest::AudioPulseWave::tick()
 {
-    // Decrease the tick countdown by the frequency
-    m_tickCountdown -= (int) m_realFrequency;
+    // Decrease the tick countdown
+    --m_tickCountdown;
 
     // Check if we have to update the sample
-    if (m_tickCountdown <= 0) {
+    if (m_tickCountdown == 0) {
         // Reset the tick countdown
-        m_tickCountdown = (GAMEBOY_FREQUENCY / 8);
+        m_tickCountdown = (GAMEBOY_FREQUENCY / (8 * m_realFrequency));
 
         // Increase the step
         ++m_currentStep;
