@@ -19,7 +19,10 @@ public:
     [[nodiscard]] uint8_t getUnitsToTick() const;
 
 private:
-    uint8_t m_tickCounter;
+    unsigned m_tickCountdown;
+    uint8_t m_step;
+
+    uint8_t m_unitsToTick;
 
 }; // class FrameSequencer
 
