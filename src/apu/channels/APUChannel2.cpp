@@ -177,6 +177,7 @@ inline void gbtest::APUChannel2::updatePatternDuty()
 void gbtest::APUChannel2::doTrigger()
 {
     // Dispatch the trigger event to the units
+    m_audioPulseWave.doTrigger();
     m_lengthCounter.doTrigger();
     m_volumeEnvelope.doTrigger();
 }

@@ -24,6 +24,8 @@ public:
 
     [[nodiscard]] float getSample() const;
 
+    void doTrigger();
+
     void tick() override;
 
 private:

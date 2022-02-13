@@ -35,6 +35,12 @@ float gbtest::AudioPulseWave::getSample() const
     return m_currentSample;
 }
 
+void gbtest::AudioPulseWave::doTrigger()
+{
+    // Reset the timer
+    m_tickCountdown = ((2048 - m_frequency) * 4);
+}
+
 void gbtest::AudioPulseWave::tick()
 {
     // Decrease the tick countdown

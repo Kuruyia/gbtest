@@ -197,6 +197,7 @@ inline void gbtest::APUChannel1::updatePatternDuty()
 void gbtest::APUChannel1::doTrigger()
 {
     // Dispatch the trigger event to the units
+    m_audioPulseWave.doTrigger();
     m_lengthCounter.doTrigger();
     m_sweep.doTrigger(m_channel1Registers.sweep.sweepTime);
     m_volumeEnvelope.doTrigger();
