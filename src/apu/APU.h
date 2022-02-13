@@ -6,6 +6,7 @@
 
 #include "channels/APUChannel1.h"
 #include "channels/APUChannel2.h"
+#include "channels/APUChannel3.h"
 #include "channels/APUChannel4.h"
 
 #include "units/FrameSequencer.h"
@@ -46,6 +47,9 @@ public:
     [[nodiscard]] APUChannel2& getChannel2();
     [[nodiscard]] const APUChannel2& getChannel2() const;
 
+    [[nodiscard]] APUChannel3& getChannel3();
+    [[nodiscard]] const APUChannel3& getChannel3() const;
+
     [[nodiscard]] APUChannel4& getChannel4();
     [[nodiscard]] const APUChannel4& getChannel4() const;
 
@@ -63,6 +67,7 @@ private:
     FrameSequencer m_frameSequencer;
     APUChannel1 m_apuChannel1;
     APUChannel2 m_apuChannel2;
+    APUChannel3 m_apuChannel3;
     APUChannel4 m_apuChannel4;
 
     AudioFramebuffer m_framebuffer;

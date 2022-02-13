@@ -5,6 +5,8 @@ set(SOURCE_FILES
         apu/channels/APUChannel1.h
         apu/channels/APUChannel2.cpp
         apu/channels/APUChannel2.h
+        apu/channels/APUChannel3.cpp
+        apu/channels/APUChannel3.h
         apu/channels/APUChannel4.cpp
         apu/channels/APUChannel4.h
         apu/units/AudioNoise.cpp

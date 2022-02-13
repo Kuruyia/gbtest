@@ -61,16 +61,49 @@ union FrequencyHigh {
 
 static_assert(sizeof(FrequencyHigh) == 1, "Frequency High structure size is incorrect");
 
+// [NR30] Channel 3 Sound on/off
+union WaveSoundOnOffReg {
+    struct {
+        uint8_t unused: 7;
+        uint8_t soundOff: 1; // 0: Stop; 1: Playback
+    };
+    uint8_t raw;
+};
+
+static_assert(sizeof(WaveSoundOnOffReg) == 1, "Sound on/off register structure size is incorrect");
+
+// [NR31] Channel 3 Sound Length
+union WaveSoundLengthReg {
+    struct {
+        uint8_t soundLength: 8; // Length of the sound
+    };
+    uint8_t raw;
+};
+
+static_assert(sizeof(WaveSoundLengthReg) == 1, "Wave sound length register structure size is incorrect");
+
+// [NR32] Channel 3 Select output level
+union SelectOutputLevelReg {
+    struct {
+        uint8_t unused1: 5;
+        uint8_t selectOutputLevel: 2; // Volume of the sound (00b: Mute; 01b: 100%; 10b: 50%; 11b: 25%)
+        uint8_t unused2: 1;
+    };
+    uint8_t raw;
+};
+
+static_assert(sizeof(SelectOutputLevelReg) == 1, "Select output level register structure size is incorrect");
+
 // [NR41] Channel 4 Sound Length
-union SoundLengthReg {
+union NoiseSoundLengthReg {
     struct {
         uint8_t soundLengthData: 6; // Length of the sound
         uint8_t unused: 2;
     };
     uint8_t raw;
-}; // union SoundLengthReg
+}; // union NoiseSoundLengthReg
 
-static_assert(sizeof(SoundLengthReg) == 1, "Sound length register structure size is incorrect");
+static_assert(sizeof(NoiseSoundLengthReg) == 1, "Noise sound length register structure size is incorrect");
 
 // [NR43] Channel 4 Polynomial Counter
 union PolynomialCounterReg {
@@ -165,8 +198,16 @@ struct Channel2Registers {
     FrequencyHigh frequencyHigh;
 }; // struct Channel2Registers
 
+struct Channel3Registers {
+    WaveSoundOnOffReg soundOnOff;
+    NoiseSoundLengthReg soundLength;
+    SelectOutputLevelReg selectOutputLevel;
+    FrequencyLow frequencyLow;
+    FrequencyHigh frequencyHigh;
+}; // struct Channel3Registers
+
 struct Channel4Registers {
-    SoundLengthReg soundLength;
+    NoiseSoundLengthReg soundLength;
     VolumeEnvelopeReg volumeEnvelope;
     PolynomialCounterReg polynomialCounter;
     CounterConsecutiveAndInitialReg counterConsecutiveAndInitial;

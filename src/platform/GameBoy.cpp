@@ -187,6 +187,15 @@ void gbtest::GameBoy::resetCpuRegisters()
     channel2Registers.frequencyLow.raw = 0xFF;
     channel2Registers.frequencyHigh.raw = 0xBF;
 
+    // APU Channel 3
+    Channel3Registers& channel3Registers = m_apu.getChannel3().getRegisters();
+
+    channel3Registers.soundOnOff.raw = 0x7F;
+    channel3Registers.soundLength.raw = 0xFF;
+    channel3Registers.selectOutputLevel.raw = 0x9F;
+    channel3Registers.frequencyLow.raw = 0xFF;
+    channel3Registers.frequencyHigh.raw = 0xBF;
+
     // APU Channel 4
     Channel4Registers& channel4Registers = m_apu.getChannel4().getRegisters();
 
