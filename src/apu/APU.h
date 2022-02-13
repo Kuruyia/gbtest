@@ -8,6 +8,8 @@
 #include "channels/APUChannel2.h"
 #include "channels/APUChannel4.h"
 
+#include "units/FrameSequencer.h"
+
 #include "../platform/bus/BusProvider.h"
 #include "../platform/GameBoyFrequencies.h"
 #include "../utils/Tickable.h"
@@ -58,6 +60,7 @@ public:
 private:
     SoundControlRegisters m_soundControlRegisters;
 
+    FrameSequencer m_frameSequencer;
     APUChannel1 m_apuChannel1;
     APUChannel2 m_apuChannel2;
     APUChannel4 m_apuChannel4;

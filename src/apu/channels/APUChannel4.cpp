@@ -16,6 +16,20 @@ const gbtest::Channel4Registers& gbtest::APUChannel4::getRegisters() const
     return m_channel4Registers;
 }
 
+void gbtest::APUChannel4::tickUnits(uint8_t unitsToTick)
+{
+    // Tick the units
+    m_audioNoise.tick();
+
+    if (unitsToTick & static_cast<uint8_t>(APUUnit::LengthCounter)) {
+        m_lengthCounter.tick();
+    }
+
+    if (unitsToTick & static_cast<uint8_t>(APUUnit::VolumeEnvelope)) {
+        m_volumeEnvelope.tick();
+    }
+}
+
 float gbtest::APUChannel4::sample() const
 {
     // If the channel is disabled, return 0
@@ -124,25 +138,6 @@ bool gbtest::APUChannel4::busWriteOverride(uint16_t addr, uint8_t val, gbtest::B
 {
     // APU Channel 4 never overrides write requests
     return false;
-}
-
-void gbtest::APUChannel4::tick()
-{
-    // Tick the base class
-    APUChannel::tick();
-
-    // Tick the units
-    m_audioNoise.tick();
-
-    uint8_t unitsToTick = m_frameSequencer.getUnitsToTick();
-
-    if (unitsToTick & static_cast<uint8_t>(APUUnit::LengthCounter)) {
-        m_lengthCounter.tick();
-    }
-
-    if (unitsToTick & static_cast<uint8_t>(APUUnit::VolumeEnvelope)) {
-        m_volumeEnvelope.tick();
-    }
 }
 
 void gbtest::APUChannel4::doTrigger()

@@ -18,23 +18,23 @@ void gbtest::APU::sample(float& sampleLeft, float& sampleRight) const
     sampleRight = 0.f;
 
     // TODO: Mix all channels
-//    float channel1Sample = m_apuChannel1.sample();
-//
-//    sampleLeft += channel1Sample;
-//    sampleRight += channel1Sample;
-//
-//    float channel2Sample = m_apuChannel2.sample();
-//
-//    sampleLeft += channel2Sample;
-//    sampleRight += channel2Sample;
+    float channel1Sample = m_apuChannel1.sample();
+
+    sampleLeft += channel1Sample;
+    sampleRight += channel1Sample;
+
+    float channel2Sample = m_apuChannel2.sample();
+
+    sampleLeft += channel2Sample;
+    sampleRight += channel2Sample;
 
     float channel4Sample = m_apuChannel4.sample();
 
     sampleLeft += channel4Sample;
     sampleRight += channel4Sample;
 
-//    sampleLeft /= 2.f;
-//    sampleRight /= 2.f;
+    sampleLeft /= 3.f;
+    sampleRight /= 3.f;
 }
 
 const gbtest::APU::AudioFramebuffer& gbtest::APU::getFramebuffer() const
@@ -104,9 +104,14 @@ const gbtest::APUChannel4& gbtest::APU::getChannel4() const
 
 void gbtest::APU::tick()
 {
+    // Tick the frame sequencer
+    m_frameSequencer.tick();
+    const uint8_t unitsToTick = m_frameSequencer.getUnitsToTick();
+
     // Tick the channels
-    m_apuChannel1.tick();
-    m_apuChannel2.tick();
+    m_apuChannel1.tickUnits(unitsToTick);
+    m_apuChannel2.tickUnits(unitsToTick);
+    m_apuChannel4.tickUnits(unitsToTick);
 
     // Check if we have to sample
     if (m_sampleCount < m_framebuffer.size() && --m_sampleCountdown == 0) {
@@ -117,8 +122,6 @@ void gbtest::APU::tick()
         // Reset the countdown
         m_sampleCountdown = SAMPLE_EVERY_X_TICK;
     }
-
-    m_apuChannel4.tick();
 }
 
 bool gbtest::APU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const

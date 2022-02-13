@@ -20,6 +20,8 @@ public:
     [[nodiscard]] Channel2Registers& getRegisters();
     [[nodiscard]] const Channel2Registers& getRegisters() const;
 
+    void tickUnits(uint8_t unitsToTick) override;
+
     [[nodiscard]] float sample() const override;
 
     [[nodiscard]] bool isChannelDisabled() const override;
@@ -29,8 +31,6 @@ public:
 
     bool busReadOverride(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWriteOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
-
-    void tick() override;
 
 private:
     Channel2Registers m_channel2Registers;
