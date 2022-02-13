@@ -1,13 +1,10 @@
 #include "AudioPulseWave.h"
 
-#include "../../platform/GameBoyFrequencies.h"
-
 gbtest::AudioPulseWave::AudioPulseWave()
         : m_frequency(0)
-        , m_realFrequency(1)
         , m_pulseWavePatternDuty()
         , m_currentSample(0.f)
-        , m_tickCountdown(GAMEBOY_FREQUENCY / (8 * m_realFrequency))
+        , m_tickCountdown((2048 - m_frequency) * 4)
         , m_currentStep(0)
 {
 
@@ -16,17 +13,11 @@ gbtest::AudioPulseWave::AudioPulseWave()
 void gbtest::AudioPulseWave::setFrequency(uint16_t frequency)
 {
     m_frequency = frequency;
-    updateRealFrequency();
 }
 
 uint16_t gbtest::AudioPulseWave::getFrequency() const
 {
     return m_frequency;
-}
-
-unsigned gbtest::AudioPulseWave::getRealFrequency() const
-{
-    return m_realFrequency;
 }
 
 void gbtest::AudioPulseWave::setPulseWavePatternDuty(gbtest::PulseWavePatternDuty pulseWavePatternDuty)
@@ -52,7 +43,7 @@ void gbtest::AudioPulseWave::tick()
     // Check if we have to update the sample
     if (m_tickCountdown == 0) {
         // Reset the tick countdown
-        m_tickCountdown = (GAMEBOY_FREQUENCY / (8 * m_realFrequency));
+        m_tickCountdown = ((2048 - m_frequency) * 4);
 
         // Increase the step
         ++m_currentStep;
@@ -65,9 +56,4 @@ void gbtest::AudioPulseWave::tick()
         m_currentSample = PULSE_WAVE_PATTERN_WAVEFORMS[(8 * static_cast<unsigned>(m_pulseWavePatternDuty))
                 + m_currentStep];
     }
-}
-
-void gbtest::AudioPulseWave::updateRealFrequency()
-{
-    m_realFrequency = (131072 / (2048 - m_frequency));
 }
