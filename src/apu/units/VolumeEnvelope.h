@@ -14,24 +14,28 @@ public:
     VolumeEnvelope();
     ~VolumeEnvelope() override = default;
 
-    void setIncreasing(bool increasing);
-    [[nodiscard]] bool isIncreasing() const;
-
     void setVolume(uint8_t volume);
     [[nodiscard]] uint8_t getVolume() const;
+
+    void setIncreasing(bool increasing);
+    [[nodiscard]] bool isIncreasing() const;
 
     void setPeriod(uint8_t period);
     [[nodiscard]] uint8_t getPeriod() const;
 
-    void doTrigger(uint8_t volume, uint8_t period);
+    [[nodiscard]] uint8_t getCurrentVolume() const;
+
+    void doTrigger();
 
     void tick() override;
 
 private:
-    bool m_increasing;
-
     uint8_t m_volume;
+    bool m_increasing;
     uint8_t m_period;
+
+    uint8_t m_currentVolume;
+    uint8_t m_countdown;
 
 }; // class VolumeEnvelope
 

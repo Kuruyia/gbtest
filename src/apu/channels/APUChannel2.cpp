@@ -23,7 +23,7 @@ float gbtest::APUChannel2::sample() const
         return 0.f;
     }
 
-    return (m_audioPulseWave.getSample() * (static_cast<float>(m_volumeEnvelope.getVolume()) / 15.f));
+    return (m_audioPulseWave.getSample() * (static_cast<float>(m_volumeEnvelope.getCurrentVolume()) / 15.f));
 }
 
 bool gbtest::APUChannel2::isChannelDisabled() const
@@ -183,6 +183,5 @@ void gbtest::APUChannel2::doTrigger()
 {
     // Dispatch the trigger event to the units
     m_lengthCounter.doTrigger();
-    m_volumeEnvelope.doTrigger(m_channel2Registers.volumeEnvelope.envelopeInitialVolume,
-            m_channel2Registers.volumeEnvelope.nbEnvelopeSweep);
+    m_volumeEnvelope.doTrigger();
 }
