@@ -17,29 +17,57 @@ void gbtest::APU::sample(float& sampleLeft, float& sampleRight) const
     sampleLeft = 0.f;
     sampleRight = 0.f;
 
-    // Mix all channels
+    // Sample channel 1
     float channel1Sample = m_apuChannel1.sample();
 
-    sampleLeft += channel1Sample;
-    sampleRight += channel1Sample;
+    if (m_soundControlRegisters.soundOutputTerminalSelection.channel1So2Output) {
+        sampleLeft += channel1Sample;
+    }
 
+    if (m_soundControlRegisters.soundOutputTerminalSelection.channel1So1Output) {
+        sampleRight += channel1Sample;
+    }
+
+    // Sample channel 2
     float channel2Sample = m_apuChannel2.sample();
 
-    sampleLeft += channel2Sample;
-    sampleRight += channel2Sample;
+    if (m_soundControlRegisters.soundOutputTerminalSelection.channel2So2Output) {
+        sampleLeft += channel2Sample;
+    }
 
+    if (m_soundControlRegisters.soundOutputTerminalSelection.channel2So1Output) {
+        sampleRight += channel2Sample;
+    }
+
+    // Sample channel 3
     float channel3Sample = m_apuChannel3.sample();
 
-    sampleLeft += channel3Sample;
-    sampleRight += channel3Sample;
+    if (m_soundControlRegisters.soundOutputTerminalSelection.channel3So2Output) {
+        sampleLeft += channel3Sample;
+    }
 
+    if (m_soundControlRegisters.soundOutputTerminalSelection.channel3So1Output) {
+        sampleRight += channel3Sample;
+    }
+
+    // Sample channel 4
     float channel4Sample = m_apuChannel4.sample();
 
-    sampleLeft += channel4Sample;
-    sampleRight += channel4Sample;
+    if (m_soundControlRegisters.soundOutputTerminalSelection.channel4So2Output) {
+        sampleLeft += channel4Sample;
+    }
 
+    if (m_soundControlRegisters.soundOutputTerminalSelection.channel4So1Output) {
+        sampleRight += channel4Sample;
+    }
+
+    // Mix all channels
     sampleLeft /= 4.f;
     sampleRight /= 4.f;
+
+    // Divide by the volume
+    sampleLeft /= (static_cast<float>(m_soundControlRegisters.channelControl.so2OutputVolume) / 7.f);
+    sampleRight /= (static_cast<float>(m_soundControlRegisters.channelControl.so1OutputVolume) / 7.f);
 }
 
 const gbtest::APU::AudioFramebuffer& gbtest::APU::getFramebuffer() const
