@@ -4,6 +4,7 @@ gbtest::GameBoy::GameBoy()
         : m_cpu(m_bus)
         , m_wholeMemory(0x8000, 0x8000)
         , m_ppu(m_bus)
+        , m_joypad(m_bus)
         , m_timer(m_bus)
 {
 

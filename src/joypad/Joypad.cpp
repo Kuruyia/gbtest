@@ -1,7 +1,8 @@
 #include "Joypad.h"
 
-gbtest::Joypad::Joypad()
-        : m_joypadState()
+gbtest::Joypad::Joypad(Bus& bus)
+        : m_bus(bus)
+        , m_joypadState()
         , m_selectedJoypadButtons(SelectedJoypadButtons::Joypad_Action)
 {
     m_joypadState.raw = 0xFF;
@@ -10,6 +11,11 @@ gbtest::Joypad::Joypad()
 void gbtest::Joypad::setRightButtonPressed(bool pressed)
 {
     m_joypadState.inputRight = (pressed ? 0 : 1);
+
+    // Check if we have to request an interrupt
+    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Direction) {
+        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
+    }
 }
 
 bool gbtest::Joypad::isRightButtonPressed() const
@@ -20,6 +26,11 @@ bool gbtest::Joypad::isRightButtonPressed() const
 void gbtest::Joypad::setLeftButtonPressed(bool pressed)
 {
     m_joypadState.inputLeft = (pressed ? 0 : 1);
+
+    // Check if we have to request an interrupt
+    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Direction) {
+        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
+    }
 }
 
 bool gbtest::Joypad::isLeftButtonPressed() const
@@ -30,6 +41,11 @@ bool gbtest::Joypad::isLeftButtonPressed() const
 void gbtest::Joypad::setUpButtonPressed(bool pressed)
 {
     m_joypadState.inputUp = (pressed ? 0 : 1);
+
+    // Check if we have to request an interrupt
+    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Direction) {
+        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
+    }
 }
 
 bool gbtest::Joypad::isUpButtonPressed() const
@@ -40,6 +56,11 @@ bool gbtest::Joypad::isUpButtonPressed() const
 void gbtest::Joypad::setDownButtonPressed(bool pressed)
 {
     m_joypadState.inputDown = (pressed ? 0 : 1);
+
+    // Check if we have to request an interrupt
+    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Direction) {
+        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
+    }
 }
 
 bool gbtest::Joypad::isDownButtonPressed() const
@@ -50,6 +71,11 @@ bool gbtest::Joypad::isDownButtonPressed() const
 void gbtest::Joypad::setAButtonPressed(bool pressed)
 {
     m_joypadState.inputA = (pressed ? 0 : 1);
+
+    // Check if we have to request an interrupt
+    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action) {
+        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
+    }
 }
 
 bool gbtest::Joypad::isAButtonPressed() const
@@ -60,6 +86,11 @@ bool gbtest::Joypad::isAButtonPressed() const
 void gbtest::Joypad::setBButtonPressed(bool pressed)
 {
     m_joypadState.inputB = (pressed ? 0 : 1);
+
+    // Check if we have to request an interrupt
+    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action) {
+        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
+    }
 }
 
 bool gbtest::Joypad::isBButtonPressed() const
@@ -70,6 +101,11 @@ bool gbtest::Joypad::isBButtonPressed() const
 void gbtest::Joypad::setSelectButtonPressed(bool pressed)
 {
     m_joypadState.inputSelect = (pressed ? 0 : 1);
+
+    // Check if we have to request an interrupt
+    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action) {
+        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
+    }
 }
 
 bool gbtest::Joypad::isSelectButtonPressed() const
@@ -80,6 +116,11 @@ bool gbtest::Joypad::isSelectButtonPressed() const
 void gbtest::Joypad::setStartButtonPressed(bool pressed)
 {
     m_joypadState.inputStart = (pressed ? 0 : 1);
+
+    // Check if we have to request an interrupt
+    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action) {
+        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
+    }
 }
 
 bool gbtest::Joypad::isStartButtonPressed() const
@@ -91,16 +132,26 @@ void
 gbtest::Joypad::updateJoypadState(bool rightPressed, bool leftPressed, bool upPressed, bool downPressed, bool aPressed,
         bool bPressed, bool selectPressed, bool startPressed)
 {
-    m_joypadState = {
-            !rightPressed,
-            !leftPressed,
-            !upPressed,
-            !downPressed,
-            !aPressed,
-            !bPressed,
-            !selectPressed,
-            !startPressed,
-    };
+    // Update the joypad state
+    m_joypadState = {{
+                             !rightPressed,
+                             !leftPressed,
+                             !upPressed,
+                             !downPressed,
+                             !aPressed,
+                             !bPressed,
+                             !selectPressed,
+                             !startPressed,
+                     }};
+
+    // Check if we have to request an interrupt
+    const bool directionPressed = (rightPressed || leftPressed || upPressed || downPressed);
+    const bool actionPressed = (aPressed || bPressed || selectPressed || startPressed);
+
+    if ((directionPressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Direction) ||
+            (actionPressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action)) {
+        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
+    }
 }
 
 const gbtest::JoypadState& gbtest::Joypad::getJoypadState() const

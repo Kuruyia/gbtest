@@ -5,6 +5,7 @@
 
 #include "JoypadState.h"
 
+#include "../platform/bus/Bus.h"
 #include "../platform/bus/BusProvider.h"
 
 namespace gbtest {
@@ -13,8 +14,7 @@ class Joypad
         : public BusProvider {
 
 public:
-    Joypad();
-
+    explicit Joypad(Bus& m_bus);
     ~Joypad() override = default;
 
     void setRightButtonPressed(bool pressed);
@@ -56,6 +56,8 @@ public:
     bool busWriteOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
 private:
+    Bus& m_bus;
+
     JoypadState m_joypadState;
     SelectedJoypadButtons m_selectedJoypadButtons;
 
