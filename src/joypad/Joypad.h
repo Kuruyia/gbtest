@@ -7,11 +7,12 @@
 
 #include "../platform/bus/Bus.h"
 #include "../platform/bus/BusProvider.h"
+#include "../utils/Tickable.h"
 
 namespace gbtest {
 
 class Joypad
-        : public BusProvider {
+        : public BusProvider, public Tickable {
 
 public:
     explicit Joypad(Bus& m_bus);
@@ -55,11 +56,16 @@ public:
     bool busReadOverride(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWriteOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
+    void tick() override;
+
 private:
     Bus& m_bus;
 
     JoypadState m_joypadState;
     SelectedJoypadButtons m_selectedJoypadButtons;
+
+    bool m_directionButtonWasPressed;
+    bool m_actionButtonWasPressed;
 
 }; // class Joypad
 

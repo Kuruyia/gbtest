@@ -101,6 +101,9 @@ bool gbtest::Timer::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusRequ
 
 void gbtest::Timer::tick()
 {
+    // Disable the interrupt line
+    m_bus.setInterruptLineHigh(InterruptType::Timer, false);
+
     // Don't do anything if the timer is disabled
     if (!m_timerControl.timerEnable) {
         return;

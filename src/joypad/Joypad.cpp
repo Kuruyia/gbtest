@@ -4,6 +4,8 @@ gbtest::Joypad::Joypad(Bus& bus)
         : m_bus(bus)
         , m_joypadState()
         , m_selectedJoypadButtons(SelectedJoypadButtons::Joypad_Action)
+        , m_directionButtonWasPressed(false)
+        , m_actionButtonWasPressed(false)
 {
     m_joypadState.raw = 0xFF;
 }
@@ -11,11 +13,7 @@ gbtest::Joypad::Joypad(Bus& bus)
 void gbtest::Joypad::setRightButtonPressed(bool pressed)
 {
     m_joypadState.inputRight = (pressed ? 0 : 1);
-
-    // Check if we have to request an interrupt
-    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Direction) {
-        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
-    }
+    m_directionButtonWasPressed = (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Direction);
 }
 
 bool gbtest::Joypad::isRightButtonPressed() const
@@ -26,11 +24,7 @@ bool gbtest::Joypad::isRightButtonPressed() const
 void gbtest::Joypad::setLeftButtonPressed(bool pressed)
 {
     m_joypadState.inputLeft = (pressed ? 0 : 1);
-
-    // Check if we have to request an interrupt
-    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Direction) {
-        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
-    }
+    m_directionButtonWasPressed = (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Direction);
 }
 
 bool gbtest::Joypad::isLeftButtonPressed() const
@@ -41,11 +35,7 @@ bool gbtest::Joypad::isLeftButtonPressed() const
 void gbtest::Joypad::setUpButtonPressed(bool pressed)
 {
     m_joypadState.inputUp = (pressed ? 0 : 1);
-
-    // Check if we have to request an interrupt
-    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Direction) {
-        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
-    }
+    m_directionButtonWasPressed = (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Direction);
 }
 
 bool gbtest::Joypad::isUpButtonPressed() const
@@ -56,11 +46,7 @@ bool gbtest::Joypad::isUpButtonPressed() const
 void gbtest::Joypad::setDownButtonPressed(bool pressed)
 {
     m_joypadState.inputDown = (pressed ? 0 : 1);
-
-    // Check if we have to request an interrupt
-    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Direction) {
-        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
-    }
+    m_directionButtonWasPressed = (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Direction);
 }
 
 bool gbtest::Joypad::isDownButtonPressed() const
@@ -71,11 +57,7 @@ bool gbtest::Joypad::isDownButtonPressed() const
 void gbtest::Joypad::setAButtonPressed(bool pressed)
 {
     m_joypadState.inputA = (pressed ? 0 : 1);
-
-    // Check if we have to request an interrupt
-    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action) {
-        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
-    }
+    m_actionButtonWasPressed = (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action);
 }
 
 bool gbtest::Joypad::isAButtonPressed() const
@@ -86,11 +68,7 @@ bool gbtest::Joypad::isAButtonPressed() const
 void gbtest::Joypad::setBButtonPressed(bool pressed)
 {
     m_joypadState.inputB = (pressed ? 0 : 1);
-
-    // Check if we have to request an interrupt
-    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action) {
-        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
-    }
+    m_actionButtonWasPressed = (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action);
 }
 
 bool gbtest::Joypad::isBButtonPressed() const
@@ -101,11 +79,7 @@ bool gbtest::Joypad::isBButtonPressed() const
 void gbtest::Joypad::setSelectButtonPressed(bool pressed)
 {
     m_joypadState.inputSelect = (pressed ? 0 : 1);
-
-    // Check if we have to request an interrupt
-    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action) {
-        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
-    }
+    m_actionButtonWasPressed = (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action);
 }
 
 bool gbtest::Joypad::isSelectButtonPressed() const
@@ -116,11 +90,7 @@ bool gbtest::Joypad::isSelectButtonPressed() const
 void gbtest::Joypad::setStartButtonPressed(bool pressed)
 {
     m_joypadState.inputStart = (pressed ? 0 : 1);
-
-    // Check if we have to request an interrupt
-    if (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action) {
-        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
-    }
+    m_actionButtonWasPressed = (pressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action);
 }
 
 bool gbtest::Joypad::isStartButtonPressed() const
@@ -144,14 +114,13 @@ gbtest::Joypad::updateJoypadState(bool rightPressed, bool leftPressed, bool upPr
                              !startPressed,
                      }};
 
-    // Check if we have to request an interrupt
+    // Check if a button was pressed
     const bool directionPressed = (rightPressed || leftPressed || upPressed || downPressed);
     const bool actionPressed = (aPressed || bPressed || selectPressed || startPressed);
 
-    if ((directionPressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Direction) ||
-            (actionPressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action)) {
-        m_bus.setInterruptLineHigh(InterruptType::Joypad, true);
-    }
+    m_directionButtonWasPressed = (directionPressed
+            && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Direction);
+    m_actionButtonWasPressed = (actionPressed && m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action);
 }
 
 const gbtest::JoypadState& gbtest::Joypad::getJoypadState() const
@@ -214,4 +183,20 @@ bool gbtest::Joypad::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusReq
 {
     // Joypad never overrides write requests
     return false;
+}
+
+void gbtest::Joypad::tick()
+{
+    // Check if we have to request an interrupt
+    if (m_directionButtonWasPressed) {
+        m_directionButtonWasPressed = false;
+        m_bus.setInterruptLineHigh(gbtest::InterruptType::Joypad, true);
+    }
+    else if (m_actionButtonWasPressed) {
+        m_actionButtonWasPressed = false;
+        m_bus.setInterruptLineHigh(gbtest::InterruptType::Joypad, true);
+    }
+    else {
+        m_bus.setInterruptLineHigh(gbtest::InterruptType::Joypad, false);
+    }
 }

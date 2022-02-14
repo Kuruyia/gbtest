@@ -38,6 +38,7 @@ void gbtest::GameBoy::tick()
 {
     m_timer.tick();
     m_divider.tick();
+    m_joypad.tick();
     m_cpu.tick();
     m_ppu.tick();
     m_apu.tick();
