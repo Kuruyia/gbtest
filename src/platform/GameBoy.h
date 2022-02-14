@@ -12,6 +12,7 @@
 #include "../joypad/Joypad.h"
 #include "../memory/Memory.h"
 #include "../ppu/PPU.h"
+#include "../timer/Divider.h"
 #include "../timer/Timer.h"
 #include "../utils/Tickable.h"
 
@@ -57,6 +58,7 @@ private:
     PPU m_ppu;
     Joypad m_joypad;
     APU m_apu;
+    Divider m_divider;
     Timer m_timer;
     std::unique_ptr<BaseCartridge> m_cartridge;
 

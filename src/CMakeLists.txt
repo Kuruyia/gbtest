@@ -100,13 +100,15 @@ set(SOURCE_FILES
         ppu/PPU.cpp
         ppu/PPU.h
         ppu/PPURegisters.h
+        timer/Divider.cpp
+        timer/Divider.h
         timer/Timer.cpp
         timer/Timer.h
         timer/TimerRegisters.h
         utils/Tickable.h
         miniaudio.cpp
         miniaudio.h
-        main.cpp)
+        main.cpp timer/DividerRegisters.h)
 
 # Dependencies
 find_package(Threads REQUIRED)

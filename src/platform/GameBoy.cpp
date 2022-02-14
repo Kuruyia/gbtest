@@ -36,6 +36,7 @@ void gbtest::GameBoy::update(float secondsToEmulate)
 void gbtest::GameBoy::tick()
 {
     m_timer.tick();
+    m_divider.tick();
     m_cpu.tick();
     m_ppu.tick();
     m_apu.tick();
@@ -212,6 +213,7 @@ void gbtest::GameBoy::registerBusProviders()
     m_bus.registerBusProvider(&m_ppu);
     m_bus.registerBusProvider(&m_joypad);
     m_bus.registerBusProvider(&m_apu);
+    m_bus.registerBusProvider(&m_divider);
     m_bus.registerBusProvider(&m_timer);
     m_bus.registerBusProvider(&m_wholeMemory);
 }
@@ -224,6 +226,7 @@ void gbtest::GameBoy::unregisterBusProviders()
 
     m_bus.unregisterBusProvider(&m_wholeMemory);
     m_bus.unregisterBusProvider(&m_timer);
+    m_bus.unregisterBusProvider(&m_divider);
     m_bus.unregisterBusProvider(&m_apu);
     m_bus.unregisterBusProvider(&m_joypad);
     m_bus.unregisterBusProvider(&m_ppu);
