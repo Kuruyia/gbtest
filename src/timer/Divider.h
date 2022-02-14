@@ -3,6 +3,7 @@
 
 #include "DividerRegisters.h"
 
+#include "../cpu/LR35902HaltState.h"
 #include "../platform/bus/BusProvider.h"
 #include "../utils/Tickable.h"
 
@@ -12,13 +13,11 @@ class Divider
         : public BusProvider, public Tickable {
 
 public:
-    Divider();
+    explicit Divider(const LR35902HaltState& haltState);
     ~Divider() override = default;
 
     [[nodiscard]] DividerReg& getRegister();
     [[nodiscard]] const DividerReg& getRegister() const;
-
-    void reset();
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
@@ -29,6 +28,8 @@ public:
     void tick() override;
 
 private:
+    const LR35902HaltState& m_haltState;
+
     DividerReg m_dividerRegister;
     unsigned m_tickCountdown;
 

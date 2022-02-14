@@ -102,12 +102,12 @@ gbtest::InterruptController& gbtest::LR35902::getInterruptController()
     return m_interruptController;
 }
 
-gbtest::LR35902HaltState gbtest::LR35902::getHaltState() const
+const gbtest::LR35902HaltState& gbtest::LR35902::getHaltState() const
 {
     return m_haltState;
 }
 
-gbtest::LR35902HaltBug gbtest::LR35902::getHaltBug() const
+const gbtest::LR35902HaltBug& gbtest::LR35902::getHaltBug() const
 {
     return m_haltBug;
 }
@@ -378,8 +378,71 @@ void gbtest::LR35902::opcode0Fh()
 // STOP
 void gbtest::LR35902::opcode10h()
 {
-    // TODO: Implement that
-    m_haltState = LR35902HaltState::Stopped;
+    // Get pending interrupts
+    const uint8_t pendingInterrupts = m_interruptController.getPendingInterrupts();
+
+    // Is a button being held and selected in JOYP?
+    const uint8_t joyp = m_bus.read(0xFF00, BusRequestSource::CPU);
+
+    if (joyp & 0x0F) {
+        // Yes
+        // Is an interrupt pending?
+        if (pendingInterrupts != 0x00) {
+            // Yes
+            // STOP is a 1-byte opcode,
+            // Mode doesn't change,
+            // DIV is not reset
+            return;
+        }
+        else {
+            // No
+            // STOP is a 2-byte opcode,
+            ++m_registers.pc;
+
+            // HALT mode is entered
+            m_haltState = LR35902HaltState::Halted;
+
+            // DIV is not reset
+            return;
+        }
+    }
+
+    // No
+    // Was a speed switch requested via KEY1?
+    // TODO: Check that
+    bool speedSwitchRequested = false;
+
+    if (!speedSwitchRequested) {
+        // No
+        // Is an interrupt pending?
+        if (pendingInterrupts != 0x00) {
+            // Yes
+            // STOP is a 1-byte opcode,
+            // STOP mode is entered,
+            m_haltState = LR35902HaltState::Stopped;
+
+            // DIV is reset
+            m_bus.write(0xFF04, 0x00, BusRequestSource::CPU);
+
+            return;
+        }
+        else {
+            // No
+            // STOP is a 2-byte opcode
+            ++m_registers.pc;
+
+            // STOP mode is entered
+            m_haltState = LR35902HaltState::Stopped;
+
+            // DIV is reset
+            m_bus.write(0xFF04, 0x00, BusRequestSource::CPU);
+
+            return;
+        }
+    }
+
+    // Yes
+    // TODO: Do the rest
 
     m_cyclesToWait += 4;
 }

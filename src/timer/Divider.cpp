@@ -2,8 +2,9 @@
 
 #include "../platform/GameBoyFrequencies.h"
 
-gbtest::Divider::Divider()
-        : m_dividerRegister()
+gbtest::Divider::Divider(const gbtest::LR35902HaltState& haltState)
+        : m_haltState(haltState)
+        , m_dividerRegister()
         , m_tickCountdown(GAMEBOY_FREQUENCY / 16384)
 {
 
@@ -17,13 +18,6 @@ gbtest::DividerReg& gbtest::Divider::getRegister()
 const gbtest::DividerReg& gbtest::Divider::getRegister() const
 {
     return m_dividerRegister;
-}
-
-void gbtest::Divider::reset()
-{
-    // Reset the register
-    // TODO: Reset this register when STOP is executed
-    m_dividerRegister.value = 0x00;
 }
 
 bool gbtest::Divider::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
@@ -62,6 +56,11 @@ bool gbtest::Divider::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusRe
 
 void gbtest::Divider::tick()
 {
+    // Don't do anything if the CPU is stopped
+    if (m_haltState == LR35902HaltState::Stopped) {
+        return;
+    }
+
     // Decrease the tick countdown
     --m_tickCountdown;
 

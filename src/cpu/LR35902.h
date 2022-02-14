@@ -31,8 +31,8 @@ public:
     [[nodiscard]] const InterruptController& getInterruptController() const;
     [[nodiscard]] InterruptController& getInterruptController();
 
-    [[nodiscard]] LR35902HaltState getHaltState() const;
-    [[nodiscard]] LR35902HaltBug getHaltBug() const;
+    [[nodiscard]] const LR35902HaltState& getHaltState() const;
+    [[nodiscard]] const LR35902HaltBug& getHaltBug() const;
 
     [[nodiscard]] const uint8_t& getCyclesToWaste() const;
     [[nodiscard]] const unsigned& getTickCounter() const;

@@ -5,6 +5,7 @@ gbtest::GameBoy::GameBoy()
         , m_wholeMemory(0x8000, 0x8000)
         , m_ppu(m_bus)
         , m_joypad(m_bus)
+        , m_divider(m_cpu.getHaltState())
         , m_timer(m_bus)
 {
 

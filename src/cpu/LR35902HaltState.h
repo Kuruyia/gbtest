@@ -15,6 +15,6 @@ enum class LR35902HaltBug {
     EIBug       // The "halt" instruction will be executed twice
 }; // enum class LR35902HaltBug
 
-}
+} // namespace gbtest
 
 #endif //GBTEST_LR35902HALTSTATE_H

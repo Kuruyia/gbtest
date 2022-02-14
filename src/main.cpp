@@ -43,7 +43,7 @@ void maDataCallback(ma_device* pDevice, void* pOutput, const void* pInput, ma_ui
 
 void loadROM(std::string_view filename, gbtest::InMemoryCartridgeDataSource& cartridgeDataSource)
 {
-    if (FILE* gbRom = fopen("halt_bug.bin", "rb"); gbRom != nullptr) {
+    if (FILE* gbRom = fopen("tetris.bin", "rb"); gbRom != nullptr) {
         struct stat fileStats{};
         fstat(fileno(gbRom), &fileStats);
         cartridgeDataSource.getStorage().reserve(fileStats.st_size);
