@@ -35,6 +35,8 @@ set(SOURCE_FILES
         cartridge/BaseCartridge.h
         cartridge/CartridgeNoMBC.cpp
         cartridge/CartridgeNoMBC.h
+        cartridge/CartridgeMBC3.cpp
+        cartridge/CartridgeMBC3.h
         cpu/interrupts/InterruptController.cpp
         cpu/interrupts/InterruptController.h
         cpu/interrupts/InterruptType.h

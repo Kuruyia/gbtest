@@ -18,7 +18,6 @@ const gbtest::VRAMTileMaps& gbtest::VRAM::getVramTileMaps() const
 
 void gbtest::VRAM::setReadBlocked(bool readBlocked)
 {
-    // TODO: Emulate that
     m_readBlocked = readBlocked;
 }
 

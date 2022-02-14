@@ -9,6 +9,7 @@
 
 #include "cartridge/datasource/InMemoryCartridgeDataSource.h"
 #include "cartridge/CartridgeNoMBC.h"
+#include "cartridge/CartridgeMBC3.h"
 #include "platform/GameBoy.h"
 
 #define SYNC_ON_AUDIO
@@ -43,7 +44,7 @@ void maDataCallback(ma_device* pDevice, void* pOutput, const void* pInput, ma_ui
 
 void loadROM(std::string_view filename, gbtest::InMemoryCartridgeDataSource& cartridgeDataSource)
 {
-    if (FILE* gbRom = fopen("tetris.bin", "rb"); gbRom != nullptr) {
+    if (FILE* gbRom = fopen("pkmn_red.bin", "rb"); gbRom != nullptr) {
         struct stat fileStats{};
         fstat(fileno(gbRom), &fileStats);
         cartridgeDataSource.getStorage().reserve(fileStats.st_size);
@@ -73,7 +74,7 @@ int main()
     gbtest::InMemoryCartridgeDataSource cartridgeDataSource;
     loadROM("tetris.bin", cartridgeDataSource);
 
-    std::unique_ptr<gbtest::CartridgeNoMBC> cartridge = std::make_unique<gbtest::CartridgeNoMBC>(cartridgeDataSource);
+    std::unique_ptr<gbtest::CartridgeMBC3> cartridge = std::make_unique<gbtest::CartridgeMBC3>(cartridgeDataSource);
     gameboy->loadCartridge(std::move(cartridge));
 
     // Init the window
