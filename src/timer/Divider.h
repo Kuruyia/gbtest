@@ -15,6 +15,9 @@ public:
     Divider();
     ~Divider() override = default;
 
+    [[nodiscard]] DividerReg& getRegister();
+    [[nodiscard]] const DividerReg& getRegister() const;
+
     void reset();
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;

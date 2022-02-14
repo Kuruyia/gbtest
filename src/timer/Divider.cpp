@@ -9,6 +9,16 @@ gbtest::Divider::Divider()
 
 }
 
+gbtest::DividerReg& gbtest::Divider::getRegister()
+{
+    return m_dividerRegister;
+}
+
+const gbtest::DividerReg& gbtest::Divider::getRegister() const
+{
+    return m_dividerRegister;
+}
+
 void gbtest::Divider::reset()
 {
     // Reset the register

@@ -143,6 +143,9 @@ void gbtest::GameBoy::resetCpuRegisters()
 
     m_cpu.setRegisters(registers);
 
+    // Divider
+    m_divider.getRegister().value = 0x18;
+
     // Timer
     m_timer.getTimerCounterRegister().raw = 0x00;
     m_timer.getTimerModuloRegister().raw = 0x00;
