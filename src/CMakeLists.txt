@@ -40,6 +40,8 @@ set(SOURCE_FILES
         cpu/interrupts/InterruptType.h
         cpu/LR35902.cpp
         cpu/LR35902.h
+        cpu/LR35902HaltState.h
+        cpu/LR35902Registers.h
         exceptions/bus/BusLockedAddressException.cpp
         exceptions/bus/BusLockedAddressException.h
         exceptions/bus/BusNoHandlerException.cpp
@@ -102,13 +104,14 @@ set(SOURCE_FILES
         ppu/PPURegisters.h
         timer/Divider.cpp
         timer/Divider.h
+        timer/DividerRegisters.h
         timer/Timer.cpp
         timer/Timer.h
         timer/TimerRegisters.h
         utils/Tickable.h
         miniaudio.cpp
         miniaudio.h
-        main.cpp timer/DividerRegisters.h)
+        main.cpp)
 
 # Dependencies
 find_package(Threads REQUIRED)

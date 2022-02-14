@@ -23,11 +23,13 @@ public:
 
     void setInterruptEnabled(InterruptType interruptType, bool enabled);
     [[nodiscard]] bool isInterruptEnabled(InterruptType interruptType) const;
-    [[nodiscard]] uint8_t getInterruptEnable() const;
+    [[nodiscard]] uint8_t getEnabledInterrupts() const;
 
     void setInterruptRequested(InterruptType interruptType, bool requested);
     [[nodiscard]] bool isInterruptRequested(InterruptType interruptType) const;
-    [[nodiscard]] uint8_t getInterruptRequest() const;
+    [[nodiscard]] uint8_t getRequestedInterrupts() const;
+
+    [[nodiscard]] uint8_t getPendingInterrupts() const;
 
     void tick() override;
 

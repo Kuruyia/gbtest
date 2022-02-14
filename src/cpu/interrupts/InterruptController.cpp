@@ -51,7 +51,7 @@ bool gbtest::InterruptController::isInterruptEnabled(InterruptType interruptType
     return (m_interruptEnable & static_cast<uint8_t>(interruptType)) != 0;
 }
 
-uint8_t gbtest::InterruptController::getInterruptEnable() const
+uint8_t gbtest::InterruptController::getEnabledInterrupts() const
 {
     return m_interruptEnable;
 }
@@ -71,9 +71,14 @@ bool gbtest::InterruptController::isInterruptRequested(InterruptType interruptTy
     return (m_interruptFlag & static_cast<uint8_t>(interruptType)) != 0;
 }
 
-uint8_t gbtest::InterruptController::getInterruptRequest() const
+uint8_t gbtest::InterruptController::getRequestedInterrupts() const
 {
     return m_interruptFlag;
+}
+
+uint8_t gbtest::InterruptController::getPendingInterrupts() const
+{
+    return (m_interruptFlag & m_interruptEnable & 0x1F);
 }
 
 void gbtest::InterruptController::tick()

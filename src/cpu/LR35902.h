@@ -10,6 +10,7 @@
 #include "../utils/Tickable.h"
 
 #include "interrupts/InterruptController.h"
+#include "LR35902HaltState.h"
 #include "LR35902Registers.h"
 
 namespace gbtest {
@@ -30,11 +31,8 @@ public:
     [[nodiscard]] const InterruptController& getInterruptController() const;
     [[nodiscard]] InterruptController& getInterruptController();
 
-    void setHalted(bool halted);
-    [[nodiscard]] const bool& isHalted() const;
-
-    void setStopped(bool stopped);
-    [[nodiscard]] const bool& isStopped() const;
+    [[nodiscard]] LR35902HaltState getHaltState() const;
+    [[nodiscard]] LR35902HaltBug getHaltBug() const;
 
     [[nodiscard]] const uint8_t& getCyclesToWaste() const;
     [[nodiscard]] const unsigned& getTickCounter() const;
@@ -56,8 +54,8 @@ private:
     LR35902Registers m_registers;
 
     uint8_t m_cyclesToWait;
-    bool m_halted; // CPU halted state
-    bool m_stopped; // CPU stopped state
+    LR35902HaltState m_haltState;
+    LR35902HaltBug m_haltBug;
 
     unsigned m_tickCounter;
 
