@@ -94,7 +94,7 @@ bool gbtest::InterruptController::busRead(uint16_t addr, uint8_t& val, gbtest::B
 {
     // Interrupt Flag register
     if (addr == 0xFF0F) {
-        val = m_interruptFlag;
+        val = (m_interruptFlag | 0xE0);
         return true;
     }
 
