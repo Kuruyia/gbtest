@@ -65,9 +65,9 @@ void gbtest::APU::sample(float& sampleLeft, float& sampleRight) const
     sampleLeft /= 4.f;
     sampleRight /= 4.f;
 
-    // Divide by the volume
-    sampleLeft /= (static_cast<float>(m_soundControlRegisters.channelControl.so2OutputVolume) / 7.f);
-    sampleRight /= (static_cast<float>(m_soundControlRegisters.channelControl.so1OutputVolume) / 7.f);
+    // Multiply by the volume
+    sampleLeft *= (static_cast<float>(m_soundControlRegisters.channelControl.so2OutputVolume) / 7.f);
+    sampleRight *= (static_cast<float>(m_soundControlRegisters.channelControl.so1OutputVolume) / 7.f);
 }
 
 const gbtest::APU::AudioFramebuffer& gbtest::APU::getFramebuffer() const
