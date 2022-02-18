@@ -155,7 +155,7 @@ void gbtest::PPUModeManager::updateLcdStatusModeRegister()
 
 void gbtest::PPUModeManager::updateStatInterrupt()
 {
-    LCDStatus& lcdStatus = m_ppuRegisters.lcdStatus;
+    LCDStatusReg& lcdStatus = m_ppuRegisters.lcdStatus;
 
     m_bus.setInterruptLineHigh(InterruptType::LCDSTAT,
             (lcdStatus.mode0InterruptSource && m_currentMode == PPUModeType::HBlank)

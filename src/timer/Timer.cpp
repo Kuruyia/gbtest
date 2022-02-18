@@ -11,32 +11,32 @@ gbtest::Timer::Timer(gbtest::Bus& bus)
 
 }
 
-gbtest::TimerCounter& gbtest::Timer::getTimerCounterRegister()
+gbtest::TimerCounterReg& gbtest::Timer::getTimerCounterRegister()
 {
     return m_timerCounter;
 }
 
-const gbtest::TimerCounter& gbtest::Timer::getTimerCounterRegister() const
+const gbtest::TimerCounterReg& gbtest::Timer::getTimerCounterRegister() const
 {
     return m_timerCounter;
 }
 
-gbtest::TimerModulo& gbtest::Timer::getTimerModuloRegister()
+gbtest::TimerModuloReg& gbtest::Timer::getTimerModuloRegister()
 {
     return m_timerModulo;
 }
 
-const gbtest::TimerModulo& gbtest::Timer::getTimerModuloRegister() const
+const gbtest::TimerModuloReg& gbtest::Timer::getTimerModuloRegister() const
 {
     return m_timerModulo;
 }
 
-gbtest::TimerControl& gbtest::Timer::getTimerControlRegister()
+gbtest::TimerControlReg& gbtest::Timer::getTimerControlRegister()
 {
     return m_timerControl;
 }
 
-const gbtest::TimerControl& gbtest::Timer::getTimerControlRegister() const
+const gbtest::TimerControlReg& gbtest::Timer::getTimerControlRegister() const
 {
     return m_timerControl;
 }

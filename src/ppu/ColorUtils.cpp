@@ -2,7 +2,7 @@
 
 #include "ColorUtils.h"
 
-void gbtest::ColorUtils::dmgBGPaletteIndexToRGBA8888(const MonochromePalette& dmgBgPalette, uint8_t colorIndex,
+void gbtest::ColorUtils::dmgBGPaletteIndexToRGBA8888(const MonochromePaletteReg& dmgBgPalette, uint8_t colorIndex,
                                                      gbtest::ColorUtils::ColorRGBA8888& pixel)
 {
     switch (colorIndex) {

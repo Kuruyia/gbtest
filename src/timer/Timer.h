@@ -18,14 +18,14 @@ public:
     explicit Timer(Bus& bus);
     ~Timer() override = default;
 
-    TimerCounter& getTimerCounterRegister();
-    [[nodiscard]] const TimerCounter& getTimerCounterRegister() const;
+    TimerCounterReg& getTimerCounterRegister();
+    [[nodiscard]] const TimerCounterReg& getTimerCounterRegister() const;
 
-    TimerModulo& getTimerModuloRegister();
-    [[nodiscard]] const TimerModulo& getTimerModuloRegister() const;
+    TimerModuloReg& getTimerModuloRegister();
+    [[nodiscard]] const TimerModuloReg& getTimerModuloRegister() const;
 
-    TimerControl& getTimerControlRegister();
-    [[nodiscard]] const TimerControl& getTimerControlRegister() const;
+    TimerControlReg& getTimerControlRegister();
+    [[nodiscard]] const TimerControlReg& getTimerControlRegister() const;
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
@@ -43,9 +43,9 @@ private:
 
     Bus& m_bus;
 
-    TimerCounter m_timerCounter;
-    TimerModulo m_timerModulo;
-    TimerControl m_timerControl;
+    TimerCounterReg m_timerCounter;
+    TimerModuloReg m_timerModulo;
+    TimerControlReg m_timerControl;
 
 }; // class Timer
 

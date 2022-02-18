@@ -6,7 +6,7 @@
 namespace gbtest {
 
 // [LCDC] LCD Control register
-union LCDControl {
+union LCDControlReg {
     struct {
         uint8_t bgAndWindowEnable: 1;       // DMG: Display BG and Window tiles; CGB: BG and Window display priority
         uint8_t objEnable: 1;               // Enable/disable sprite drawing
@@ -18,12 +18,12 @@ union LCDControl {
         uint8_t lcdAndPpuEnable: 1;         // Enable/disable LCD and PPU
     };
     uint8_t raw;
-}; // union LCDControl
+}; // union LCDControlReg
 
-static_assert(sizeof(LCDControl) == 1, "LCD Control structure size is incorrect");
+static_assert(sizeof(LCDControlReg) == 1, "LCD Control register structure size is incorrect");
 
 // [STAT] LCD Status register
-union LCDStatus {
+union LCDStatusReg {
     struct {
         uint8_t mode: 2;                        // Current PPU mode
         uint8_t lycEqualsLy: 1;                 // Is LY == LYC? (0: No; 1: Yes)
@@ -34,22 +34,24 @@ union LCDStatus {
         uint8_t unused: 1;
     };
     uint8_t raw;
-}; // union LCDStatus
+}; // union LCDStatusReg
 
-static_assert(sizeof(LCDStatus) == 1, "LCD Status structure size is incorrect");
+static_assert(sizeof(LCDStatusReg) == 1, "LCD Status register structure size is incorrect");
 
 // LCD Position and Scrolling registers
-struct LCDPositionAndScrolling {
+struct LCDPositionAndScrollingRegs {
     uint8_t yScroll;            // [SCY] BG Y scroll coordinate
     uint8_t xScroll;            // [SCX] BG X scroll coordinate
     uint8_t yLcdCoordinate;     // [ LY] LCD Y coordinate
     uint8_t lyCompare;          // [LYC] LY compare
     uint8_t yWindowPosition;    // [ WY] Window Y position
     uint8_t xWindowPosition;    // [ WX] Window X position
-}; // struct LCDPositionAndScrolling
+}; // struct LCDPositionAndScrollingRegs
+
+static_assert(sizeof(LCDPositionAndScrollingRegs) == 6, "LCD Position and Scrolling registers structure size is incorrect");
 
 // Palette registers
-union MonochromePalette {
+union MonochromePaletteReg {
     struct {
         uint8_t colorIdx0: 2; // Color for index 0
         uint8_t colorIdx1: 2; // Color for index 1
@@ -57,22 +59,24 @@ union MonochromePalette {
         uint8_t colorIdx3: 2; // Color for index 3
     };
     uint8_t raw;
-}; // union MonochromePalette
+}; // union MonochromePaletteReg
 
-static_assert(sizeof(MonochromePalette) == 1, "Monochrome Palette structure size is incorrect");
+static_assert(sizeof(MonochromePaletteReg) == 1, "Monochrome Palette register structure size is incorrect");
 
-struct DMGPalettes {
-    MonochromePalette bgPaletteData;        // [ BGP] Data for the BG palette
-    MonochromePalette objectPaletteData0;   // [OBP0] Data for the first OBJ palette
-    MonochromePalette objectPaletteData1;   // [OBP1] Data for the second OBJ palette
-}; // struct DMGPalettes
+struct DMGPalettesRegs {
+    MonochromePaletteReg bgPaletteData;        // [ BGP] Data for the BG palette
+    MonochromePaletteReg objectPaletteData0;   // [OBP0] Data for the first OBJ palette
+    MonochromePaletteReg objectPaletteData1;   // [OBP1] Data for the second OBJ palette
+}; // struct DMGPalettesRegs
+
+static_assert(sizeof(DMGPalettesRegs) == 3, "DMG Palette registers register structure size is incorrect");
 
 // Registers
 struct PPURegisters {
-    LCDControl lcdControl;
-    LCDStatus lcdStatus;
-    LCDPositionAndScrolling lcdPositionAndScrolling;
-    DMGPalettes dmgPalettes;
+    LCDControlReg lcdControl;
+    LCDStatusReg lcdStatus;
+    LCDPositionAndScrollingRegs lcdPositionAndScrolling;
+    DMGPalettesRegs dmgPalettes;
 }; // struct PPURegisters
 
 } // namespace gbtest
