@@ -262,17 +262,17 @@ bool gbtest::APU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource 
 
 bool gbtest::APU::busReadOverride(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
-    // APU is in memory area from FF10h to FF3Fh
-    if (addr < 0xFF10 || addr > 0xFF3F) { return false; }
-
-    // Disable access when the APU is disabled
-    return m_soundControlRegisters.soundOnOff.globalOn == 0;
+    // APU never overrides read requests
+    return false;
 }
 
 bool gbtest::APU::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusRequestSource requestSource)
 {
     // APU is in memory area from FF10h to FF3Fh
     if (addr < 0xFF10 || addr > 0xFF3F) { return false; }
+
+    // Don't prevent writes to the NR52 register
+    if (addr == 0xFF26) { return false; }
 
     // Disable access when the APU is disabled
     return m_soundControlRegisters.soundOnOff.globalOn == 0;
