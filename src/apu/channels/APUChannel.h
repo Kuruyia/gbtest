@@ -22,6 +22,8 @@ public:
 
     [[nodiscard]] virtual bool isChannelDisabled() const = 0;
 
+    virtual void reset() = 0;
+
 }; // class APUChannel
 
 } // namespace gbtest

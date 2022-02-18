@@ -22,11 +22,6 @@ bool gbtest::AudioWave::isEnabled() const
     return m_enabled;
 }
 
-bool gbtest::AudioWave::isChannelDisabled() const
-{
-    return !m_enabled;
-}
-
 void gbtest::AudioWave::setFrequency(uint16_t frequency)
 {
     m_frequency = frequency;

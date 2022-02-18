@@ -3,7 +3,7 @@
 gbtest::Sweep::Sweep(gbtest::AudioPulseWave& audioPulseWave)
         : m_audioPulseWave(audioPulseWave)
         , m_shadowFrequency(0)
-        , m_channelDisabled(true)
+        , m_enabled(false)
         , m_period(0)
         , m_increasing(true)
         , m_sweepShift(0)
@@ -16,9 +16,9 @@ unsigned gbtest::Sweep::getShadowFrequency() const
     return m_shadowFrequency;
 }
 
-bool gbtest::Sweep::isChannelDisabled() const
+bool gbtest::Sweep::isEnabled() const
 {
-    return m_channelDisabled;
+    return m_enabled;
 }
 
 void gbtest::Sweep::setPeriod(uint8_t period)
@@ -59,20 +59,20 @@ void gbtest::Sweep::doTrigger(uint8_t period)
     // Reload the period
     setPeriod(period);
 
-    // Update the channel disabled flag
-    m_channelDisabled = false;
+    // Update the internal enabled flag
+    m_enabled = true;
 
     if (m_sweepShift != 0) {
         // Calculate a new frequency
         unsigned newFrequency = 0;
-        m_channelDisabled = calculateNewFrequency(newFrequency);
+        m_enabled = calculateNewFrequency(newFrequency);
     }
 }
 
 void gbtest::Sweep::tick()
 {
     // Don't do anything if the sweep is disabled or the sweep period is zero or the sweep shift is zero
-    if (m_channelDisabled || m_period == 0 || m_sweepShift == 0) {
+    if (!m_enabled || m_period == 0 || m_sweepShift == 0) {
         return;
     }
 
@@ -81,9 +81,9 @@ void gbtest::Sweep::tick()
 
     // Calculate the new frequency
     unsigned newFrequency = 0;
-    m_channelDisabled = calculateNewFrequency(newFrequency);
+    m_enabled = calculateNewFrequency(newFrequency);
 
-    if (m_channelDisabled) {
+    if (!m_enabled) {
         return;
     }
 
@@ -92,7 +92,7 @@ void gbtest::Sweep::tick()
     m_shadowFrequency = newFrequency;
 
     // Calculate a new frequency again
-    m_channelDisabled = calculateNewFrequency(newFrequency);
+    m_enabled = calculateNewFrequency(newFrequency);
 }
 
 bool gbtest::Sweep::calculateNewFrequency(unsigned int& newFrequency) const
@@ -107,11 +107,11 @@ bool gbtest::Sweep::calculateNewFrequency(unsigned int& newFrequency) const
     newFrequency = (m_shadowFrequency + shiftedFrequency);
 
     // Do the overflow check
-    bool channelDisabled = false;
+    bool channelEnabled = true;
 
     if (newFrequency > 2047) {
-        channelDisabled = true;
+        channelEnabled = false;
     }
 
-    return channelDisabled;
+    return channelEnabled;
 }

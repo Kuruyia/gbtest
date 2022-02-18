@@ -46,6 +46,17 @@ bool gbtest::APUChannel2::isChannelDisabled() const
     return m_lengthCounter.isChannelDisabled();
 }
 
+void gbtest::APUChannel2::reset()
+{
+    // Reset the registers
+    for (uint16_t addr = 0xFF15; addr <= 0xFF19; ++addr) {
+        busWrite(addr, 0x00, BusRequestSource::APUChannel);
+    }
+
+    // Turn off the channel
+    m_lengthCounter.setChannelDisabled(true);
+}
+
 bool gbtest::APUChannel2::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
     // APU Channel 2 is in memory area from FF15h to FF19h

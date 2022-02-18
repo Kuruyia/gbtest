@@ -21,6 +21,7 @@ public:
     [[nodiscard]] bool isEnabled() const;
 
     [[nodiscard]] bool isChannelDisabled() const;
+    void setChannelDisabled(bool channelDisabled);
 
     void doTrigger();
 
@@ -31,6 +32,7 @@ private:
 
     uint16_t m_countdown;
     bool m_enabled;
+    bool m_channelDisabled;
 
 }; // class LengthCounter
 

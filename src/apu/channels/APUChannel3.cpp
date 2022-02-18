@@ -29,8 +29,8 @@ void gbtest::APUChannel3::tickUnits(uint8_t unitsToTick)
 
 float gbtest::APUChannel3::sample() const
 {
-    // If the channel is disabled, return 0
-    if (isChannelDisabled()) {
+    // If the channel is disabled or not playing back, return 0
+    if (isChannelDisabled() || !m_audioWave.isEnabled()) {
         return 0.f;
     }
 
@@ -39,7 +39,18 @@ float gbtest::APUChannel3::sample() const
 
 bool gbtest::APUChannel3::isChannelDisabled() const
 {
-    return (m_lengthCounter.isChannelDisabled() || m_audioWave.isChannelDisabled());
+    return m_lengthCounter.isChannelDisabled();
+}
+
+void gbtest::APUChannel3::reset()
+{
+    // Reset the registers
+    for (uint16_t addr = 0xFF1A; addr <= 0xFF1E; ++addr) {
+        busWrite(addr, 0x00, BusRequestSource::APUChannel);
+    }
+
+    // Turn off the channel
+    m_lengthCounter.setChannelDisabled(true);
 }
 
 bool gbtest::APUChannel3::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const

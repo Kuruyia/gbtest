@@ -46,6 +46,17 @@ bool gbtest::APUChannel4::isChannelDisabled() const
     return m_lengthCounter.isChannelDisabled();
 }
 
+void gbtest::APUChannel4::reset()
+{
+    // Reset the registers
+    for (uint16_t addr = 0xFF1F; addr <= 0xFF23; ++addr) {
+        busWrite(addr, 0x00, BusRequestSource::APUChannel);
+    }
+
+    // Turn off the channel
+    m_lengthCounter.setChannelDisabled(true);
+}
+
 bool gbtest::APUChannel4::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
     // APU Channel 4 is in memory area from FF1Fh to FF23h

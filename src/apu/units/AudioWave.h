@@ -18,8 +18,6 @@ public:
     void setEnabled(bool enabled);
     [[nodiscard]] bool isEnabled() const;
 
-    [[nodiscard]] bool isChannelDisabled() const;
-
     void setFrequency(uint16_t frequency);
     [[nodiscard]] uint16_t getFrequency() const;
 

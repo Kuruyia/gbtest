@@ -26,6 +26,8 @@ public:
 
     [[nodiscard]] bool isChannelDisabled() const override;
 
+    void reset() override;
+
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 

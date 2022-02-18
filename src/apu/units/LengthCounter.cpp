@@ -4,6 +4,7 @@ gbtest::LengthCounter::LengthCounter(uint16_t countdownReloadValue)
         : m_countdownReloadValue(countdownReloadValue)
         , m_countdown(0)
         , m_enabled(false)
+        , m_channelDisabled(true)
 {
 
 }
@@ -30,7 +31,12 @@ bool gbtest::LengthCounter::isEnabled() const
 
 bool gbtest::LengthCounter::isChannelDisabled() const
 {
-    return (m_enabled && m_countdown == 0);
+    return m_channelDisabled;
+}
+
+void gbtest::LengthCounter::setChannelDisabled(bool channelDisabled)
+{
+    m_channelDisabled = channelDisabled;
 }
 
 void gbtest::LengthCounter::doTrigger()
@@ -39,6 +45,9 @@ void gbtest::LengthCounter::doTrigger()
     if (m_countdown == 0) {
         m_countdown = m_countdownReloadValue;
     }
+
+    // Enable the channel
+    m_channelDisabled = false;
 }
 
 void gbtest::LengthCounter::tick()
@@ -46,5 +55,6 @@ void gbtest::LengthCounter::tick()
     // Decrease the countdown if necessary
     if (m_enabled && m_countdown > 0) {
         --m_countdown;
+        m_channelDisabled = (m_countdown == 0);
     }
 }

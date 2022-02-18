@@ -48,7 +48,18 @@ float gbtest::APUChannel1::sample() const
 
 bool gbtest::APUChannel1::isChannelDisabled() const
 {
-    return (m_lengthCounter.isChannelDisabled() || m_sweep.isChannelDisabled());
+    return m_lengthCounter.isChannelDisabled();
+}
+
+void gbtest::APUChannel1::reset()
+{
+    // Reset the registers
+    for (uint16_t addr = 0xFF10; addr <= 0xFF14; ++addr) {
+        busWrite(addr, 0x00, BusRequestSource::APUChannel);
+    }
+
+    // Turn off the channel
+    m_lengthCounter.setChannelDisabled(true);
 }
 
 bool gbtest::APUChannel1::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const

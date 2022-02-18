@@ -17,7 +17,7 @@ public:
 
     [[nodiscard]] unsigned getShadowFrequency() const;
 
-    [[nodiscard]] bool isChannelDisabled() const;
+    [[nodiscard]] bool isEnabled() const;
 
     void setPeriod(uint8_t period);
     [[nodiscard]] uint8_t getPeriod() const;
@@ -36,7 +36,7 @@ private:
     AudioPulseWave& m_audioPulseWave;
 
     unsigned m_shadowFrequency;
-    bool m_channelDisabled;
+    bool m_enabled;
 
     uint8_t m_period;
     bool m_increasing;
