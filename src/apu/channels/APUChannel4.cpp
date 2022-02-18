@@ -52,17 +52,17 @@ bool gbtest::APUChannel4::busRead(uint16_t addr, uint8_t& val, gbtest::BusReques
     if (addr < 0xFF20 || addr > 0xFF23) { return false; }
 
     switch (addr) {
-    case 0xFF21:
+    case 0xFF21: // [NR42] Channel 4 Volume Envelope
         val = m_channel4Registers.volumeEnvelope.raw;
 
         break;
 
-    case 0xFF22:
+    case 0xFF22: // [NR43] Channel 4 Polynomial Counter
         val = m_channel4Registers.polynomialCounter.raw;
 
         break;
 
-    case 0xFF23:
+    case 0xFF23: // [NR44] Channel 4 Counter/consecutive; Initial
         val = m_channel4Registers.counterConsecutiveAndInitial.raw;
 
         break;
@@ -80,7 +80,7 @@ bool gbtest::APUChannel4::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
     if (addr < 0xFF20 || addr > 0xFF23) { return false; }
 
     switch (addr) {
-    case 0xFF20:
+    case 0xFF20: // [NR41] Channel 4 Sound Length
         m_channel4Registers.soundLength.raw = val;
 
         // Update the length counter
@@ -88,7 +88,7 @@ bool gbtest::APUChannel4::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         break;
 
-    case 0xFF21:
+    case 0xFF21: // [NR42] Channel 4 Volume Envelope
         m_channel4Registers.volumeEnvelope.raw = val;
 
         // Update the volume envelope
@@ -98,7 +98,7 @@ bool gbtest::APUChannel4::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         break;
 
-    case 0xFF22:
+    case 0xFF22: // [NR43] Channel 4 Polynomial Counter
         m_channel4Registers.polynomialCounter.raw = val;
 
         // Update the noise generator
@@ -108,7 +108,7 @@ bool gbtest::APUChannel4::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         break;
 
-    case 0xFF23:
+    case 0xFF23: // [NR44] Channel 4 Counter/consecutive; Initial
         m_channel4Registers.counterConsecutiveAndInitial.raw = val;
 
         // Update the length counter enabled state

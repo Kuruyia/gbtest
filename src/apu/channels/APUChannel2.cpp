@@ -52,17 +52,17 @@ bool gbtest::APUChannel2::busRead(uint16_t addr, uint8_t& val, gbtest::BusReques
     if (addr < 0xFF16 || addr > 0xFF19) { return false; }
 
     switch (addr) {
-    case 0xFF16:
+    case 0xFF16: // [NR21] Channel 2 Sound Length/Wave Pattern Duty register
         val = m_channel2Registers.soundLengthWavePatternDuty.raw;
 
         break;
 
-    case 0xFF17:
+    case 0xFF17: // [NR22] Channel 2 Volume Envelope
         val = m_channel2Registers.volumeEnvelope.raw;
 
         break;
 
-    case 0xFF19:
+    case 0xFF19: // [NR24] Channel 2 Frequency High
         val = m_channel2Registers.frequencyHigh.raw;
 
         break;
@@ -80,7 +80,7 @@ bool gbtest::APUChannel2::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
     if (addr < 0xFF16 || addr > 0xFF19) { return false; }
 
     switch (addr) {
-    case 0xFF16:
+    case 0xFF16: // [NR21] Channel 2 Sound Length/Wave Pattern Duty register
         m_channel2Registers.soundLengthWavePatternDuty.raw = val;
 
         // Update the generator pattern duty
@@ -91,7 +91,7 @@ bool gbtest::APUChannel2::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         break;
 
-    case 0xFF17:
+    case 0xFF17: // [NR22] Channel 2 Volume Envelope
         m_channel2Registers.volumeEnvelope.raw = val;
 
         // Update the volume envelope
@@ -101,7 +101,7 @@ bool gbtest::APUChannel2::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         break;
 
-    case 0xFF18:
+    case 0xFF18: // [NR23] Channel 2 Frequency Low
         m_channel2Registers.frequencyLow.raw = val;
 
         // Update the generator frequency
@@ -109,7 +109,7 @@ bool gbtest::APUChannel2::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         break;
 
-    case 0xFF19:
+    case 0xFF19: // [NR24] Channel 2 Frequency High
         m_channel2Registers.frequencyHigh.raw = val;
 
         // Update the generator frequency

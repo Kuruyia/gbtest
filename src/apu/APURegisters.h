@@ -29,7 +29,7 @@ union SoundLengthWavePatternDuty {
 
 static_assert(sizeof(SoundLengthWavePatternDuty) == 1, "Sound Length/Wave Pattern Duty structure size is incorrect");
 
-// [NR12/NR22/42] Channel 1/2/4 Volume Envelope
+// [NR12/22/42] Channel 1/2/4 Volume Envelope
 union VolumeEnvelopeReg {
     struct {
         uint8_t nbEnvelopeSweep: 3;         // Number of envelope sweep (0: Stop operation)
@@ -41,14 +41,14 @@ union VolumeEnvelopeReg {
 
 static_assert(sizeof(VolumeEnvelopeReg) == 1, "Volume Envelope register structure size is incorrect");
 
-// [NR13/23] Channel 1/2 Frequency Low
+// [NR13/23/33] Channel 1/2/3 Frequency Low
 union FrequencyLow {
     uint8_t raw; // Lower 8 bits of the frequency
 }; // union FrequencyLow
 
 static_assert(sizeof(FrequencyLow) == 1, "Frequency Low structure size is incorrect");
 
-// [NR14/24] Channel 1/2 Frequency High
+// [NR14/24/34] Channel 1/2/3 Frequency High
 union FrequencyHigh {
     struct {
         uint8_t frequencyHigh: 3;               // Higher 3 bits of the frequency

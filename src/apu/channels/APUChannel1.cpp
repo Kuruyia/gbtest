@@ -57,22 +57,22 @@ bool gbtest::APUChannel1::busRead(uint16_t addr, uint8_t& val, gbtest::BusReques
     if (addr < 0xFF10 || addr > 0xFF14) { return false; }
 
     switch (addr) {
-    case 0xFF10:
+    case 0xFF10: // [NR10] Channel 1 Sweep register
         val = m_channel1Registers.sweep.raw;
 
         break;
 
-    case 0xFF11:
+    case 0xFF11: // [NR11] Channel 1 Sound Length/Wave Pattern Duty register
         val = m_channel1Registers.soundLengthWavePatternDuty.raw;
 
         break;
 
-    case 0xFF12:
+    case 0xFF12: // [NR12] Channel 1 Volume Envelope
         val = m_channel1Registers.volumeEnvelope.raw;
 
         break;
 
-    case 0xFF14:
+    case 0xFF14: // [NR14] Channel 1 Frequency High
         val = m_channel1Registers.frequencyHigh.raw;
 
         break;
@@ -90,7 +90,7 @@ bool gbtest::APUChannel1::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
     if (addr < 0xFF10 || addr > 0xFF14) { return false; }
 
     switch (addr) {
-    case 0xFF10:
+    case 0xFF10: // [NR10] Channel 1 Sweep register
         m_channel1Registers.sweep.raw = val;
 
         // Update the sweep
@@ -100,7 +100,7 @@ bool gbtest::APUChannel1::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         break;
 
-    case 0xFF11:
+    case 0xFF11: // [NR11] Channel 1 Sound Length/Wave Pattern Duty register
         m_channel1Registers.soundLengthWavePatternDuty.raw = val;
 
         // Update the generator pattern duty
@@ -111,7 +111,7 @@ bool gbtest::APUChannel1::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         break;
 
-    case 0xFF12:
+    case 0xFF12: // [NR12] Channel 1 Volume Envelope
         m_channel1Registers.volumeEnvelope.raw = val;
 
         // Update the volume envelope
@@ -121,7 +121,7 @@ bool gbtest::APUChannel1::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         break;
 
-    case 0xFF13:
+    case 0xFF13: // [NR13] Channel 1 Frequency Low
         m_channel1Registers.frequencyLow.raw = val;
 
         // Update the generator frequency
@@ -129,7 +129,7 @@ bool gbtest::APUChannel1::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         break;
 
-    case 0xFF14:
+    case 0xFF14: // [NR14] Channel 1 Frequency High
         m_channel1Registers.frequencyHigh.raw = val;
 
         // Update the generator frequency

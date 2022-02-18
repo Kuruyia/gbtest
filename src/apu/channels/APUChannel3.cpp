@@ -54,17 +54,17 @@ bool gbtest::APUChannel3::busRead(uint16_t addr, uint8_t& val, gbtest::BusReques
     }
 
     switch (addr) {
-    case 0xFF1A:
+    case 0xFF1A: // [NR30] Channel 3 Sound on/off
         val = m_channel3Registers.soundOnOff.raw;
 
         break;
 
-    case 0xFF1C:
+    case 0xFF1C: // [NR32] Channel 3 Select output level
         val = m_channel3Registers.selectOutputLevel.raw;
 
         break;
 
-    case 0xFF1E:
+    case 0xFF1E: // [NR34] Channel 3 Frequency High
         val = m_channel3Registers.frequencyHigh.raw;
 
         break;
@@ -88,7 +88,7 @@ bool gbtest::APUChannel3::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
     }
 
     switch (addr) {
-    case 0xFF1A:
+    case 0xFF1A: // [NR30] Channel 3 Sound on/off
         m_channel3Registers.soundOnOff.raw = val;
 
         // Update the wave unit
@@ -96,7 +96,7 @@ bool gbtest::APUChannel3::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         break;
 
-    case 0xFF1B:
+    case 0xFF1B: // [NR31] Channel 3 Sound Length
         m_channel3Registers.soundLength.raw = val;
 
         // Update the length counter
@@ -104,7 +104,7 @@ bool gbtest::APUChannel3::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         break;
 
-    case 0xFF1C:
+    case 0xFF1C: // [NR32] Channel 3 Select output level
         m_channel3Registers.selectOutputLevel.raw = val;
 
         // Update the wave unit
@@ -112,7 +112,7 @@ bool gbtest::APUChannel3::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         break;
 
-    case 0xFF1D:
+    case 0xFF1D: // [NR33] Channel 3 Frequency Low
         m_channel3Registers.frequencyLow.raw = val;
 
         // Update the generator frequency
@@ -120,7 +120,7 @@ bool gbtest::APUChannel3::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
         break;
 
-    case 0xFF1E:
+    case 0xFF1E: // [NR34] Channel 3 Frequency High
         m_channel3Registers.frequencyHigh.raw = val;
 
         // Update the generator frequency

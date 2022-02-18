@@ -188,17 +188,17 @@ bool gbtest::APU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource 
     }
     else if (addr >= 0xFF24 && addr <= 0xFF26) {
         switch (addr) {
-        case 0xFF24:
+        case 0xFF24: // [NR50] Channel control / ON-OFF / Volume
             val = m_soundControlRegisters.channelControl.raw;
 
             break;
 
-        case 0xFF25:
+        case 0xFF25: // [NR51] Selection of Sound output terminal
             val = m_soundControlRegisters.soundOutputTerminalSelection.raw;
 
             break;
 
-        case 0xFF26:
+        case 0xFF26: // [NR52] Sound on/off
             val = (m_soundControlRegisters.soundOnOff.raw & 0xF0);
 
             // Set channel statuses
@@ -237,17 +237,17 @@ bool gbtest::APU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource 
     }
     else if (addr >= 0xFF24 && addr <= 0xFF26) {
         switch (addr) {
-        case 0xFF24:
+        case 0xFF24: // [NR50] Channel control / ON-OFF / Volume
             m_soundControlRegisters.channelControl.raw = val;
 
             break;
 
-        case 0xFF25:
+        case 0xFF25: // [NR51] Selection of Sound output terminal
             m_soundControlRegisters.soundOutputTerminalSelection.raw = val;
 
             break;
 
-        case 0xFF26:
+        case 0xFF26: // [NR52] Sound on/off
             m_soundControlRegisters.soundOnOff.raw = (val & 0xF0);
 
             break;

@@ -92,36 +92,48 @@ void gbtest::InterruptController::tick()
 
 bool gbtest::InterruptController::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
-    // Interrupt Flag register
-    if (addr == 0xFF0F) {
+    // Interrupt controller is in memory addresses FF0Fh and FFFFh
+    if (addr != 0xFF0F && addr != 0xFFFF) { return false; }
+
+    switch (addr) {
+    case 0xFF0F: // [IF] Interrupt Flag
         val = (m_interruptFlag | 0xE0);
-        return true;
-    }
 
-    // Interrupt Enable register
-    if (addr == 0xFFFF) {
+        break;
+
+    case 0xFFFF: // [IE] Interrupt Enable
         val = m_interruptEnable;
-        return true;
+
+        break;
+
+    default:
+        break;
     }
 
-    return false;
+    return true;
 }
 
 bool gbtest::InterruptController::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource requestSource)
 {
-    // Interrupt Flag register
-    if (addr == 0xFF0F) {
+    // Interrupt controller is in memory addresses FF0Fh and FFFFh
+    if (addr != 0xFF0F && addr != 0xFFFF) { return false; }
+
+    switch (addr) {
+    case 0xFF0F: // [IF] Interrupt Flag
         m_interruptFlag = val;
-        return true;
-    }
 
-    // Interrupt Enable register
-    if (addr == 0xFFFF) {
+        break;
+
+    case 0xFFFF: // [IE] Interrupt Enable
         m_interruptEnable = val;
-        return true;
+
+        break;
+
+    default:
+        break;
     }
 
-    return false;
+    return true;
 }
 
 bool
