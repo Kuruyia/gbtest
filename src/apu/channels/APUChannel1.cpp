@@ -58,12 +58,12 @@ bool gbtest::APUChannel1::busRead(uint16_t addr, uint8_t& val, gbtest::BusReques
 
     switch (addr) {
     case 0xFF10: // [NR10] Channel 1 Sweep register
-        val = m_channel1Registers.sweep.raw;
+        val = (m_channel1Registers.sweep.raw | 0x80);
 
         break;
 
     case 0xFF11: // [NR11] Channel 1 Sound Length/Wave Pattern Duty register
-        val = m_channel1Registers.soundLengthWavePatternDuty.raw;
+        val = (m_channel1Registers.soundLengthWavePatternDuty.raw | 0x3F);
 
         break;
 
@@ -73,11 +73,14 @@ bool gbtest::APUChannel1::busRead(uint16_t addr, uint8_t& val, gbtest::BusReques
         break;
 
     case 0xFF14: // [NR14] Channel 1 Frequency High
-        val = m_channel1Registers.frequencyHigh.raw;
+        val = (m_channel1Registers.frequencyHigh.raw | 0xBF);
 
         break;
 
     default:
+        // Default value
+        val = 0xFF;
+
         break;
     }
 
@@ -102,6 +105,10 @@ bool gbtest::APUChannel1::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
     case 0xFF11: // [NR11] Channel 1 Sound Length/Wave Pattern Duty register
         m_channel1Registers.soundLengthWavePatternDuty.raw = val;
+
+        // Fix the length counter value
+        m_channel1Registers.soundLengthWavePatternDuty.soundLengthData = ~m_channel1Registers.soundLengthWavePatternDuty.soundLengthData;
+        ++m_channel1Registers.soundLengthWavePatternDuty.soundLengthData;
 
         // Update the generator pattern duty
         updatePatternDuty();

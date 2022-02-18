@@ -177,13 +177,13 @@ bool gbtest::APU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource 
     if (addr >= 0xFF10 && addr <= 0xFF14) {
         m_apuChannel1.busRead(addr, val, requestSource);
     }
-    else if (addr >= 0xFF16 && addr <= 0xFF19) {
+    else if (addr >= 0xFF15 && addr <= 0xFF19) {
         m_apuChannel2.busRead(addr, val, requestSource);
     }
     else if ((addr >= 0xFF1A && addr <= 0xFF1E) || (addr >= 0xFF30 && addr <= 0xFF3F)) {
         m_apuChannel3.busRead(addr, val, requestSource);
     }
-    else if (addr >= 0xFF20 && addr <= 0xFF23) {
+    else if (addr >= 0xFF1F && addr <= 0xFF23) {
         m_apuChannel4.busRead(addr, val, requestSource);
     }
     else if (addr >= 0xFF24 && addr <= 0xFF26) {
@@ -212,6 +212,9 @@ bool gbtest::APU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource 
         default:
             break;
         }
+    } else {
+        // Default value
+        val = 0xFF;
     }
 
     return true;

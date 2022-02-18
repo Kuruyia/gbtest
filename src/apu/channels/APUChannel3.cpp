@@ -55,21 +55,24 @@ bool gbtest::APUChannel3::busRead(uint16_t addr, uint8_t& val, gbtest::BusReques
 
     switch (addr) {
     case 0xFF1A: // [NR30] Channel 3 Sound on/off
-        val = m_channel3Registers.soundOnOff.raw;
+        val = (m_channel3Registers.soundOnOff.raw | 0x7F);
 
         break;
 
     case 0xFF1C: // [NR32] Channel 3 Select output level
-        val = m_channel3Registers.selectOutputLevel.raw;
+        val = (m_channel3Registers.selectOutputLevel.raw | 0x9F);
 
         break;
 
     case 0xFF1E: // [NR34] Channel 3 Frequency High
-        val = m_channel3Registers.frequencyHigh.raw;
+        val = (m_channel3Registers.frequencyHigh.raw | 0xBF);
 
         break;
 
     default:
+        // Default value
+        val = 0xFF;
+
         break;
     }
 
@@ -98,6 +101,10 @@ bool gbtest::APUChannel3::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
     case 0xFF1B: // [NR31] Channel 3 Sound Length
         m_channel3Registers.soundLength.raw = val;
+
+        // Fix the length counter value
+        m_channel3Registers.soundLength.raw = ~m_channel3Registers.soundLength.raw;
+        ++m_channel3Registers.soundLength.raw;
 
         // Update the length counter
         m_lengthCounter.setCountdown(m_channel3Registers.soundLength.soundLengthData);

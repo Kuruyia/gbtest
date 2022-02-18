@@ -48,8 +48,8 @@ bool gbtest::APUChannel4::isChannelDisabled() const
 
 bool gbtest::APUChannel4::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
-    // APU Channel 4 is in memory area from FF20h to FF23h
-    if (addr < 0xFF20 || addr > 0xFF23) { return false; }
+    // APU Channel 4 is in memory area from FF1Fh to FF23h
+    if (addr < 0xFF1F || addr > 0xFF23) { return false; }
 
     switch (addr) {
     case 0xFF21: // [NR42] Channel 4 Volume Envelope
@@ -63,11 +63,14 @@ bool gbtest::APUChannel4::busRead(uint16_t addr, uint8_t& val, gbtest::BusReques
         break;
 
     case 0xFF23: // [NR44] Channel 4 Counter/consecutive; Initial
-        val = m_channel4Registers.counterConsecutiveAndInitial.raw;
+        val = (m_channel4Registers.counterConsecutiveAndInitial.raw | 0xBF);
 
         break;
 
     default:
+        // Default value
+        val = 0xFF;
+
         break;
     }
 
@@ -76,12 +79,16 @@ bool gbtest::APUChannel4::busRead(uint16_t addr, uint8_t& val, gbtest::BusReques
 
 bool gbtest::APUChannel4::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource requestSource)
 {
-    // APU Channel 4 is in memory area from FF20h to FF23h
-    if (addr < 0xFF20 || addr > 0xFF23) { return false; }
+    // APU Channel 4 is in memory area from FF1Fh to FF23h
+    if (addr < 0xFF1F || addr > 0xFF23) { return false; }
 
     switch (addr) {
     case 0xFF20: // [NR41] Channel 4 Sound Length
         m_channel4Registers.soundLength.raw = val;
+
+        // Fix the length counter value
+        m_channel4Registers.soundLength.soundLengthData = ~m_channel4Registers.soundLength.soundLengthData;
+        ++m_channel4Registers.soundLength.soundLengthData;
 
         // Update the length counter
         m_lengthCounter.setCountdown(m_channel4Registers.soundLength.soundLengthData);

@@ -48,12 +48,12 @@ bool gbtest::APUChannel2::isChannelDisabled() const
 
 bool gbtest::APUChannel2::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
-    // APU Channel 2 is in memory area from FF16h to FF19h
-    if (addr < 0xFF16 || addr > 0xFF19) { return false; }
+    // APU Channel 2 is in memory area from FF15h to FF19h
+    if (addr < 0xFF15 || addr > 0xFF19) { return false; }
 
     switch (addr) {
     case 0xFF16: // [NR21] Channel 2 Sound Length/Wave Pattern Duty register
-        val = m_channel2Registers.soundLengthWavePatternDuty.raw;
+        val = (m_channel2Registers.soundLengthWavePatternDuty.raw | 0x3F);
 
         break;
 
@@ -63,11 +63,14 @@ bool gbtest::APUChannel2::busRead(uint16_t addr, uint8_t& val, gbtest::BusReques
         break;
 
     case 0xFF19: // [NR24] Channel 2 Frequency High
-        val = m_channel2Registers.frequencyHigh.raw;
+        val = (m_channel2Registers.frequencyHigh.raw | 0xBF);
 
         break;
 
     default:
+        // Default value
+        val = 0xFF;
+
         break;
     }
 
@@ -76,12 +79,16 @@ bool gbtest::APUChannel2::busRead(uint16_t addr, uint8_t& val, gbtest::BusReques
 
 bool gbtest::APUChannel2::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource requestSource)
 {
-    // APU Channel 2 is in memory area from FF16h to FF19h
-    if (addr < 0xFF16 || addr > 0xFF19) { return false; }
+    // APU Channel 2 is in memory area from FF15h to FF19h
+    if (addr < 0xFF15 || addr > 0xFF19) { return false; }
 
     switch (addr) {
     case 0xFF16: // [NR21] Channel 2 Sound Length/Wave Pattern Duty register
         m_channel2Registers.soundLengthWavePatternDuty.raw = val;
+
+        // Fix the length counter value
+        m_channel2Registers.soundLengthWavePatternDuty.soundLengthData = ~m_channel2Registers.soundLengthWavePatternDuty.soundLengthData;
+        ++m_channel2Registers.soundLengthWavePatternDuty.soundLengthData;
 
         // Update the generator pattern duty
         updatePatternDuty();
