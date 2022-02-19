@@ -1,5 +1,5 @@
-#ifndef GBTEST_SWEEP_H
-#define GBTEST_SWEEP_H
+#ifndef GBTEST_FREQUENCYSWEEP_H
+#define GBTEST_FREQUENCYSWEEP_H
 
 #include <cstdint>
 
@@ -8,12 +8,12 @@
 
 namespace gbtest {
 
-class Sweep
+class FrequencySweep
         : public Tickable {
 
 public:
-    explicit Sweep(AudioPulseWave& audioPulseWave);
-    ~Sweep() override = default;
+    explicit FrequencySweep(AudioPulseWave& audioPulseWave);
+    ~FrequencySweep() override = default;
 
     [[nodiscard]] unsigned getShadowFrequency() const;
 
@@ -22,13 +22,13 @@ public:
     void setPeriod(uint8_t period);
     [[nodiscard]] uint8_t getPeriod() const;
 
-    void setIncreasing(bool increasing);
-    [[nodiscard]] bool isIncreasing() const;
+    void setDecreasing(bool decreasing);
+    [[nodiscard]] bool isDecreasing() const;
 
     void setSweepShift(uint8_t sweepShift);
     [[nodiscard]] uint8_t getSweepShift() const;
 
-    void doTrigger(uint8_t period);
+    void doTrigger();
 
     void tick() override;
 
@@ -39,13 +39,15 @@ private:
     bool m_enabled;
 
     uint8_t m_period;
-    bool m_increasing;
+    bool m_decreasing;
     uint8_t m_sweepShift;
 
-    [[nodiscard]] bool calculateNewFrequency(unsigned& newFrequency) const;
+    uint8_t m_tickCountdown;
 
-}; // class Sweep
+    [[nodiscard]] bool calculateNewFrequency();
+
+}; // class FrequencySweep
 
 } // namespace gbtest
 
-#endif //GBTEST_SWEEP_H
+#endif //GBTEST_FREQUENCYSWEEP_H

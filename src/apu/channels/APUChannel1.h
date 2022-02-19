@@ -5,7 +5,7 @@
 
 #include "../units/AudioPulseWave.h"
 #include "../units/LengthCounter.h"
-#include "../units/Sweep.h"
+#include "../units/FrequencySweep.h"
 #include "../units/VolumeEnvelope.h"
 #include "../APURegisters.h"
 
@@ -40,7 +40,7 @@ private:
 
     AudioPulseWave m_audioPulseWave;
     LengthCounter m_lengthCounter;
-    Sweep m_sweep;
+    FrequencySweep m_frequencySweep;
     VolumeEnvelope m_volumeEnvelope;
 
     void updateFrequency();

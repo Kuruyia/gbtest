@@ -72,9 +72,9 @@ int main()
 
     // Load a ROM file
     gbtest::InMemoryCartridgeDataSource cartridgeDataSource;
-    loadROM("tetris.bin", cartridgeDataSource);
+    loadROM("pkmn_red.bin", cartridgeDataSource);
 
-    std::unique_ptr<gbtest::CartridgeNoMBC> cartridge = std::make_unique<gbtest::CartridgeNoMBC>(cartridgeDataSource);
+    std::unique_ptr<gbtest::CartridgeMBC3> cartridge = std::make_unique<gbtest::CartridgeMBC3>(cartridgeDataSource);
     gameboy->loadCartridge(std::move(cartridge));
 
     // Init the window

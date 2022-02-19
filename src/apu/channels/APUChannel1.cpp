@@ -3,7 +3,7 @@
 gbtest::APUChannel1::APUChannel1()
         : m_channel1Registers()
         , m_lengthCounter(64)
-        , m_sweep(m_audioPulseWave)
+        , m_frequencySweep(m_audioPulseWave)
 {
 
 }
@@ -32,7 +32,7 @@ void gbtest::APUChannel1::tickUnits(uint8_t unitsToTick)
     }
 
     if (unitsToTick & static_cast<uint8_t>(APUUnit::Sweep)) {
-        m_sweep.tick();
+        m_frequencySweep.tick();
     }
 }
 
@@ -108,9 +108,9 @@ bool gbtest::APUChannel1::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
         m_channel1Registers.sweep.raw = val;
 
         // Update the sweep
-        m_sweep.setPeriod(m_channel1Registers.sweep.sweepTime);
-        m_sweep.setIncreasing(m_channel1Registers.sweep.sweepDirection);
-        m_sweep.setSweepShift(m_channel1Registers.sweep.nbSweepShift);
+        m_frequencySweep.setPeriod(m_channel1Registers.sweep.sweepTime);
+        m_frequencySweep.setDecreasing(m_channel1Registers.sweep.sweepDirection);
+        m_frequencySweep.setSweepShift(m_channel1Registers.sweep.nbSweepShift);
 
         break;
 
@@ -218,6 +218,6 @@ void gbtest::APUChannel1::doTrigger()
     // Dispatch the trigger event to the units
     m_audioPulseWave.doTrigger();
     m_lengthCounter.doTrigger();
-    m_sweep.doTrigger(m_channel1Registers.sweep.sweepTime);
+    m_frequencySweep.doTrigger();
     m_volumeEnvelope.doTrigger();
 }
