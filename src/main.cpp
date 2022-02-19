@@ -9,6 +9,7 @@
 
 #include "cartridge/datasource/InMemoryCartridgeDataSource.h"
 #include "cartridge/CartridgeNoMBC.h"
+#include "cartridge/CartridgeMBC1.h"
 #include "cartridge/CartridgeMBC3.h"
 #include "platform/GameBoy.h"
 
@@ -72,9 +73,9 @@ int main()
 
     // Load a ROM file
     gbtest::InMemoryCartridgeDataSource cartridgeDataSource;
-    loadROM("pkmn_red.bin", cartridgeDataSource);
+    loadROM("mario_land.bin", cartridgeDataSource);
 
-    std::unique_ptr<gbtest::CartridgeMBC3> cartridge = std::make_unique<gbtest::CartridgeMBC3>(cartridgeDataSource);
+    auto cartridge = std::make_unique<gbtest::CartridgeMBC1>(cartridgeDataSource);
     gameboy->loadCartridge(std::move(cartridge));
 
     // Init the window

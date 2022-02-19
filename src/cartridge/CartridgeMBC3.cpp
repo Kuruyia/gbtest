@@ -3,7 +3,7 @@
 gbtest::CartridgeMBC3::CartridgeMBC3(gbtest::CartridgeDataSource& cartridgeDataSource)
         : BaseCartridge(cartridgeDataSource)
         , m_ram()
-        , m_currentRomBank(0)
+        , m_currentRomBank(1)
         , m_currentRamBankAndRTCRegister(0)
         , m_ramAndTimerEnable(false)
 {
@@ -19,11 +19,11 @@ bool gbtest::CartridgeMBC3::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequ
 
     // Check what part of the memory is being read
     if (addr <= 0x3FFF) {
-        // Check if the read is for ROM Bank 00
+        // The read is for ROM Bank 00
         m_cartridgeDataSource.read(addr, val);
     }
     else if (addr >= 0x4000 && addr <= 0x7FFF) {
-        // Check if the read is for ROM Bank 01-7F
+        // The read is for ROM Bank 01-7F
         m_cartridgeDataSource.read((0x4000 * m_currentRomBank) + (addr - 0x4000), val);
     }
     else if (m_ramAndTimerEnable && (addr >= 0xA000 && addr <= 0xBFFF)) {
@@ -51,22 +51,17 @@ bool gbtest::CartridgeMBC3::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequ
     // Check what part of the memory is being written to
     if (addr <= 0x1FFF) {
         // Writes to memory area 0000h to 1FFFh are for enabling/disabling RAM and Timer accesses
-        if ((val & 0x0A) == 0x0A) {
-            m_ramAndTimerEnable = true;
-        }
-        else {
-            m_ramAndTimerEnable = false;
-        }
+        m_ramAndTimerEnable = ((val & 0x0A) == 0x0A);
     }
     else if (addr >= 0x2000 && addr <= 0x3FFF) {
         // Writes to memory area 2000h to 3FFFh are for switching the ROM Bank Number
 
         // Fix the value
+        val &= 0x7F;
+
         if (val == 0) {
             val = 1;
         }
-
-        val &= 0x7F;
 
         // Save the bank number
         m_currentRomBank = val;
