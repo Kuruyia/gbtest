@@ -144,11 +144,6 @@ bool gbtest::PPU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource 
     // Check if it's for one of our registers
     switch (addr) {
     case 0xFF40: // [LCDC] LCD Control
-        if (m_ppuRegisters.lcdControl.lcdAndPpuEnable == 1 && (val & 0x80) == 0x00) {
-            // PPU just stopped, reset it
-            reset();
-        }
-
         m_ppuRegisters.lcdControl.raw = val;
         return true;
 
