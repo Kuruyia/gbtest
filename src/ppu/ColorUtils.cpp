@@ -2,24 +2,17 @@
 
 #include "ColorUtils.h"
 
-void gbtest::ColorUtils::dmgBGPaletteIndexToRGBA8888(const MonochromePaletteReg& dmgBgPalette, uint8_t colorIndex,
+void gbtest::ColorUtils::dmgPaletteIndexToRGBA8888(const MonochromePaletteReg& palette, uint8_t index,
                                                      gbtest::ColorUtils::ColorRGBA8888& pixel)
 {
-    switch (colorIndex) {
-    case 0: // Index 0
-        pixel.raw = 0xFFFFFFFF; // White
-        break;
+    // Lookup table for colors
+    static const uint32_t colors[] = {
+            0xFFFFFFFF,
+            0xFFAAAAAA,
+            0xFF555555,
+            0xFF000000
+    };
 
-    case 1: // Index 1
-        pixel.raw = 0xFFAAAAAA; // Light gray
-        break;
-
-    case 2: // Index 2
-        pixel.raw = 0xFF555555; // Dark gray
-        break;
-
-    default: // Index 3 or Invalid index
-        pixel.raw = 0xFF000000; // Black
-        break;
-    }
+    // Set the correct color
+    pixel.raw = colors[(palette.raw >> (index * 2)) & 0x3];
 }

@@ -19,7 +19,7 @@ union ColorRGBA8888 {
 
 static_assert(sizeof(ColorRGBA8888) == 4, "ColorRGBA8888 structure size is incorrect");
 
-void dmgBGPaletteIndexToRGBA8888(const MonochromePaletteReg& dmgBgPalette, uint8_t colorIndex,
+void dmgPaletteIndexToRGBA8888(const MonochromePaletteReg& palette, uint8_t index,
                                  ColorRGBA8888& pixel);
 
 } // namespace gbtest::ColorUtils

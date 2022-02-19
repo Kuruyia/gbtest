@@ -138,16 +138,16 @@ void gbtest::DrawingPPUMode::mixPixels(const FIFOPixelData& backgroundPixelData,
                     || (spritePixelData.backgroundPriority && backgroundPixelData.colorIndex != 0)
                     || m_ppuRegisters.lcdControl.objEnable == 0)) {
         // Use the background pixel
-        ColorUtils::dmgBGPaletteIndexToRGBA8888(
+        ColorUtils::dmgPaletteIndexToRGBA8888(
                 m_ppuRegisters.dmgPalettes.bgPaletteData,
                 backgroundPixelData.colorIndex,
                 mixedPixel);
     }
     else if (m_ppuRegisters.lcdControl.objEnable == 1) {
         // Use the sprite pixel
-        ColorUtils::dmgBGPaletteIndexToRGBA8888(
+        ColorUtils::dmgPaletteIndexToRGBA8888(
                 (spritePixelData.palette == 0) ? m_ppuRegisters.dmgPalettes.objectPaletteData0
-                : m_ppuRegisters.dmgPalettes.objectPaletteData1,
+                                               : m_ppuRegisters.dmgPalettes.objectPaletteData1,
                 spritePixelData.colorIndex,
                 mixedPixel);
     }
