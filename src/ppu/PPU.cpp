@@ -84,7 +84,11 @@ bool gbtest::PPU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource 
         return true;
 
     case 0xFF41: // [STAT] LCD Status
-        val = m_ppuRegisters.lcdStatus.raw;
+        val = (m_ppuRegisters.lcdStatus.raw & 0xFC);
+
+        // Report the current PPU mode
+        val |= (static_cast<uint8_t>(m_modeManager.getCurrentMode()) & 0x03);
+
         return true;
 
     case 0xFF42: // [SCY] BG Y scroll coordinate
