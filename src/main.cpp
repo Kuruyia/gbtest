@@ -73,9 +73,9 @@ int main()
 
     // Load a ROM file
     gbtest::InMemoryCartridgeDataSource cartridgeDataSource;
-    loadROM("mario_land.bin", cartridgeDataSource);
+    loadROM("pkmn_red.bin", cartridgeDataSource);
 
-    auto cartridge = std::make_unique<gbtest::CartridgeMBC1>(cartridgeDataSource);
+    auto cartridge = std::make_unique<gbtest::CartridgeMBC3>(cartridgeDataSource);
     gameboy->loadCartridge(std::move(cartridge));
 
     // Init the window

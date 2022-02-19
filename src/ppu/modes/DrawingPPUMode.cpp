@@ -174,6 +174,7 @@ void gbtest::DrawingPPUMode::checkWindow()
     // Start fetching the window
     m_backgroundFetcher.startFetchingWindow();
     m_backgroundPixelFifo = {};
+    m_pixelsToDiscard = 0;
 }
 
 void gbtest::DrawingPPUMode::checkSprite()
