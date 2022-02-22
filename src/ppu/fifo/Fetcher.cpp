@@ -51,3 +51,21 @@ void gbtest::Fetcher::tick()
         --m_cyclesToWait;
     }
 }
+
+uint8_t gbtest::Fetcher::getPixelFromTileData(uint16_t tileData, uint8_t bitNb, bool xFlipped)
+{
+    // Extract the bits from the tile data
+    uint8_t highBit, lowBit;
+
+    if (!xFlipped) {
+        lowBit = (tileData >> (8 + bitNb)) & 0x1;
+        highBit = (tileData >> bitNb) & 0x1;
+    }
+    else {
+        lowBit = (tileData >> (15 - bitNb)) & 0x1;
+        highBit = (tileData >> (7 - bitNb)) & 0x1;
+    }
+
+    // Merge the two bits
+    return (((highBit << 1) | lowBit) & 0x03);
+}

@@ -99,14 +99,12 @@ void gbtest::BackgroundFetcher::executeState()
         if (m_pixelFifo.empty()) {
             // Fill the queue with the fetched pixels
             for (uint8_t i = 8; i-- > 0;) {
-                const uint8_t lowBit = (m_currentTileData >> (8 + i)) & 0x1;
-                const uint8_t highBit = (m_currentTileData >> i) & 0x1;
-
-                m_pixelFifo.push(FIFOPixelData(
-                        (highBit << 1) | lowBit,
+                // Push the pixel to the FIFO
+                m_pixelFifo.emplace_back(
+                        getPixelFromTileData(m_currentTileData, i, false),
                         0,
                         0,
-                        false));
+                        false);
             }
 
             ++m_fetcherX;

@@ -30,6 +30,8 @@ public:
     void tick() override;
 
 protected:
+    static uint8_t getPixelFromTileData(uint16_t tileData, uint8_t bitNb, bool xFlipped);
+
     FetcherState m_fetcherState;
     bool m_paused;
     unsigned m_cyclesToWait;

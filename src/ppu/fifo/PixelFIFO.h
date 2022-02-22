@@ -1,13 +1,13 @@
 #ifndef GBTEST_PIXELFIFO_HPP
 #define GBTEST_PIXELFIFO_HPP
 
-#include <queue>
+#include <list>
 
 #include "FIFOPixelData.h"
 
 namespace gbtest {
 
-using PixelFIFO = std::queue<FIFOPixelData>;
+using PixelFIFO = std::list<FIFOPixelData>;
 
 } // namespace gbtest
 

@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "SpriteFetcher.h"
 
 gbtest::SpriteFetcher::SpriteFetcher(const gbtest::PPURegisters& ppuRegisters, const gbtest::VRAM& vram,
@@ -82,36 +84,45 @@ void gbtest::SpriteFetcher::executeState()
 
     case FetcherState::PushFIFO:
         // Fill the queue with the fetched pixels
+        uint8_t currentPixel = 8;
 
-        // We subtract "m_pixelFifo.getSize()" to prevent overwriting any pixel already in the FIFO
-        uint8_t startPixel = 8 - (m_pixelFifo.size() & 0xFF);
+        // Get the amount of pixels that's going to be overwritten
+        uint8_t endPixelOverwrite = (8 - m_pixelFifo.size());
 
         // If the sprite starts before the "beginning of the line", we need not push its pixels outside the viewport
         if (m_spriteToFetch.xPosition < 8) {
-            startPixel -= (8 - m_spriteToFetch.xPosition);
+            currentPixel -= (8 - m_spriteToFetch.xPosition);
+            endPixelOverwrite -= std::min<uint8_t>(8 - m_spriteToFetch.xPosition, endPixelOverwrite);
         }
 
-        for (uint8_t i = startPixel; i-- > 0;) {
-            // Change the order on which we put pixels in the FIFO depending on the X flip flag
-            uint8_t highBit, lowBit;
+        // Get the palette number
+        uint8_t paletteNumber = m_spriteToFetch.flags.dmgPaletteNumber;
 
-            if (m_spriteToFetch.flags.xFlip == 0) {
-                lowBit = (m_currentTileData >> (8 + i)) & 0x1;
-                highBit = (m_currentTileData >> i) & 0x1;
+        // First, overwrite any "invisible" pixel already in the FIFO
+        auto fifoIter = m_pixelFifo.begin();
+
+        for (; currentPixel-- > endPixelOverwrite;) {
+            if (fifoIter->colorIndex == 0x00) {
+                // Overwrite the pixel
+                fifoIter->colorIndex = getPixelFromTileData(m_currentTileData, currentPixel, m_spriteToFetch.flags.xFlip);
+                fifoIter->palette = paletteNumber;
+                fifoIter->spriteOamIndex = 0;
+                fifoIter->backgroundPriority = (m_spriteToFetch.flags.bgAndWindowsOverObj == 1);
             }
-            else {
-                lowBit = (m_currentTileData >> (15 - i)) & 0x1;
-                highBit = (m_currentTileData >> (7 - i)) & 0x1;
-            }
 
-            highBit &= 0x01;
-            lowBit &= 0x01;
+            ++fifoIter;
+        }
 
-            m_pixelFifo.push(FIFOPixelData(
-                    (highBit << 1) | lowBit,
-                    m_spriteToFetch.flags.dmgPaletteNumber,
+        // Then, add the remaining pixels
+        ++currentPixel;
+
+        for (; currentPixel-- > 0;) {
+            // Push the pixel to the FIFO
+            m_pixelFifo.emplace_back(
+                    getPixelFromTileData(m_currentTileData, currentPixel, m_spriteToFetch.flags.xFlip),
+                    paletteNumber,
                     0,
-                    m_spriteToFetch.flags.bgAndWindowsOverObj == 1));
+                    m_spriteToFetch.flags.bgAndWindowsOverObj == 1);
         }
 
         // Stop sprite fetching and reset to the first mode

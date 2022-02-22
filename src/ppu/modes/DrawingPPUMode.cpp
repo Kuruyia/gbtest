@@ -96,7 +96,7 @@ void gbtest::DrawingPPUMode::drawPixel()
 
     // Retrieve the background pixel
     FIFOPixelData backgroundPixelData = m_backgroundPixelFifo.front();
-    m_backgroundPixelFifo.pop();
+    m_backgroundPixelFifo.pop_front();
 
     // Only draw the pixel to the screen if it's not to be discarded
     if (m_pixelsToDiscard == 0) {
@@ -105,7 +105,7 @@ void gbtest::DrawingPPUMode::drawPixel()
 
         if (!m_spritePixelFifo.empty()) {
             spritePixelData = m_spritePixelFifo.front();
-            m_spritePixelFifo.pop();
+            m_spritePixelFifo.pop_front();
         }
 
         // Mix both pixels
