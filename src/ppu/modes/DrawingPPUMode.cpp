@@ -69,16 +69,18 @@ void gbtest::DrawingPPUMode::executeMode()
     // Tick the fetchers
     m_spriteFetcher.tick();
 
+    // Check for window and sprite
+    if (!m_spriteFetcher.isFetchingSprite()) {
+        checkWindow();
+        checkSprite();
+    }
+
     // Only do the rest if we're not suspended due to sprite fetching
     if (!m_spriteFetcher.isFetchingSprite()) {
         m_backgroundFetcher.tick();
 
         // Try to draw a pixel
         drawPixel();
-
-        // Check the window and sprites after shifting a pixel
-        checkWindow();
-        checkSprite();
 
         // If we're on the 160th pixel, the scanline is finished
         if (m_currentXCoordinate == 160) {
@@ -186,16 +188,13 @@ void gbtest::DrawingPPUMode::checkSprite()
      *  We expect the sprite buffer to be sorted by the X position of the sprites it contains,
      *  so we can just check one sprite each time instead of all of them.
      */
-    if (m_spriteToCheckIdx == m_spriteBuffer.getSize()) { return; }
-
-    const OAMEntry& spriteToCheck = m_spriteBuffer.at(m_spriteToCheckIdx);
-
-    if (spriteToCheck.xPosition <= m_currentXCoordinate + 8) {
+    if (m_spriteToCheckIdx < m_spriteBuffer.getSize()
+            && m_spriteBuffer[m_spriteToCheckIdx].xPosition <= m_currentXCoordinate + 8) {
         // Background fetched is paused and reset to step 1, pixel shifting is paused
         m_backgroundFetcher.resetForSpriteFetch();
 
         // Fetch the sprite
-        m_spriteFetcher.fetchSprite(spriteToCheck);
+        m_spriteFetcher.fetchSprite(m_spriteBuffer[m_spriteToCheckIdx]);
 
         // Next time, check the next sprite
         ++m_spriteToCheckIdx;

@@ -7,6 +7,16 @@ gbtest::SpriteBuffer::SpriteBuffer()
 
 }
 
+const gbtest::OAMEntry& gbtest::SpriteBuffer::operator[](size_t idx) const
+{
+    return m_buffer[idx];
+}
+
+gbtest::OAMEntry& gbtest::SpriteBuffer::operator[](size_t idx)
+{
+    return m_buffer[idx];
+}
+
 void gbtest::SpriteBuffer::push(const gbtest::OAMEntry& oamEntry)
 {
     if (m_size < m_buffer.size()) {

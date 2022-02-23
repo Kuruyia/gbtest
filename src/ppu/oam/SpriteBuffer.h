@@ -15,6 +15,9 @@ public:
 
     SpriteBuffer();
 
+    [[nodiscard]] const OAMEntry& operator[](size_t idx) const;
+    [[nodiscard]] OAMEntry& operator[](size_t idx);
+
     void push(const OAMEntry& oamEntry);
     [[nodiscard]] const OAMEntry& at(size_t idx) const;
     [[nodiscard]] OAMEntry& at(size_t idx);
