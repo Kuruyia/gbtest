@@ -33,6 +33,7 @@ set(SOURCE_FILES
         cartridge/datasource/InMemoryCartridgeDataSource.h
         cartridge/BaseCartridge.cpp
         cartridge/BaseCartridge.h
+        cartridge/CartridgeHeaderData.h
         cartridge/CartridgeNoMBC.cpp
         cartridge/CartridgeNoMBC.h
         cartridge/CartridgeMBC1.cpp
