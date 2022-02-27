@@ -106,8 +106,8 @@ int main()
 
     // Init miniaudio
     ma_lpf_config lpfConfig = ma_lpf_config_init(ma_format_f32, gbtest::APU::CHANNELS, gbtest::APU::SAMPLE_RATE,
-            gbtest::APU::SAMPLE_RATE / 2, 3);
-    ma_result result = ma_lpf_init(&lpfConfig, &lpf);
+            (float) gbtest::APU::SAMPLE_RATE / 2, 3);
+    ma_result result = ma_lpf_init(&lpfConfig, nullptr, &lpf);
     if (result != MA_SUCCESS) {
         return -1;
     }
@@ -118,6 +118,7 @@ int main()
     config.sampleRate = gbtest::APU::SAMPLE_RATE;
     config.dataCallback = maDataCallback;
     config.pUserData = gameboy.get();
+    config.noClip = true;
 
     ma_device device;
     if (ma_device_init(nullptr, &config, &device) != MA_SUCCESS) {
