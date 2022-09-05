@@ -120,7 +120,7 @@ set(SOURCE_FILES
 
 # Dependencies
 find_package(Threads REQUIRED)
-find_package(raylib 3.0 CONFIG REQUIRED)
+find_package(raylib 4 CONFIG REQUIRED)
 
 # Target
 add_executable(gbtest ${SOURCE_FILES})
