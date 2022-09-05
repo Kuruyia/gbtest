@@ -50,7 +50,7 @@ jobs:
         run: cmake --install '${{ github.workspace }}/builds/ninja-multi-vcpkg-release' --prefix '${{ github.workspace }}/out'
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v3
         with:
           name: 'gbtest-${{ matrix.osPrettyName }}'
           path: '${{ github.workspace }}/out'
