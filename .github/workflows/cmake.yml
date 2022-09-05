@@ -2,7 +2,7 @@ name: CMake
 on: [ push ]
 
 env:
-  VCPKG_COMMIT: '80ecdea4f9db9b22861075f14ef5d9394c3a0cf1'
+  VCPKG_COMMIT: '927006b24c3a28dfd8aa0ec5f8ce43098480a7f1'
 
 jobs:
   job:
@@ -28,7 +28,7 @@ jobs:
           sudo apt install libasound2-dev mesa-common-dev libx11-dev libxrandr-dev libxi-dev xorg-dev libgl1-mesa-dev libglu1-mesa-dev
         if: matrix.os == 'ubuntu-latest'
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
 
@@ -50,7 +50,7 @@ jobs:
         run: cmake --install '${{ github.workspace }}/builds/ninja-multi-vcpkg-release' --prefix '${{ github.workspace }}/out'
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v3
         with:
           name: 'gbtest-${{ matrix.osPrettyName }}'
           path: '${{ github.workspace }}/out'
