@@ -21,8 +21,7 @@ bool gbtest::CartridgeMBC1::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequ
     // Check what part of the memory is being read
     if (addr <= 0x3FFF) {
         // The read is for ROM Bank X0
-        // TODO: Check if the cart is a "large ROM" one
-        if (m_advancedBankingMode) {
+        if (m_advancedBankingMode && m_cartridgeHeaderData.romSize >= CartridgeHeaderROMSize::ROM1M) {
             m_cartridgeDataSource.read((0x4000 * (m_currentRamAndUpperRomBank << 5)) + addr, val);
         }
         else {
@@ -36,8 +35,7 @@ bool gbtest::CartridgeMBC1::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequ
     }
     else if (m_ramEnable && (addr >= 0xA000 && addr <= 0xBFFF)) {
         // The read is for RAM Bank 00-03
-        // TODO: Check if the cart is a "large RAM" one
-        if (m_advancedBankingMode) {
+        if (m_advancedBankingMode && m_cartridgeHeaderData.ramSize == CartridgeHeaderRAMSize::RAM32K) {
             // RAM Banking is enabled
             val = m_ram[(0x2000 * m_currentRamAndUpperRomBank) + (addr - 0xA000)];
         }
@@ -70,6 +68,23 @@ bool gbtest::CartridgeMBC1::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequ
 
         if (val == 0) {
             val = 1;
+        }
+
+        if (m_cartridgeHeaderData.romSize == CartridgeHeaderROMSize::ROM32K) {
+            // Mask out four bits
+            val &= 0x01;
+        }
+        else if (m_cartridgeHeaderData.romSize == CartridgeHeaderROMSize::ROM64K) {
+            // Mask out three bits
+            val &= 0x03;
+        }
+        else if (m_cartridgeHeaderData.romSize == CartridgeHeaderROMSize::ROM128K) {
+            // Mask out two bits
+            val &= 0x07;
+        }
+        else if (m_cartridgeHeaderData.romSize == CartridgeHeaderROMSize::ROM256K) {
+            // Mask out one bit
+            val &= 0x0F;
         }
 
         // Save the high bank number
