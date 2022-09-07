@@ -2,7 +2,7 @@
 
 gbtest::GameBoy::GameBoy()
         : m_cpu(m_bus)
-        , m_wholeMemory(0x8000, 0x8000)
+        , m_wholeMemory(0xC000, 0x4000)
         , m_ppu(m_bus)
         , m_joypad(m_bus)
         , m_divider(m_cpu.getHaltState())
@@ -43,6 +43,10 @@ void gbtest::GameBoy::tick()
     m_cpu.tick();
     m_ppu.tick();
     m_apu.tick();
+
+    if (m_cartridge) {
+        m_cartridge->tick();
+    }
 }
 
 gbtest::Bus& gbtest::GameBoy::getBus()

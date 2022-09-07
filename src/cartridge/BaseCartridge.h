@@ -5,15 +5,18 @@
 #include "CartridgeHeaderData.h"
 
 #include "../platform/bus/BusProvider.h"
+#include "../utils/Tickable.h"
 
 namespace gbtest {
 
 class BaseCartridge
-        : public BusProvider {
+        : public BusProvider, public Tickable {
 
 public:
     explicit BaseCartridge(CartridgeDataSource& cartridgeDataSource);
     ~BaseCartridge() override = default;
+
+    void tick() override;
 
     [[nodiscard]] CartridgeMBCType getMBCType() const;
 

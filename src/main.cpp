@@ -73,7 +73,7 @@ int main()
 
     // Load a ROM file
     gbtest::InMemoryCartridgeDataSource cartridgeDataSource;
-    loadROM("pkmn_red.bin", cartridgeDataSource);
+    loadROM("rtc.bin", cartridgeDataSource);
 
     auto cartridge = std::make_unique<gbtest::CartridgeMBC3>(cartridgeDataSource);
     gameboy->loadCartridge(std::move(cartridge));

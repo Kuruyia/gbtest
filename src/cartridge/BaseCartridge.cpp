@@ -10,6 +10,11 @@ gbtest::BaseCartridge::BaseCartridge(gbtest::CartridgeDataSource& cartridgeDataS
     parseHeader();
 }
 
+void gbtest::BaseCartridge::tick()
+{
+    // Don't do anything
+}
+
 CartridgeMBCType gbtest::BaseCartridge::getMBCType() const
 {
     switch (m_cartridgeHeaderData.cartridgeType) {

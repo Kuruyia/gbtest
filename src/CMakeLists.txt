@@ -31,6 +31,10 @@ set(SOURCE_FILES
         cartridge/datasource/CartridgeDataSource.h
         cartridge/datasource/InMemoryCartridgeDataSource.cpp
         cartridge/datasource/InMemoryCartridgeDataSource.h
+        cartridge/peripherals/CartridgeRTCPeripheral.cpp
+        cartridge/peripherals/CartridgeRTCPeripheral.h
+        cartridge/peripherals/CartridgeRTCPeripheralRegisters.cpp
+        cartridge/peripherals/CartridgeRTCPeripheralRegisters.h
         cartridge/BaseCartridge.cpp
         cartridge/BaseCartridge.h
         cartridge/CartridgeHeaderData.h
