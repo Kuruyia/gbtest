@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <mutex>
+#include <sstream>
 #include <sys/stat.h>
 
 #include "miniaudio.h"
@@ -30,7 +31,6 @@ void maDataCallback(ma_device* pDevice, void* pOutput, const void* pInput, ma_ui
 
     // If the emulator is paused, output silence
     if (!ctx->isRunning()) {
-//        memset(pOutput, 0x00, frameCount * ma_get_bytes_per_frame(ma_format_f32, gbtest::APU::CHANNELS));
         return;
     }
 
@@ -71,6 +71,28 @@ void loadROM(std::string_view filename, gbtest::InMemoryCartridgeDataSource& car
     else {
         std::cerr << "File " << filename << " not found!" << std::endl;
     }
+}
+
+void updateWindowTitle(gbtest::GameBoy* gb)
+{
+    // Build the title string
+    std::stringstream titleStream;
+
+    if (gb->getCartridge()) {
+        // Check if the emulator is paused
+        if (!gb->isRunning()) {
+            titleStream << "[PAUSED] ";
+        }
+
+        // Add the name of the game
+        titleStream << gb->getCartridge()->getHeaderData().title << " - ";
+    }
+
+    // Add the emulator name
+    titleStream << "gbtest";
+
+    // Set the window title
+    SetWindowTitle(titleStream.str().c_str());
 }
 
 int main()
@@ -137,6 +159,8 @@ int main()
     gameboy->start();
     ma_device_start(&device);
 
+    updateWindowTitle(gameboy.get());
+
     while (!WindowShouldClose()) {
 #ifndef SYNC_ON_AUDIO
         // Tick the gameboy
@@ -162,10 +186,14 @@ int main()
 
             if (gameboy->isRunning()) {
                 gameboy->stop();
+
+                updateWindowTitle(gameboy.get());
                 std::cout << "Emulator stopped" << std::endl;
             }
             else {
                 gameboy->start();
+
+                updateWindowTitle(gameboy.get());
                 std::cout << "Emulator started" << std::endl;
             }
         }

@@ -15,6 +15,11 @@ void gbtest::BaseCartridge::tick()
     // Don't do anything
 }
 
+const CartridgeHeaderData& gbtest::BaseCartridge::getHeaderData() const
+{
+    return m_cartridgeHeaderData;
+}
+
 CartridgeMBCType gbtest::BaseCartridge::getMBCType() const
 {
     switch (m_cartridgeHeaderData.cartridgeType) {
@@ -183,6 +188,11 @@ void gbtest::BaseCartridge::parseHeader()
     // Extract the logo
     for (size_t i = 0; i < 48; ++i) {
         m_cartridgeDataSource->read(0x0104 + i, m_cartridgeHeaderData.logo[i]);
+    }
+
+    // Extract the title
+    for (size_t i = 0; i < 11; ++i) {
+        m_cartridgeDataSource->read(0x0134 + i, m_cartridgeHeaderData.title[i]);
     }
 
     // Extract the manufacturer code

@@ -97,6 +97,7 @@ enum class CartridgeHeaderDestinationCode {
 // Data in the cartridge header
 struct CartridgeHeaderData {
     uint8_t logo[0x30];                             // [0104h-0133h] Logo
+    uint8_t title[0x0B];                            // [0134h-013Eh] Title
     uint32_t manufacturerCode;                      // [013Fh-0142h] Manufacturer Code
     CartridgeHeaderCGBFlag cgbFlag;                 // [0143h] CGB Flag
     uint16_t newLicenseeCode;                       // [0144h-0145h] New Licensee Code

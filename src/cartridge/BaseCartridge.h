@@ -20,6 +20,8 @@ public:
 
     void tick() override;
 
+    [[nodiscard]] const CartridgeHeaderData& getHeaderData() const;
+
     [[nodiscard]] CartridgeMBCType getMBCType() const;
 
     static bool hasRAM(CartridgeHeaderCartridgeType cartridgeType);
