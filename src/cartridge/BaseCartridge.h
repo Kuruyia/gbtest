@@ -1,6 +1,8 @@
 #ifndef GBTEST_BASECARTRIDGE_H
 #define GBTEST_BASECARTRIDGE_H
 
+#include <memory>
+
 #include "datasource/CartridgeDataSource.h"
 #include "CartridgeHeaderData.h"
 
@@ -13,7 +15,7 @@ class BaseCartridge
         : public BusProvider, public Tickable {
 
 public:
-    explicit BaseCartridge(CartridgeDataSource& cartridgeDataSource);
+    explicit BaseCartridge(std::unique_ptr<CartridgeDataSource> cartridgeDataSource);
     ~BaseCartridge() override = default;
 
     void tick() override;
@@ -36,7 +38,7 @@ public:
     [[nodiscard]] bool hasSensor() const;
 
 protected:
-    CartridgeDataSource& m_cartridgeDataSource;
+    std::unique_ptr<CartridgeDataSource> m_cartridgeDataSource;
     CartridgeHeaderData m_cartridgeHeaderData;
 
     void parseHeader();

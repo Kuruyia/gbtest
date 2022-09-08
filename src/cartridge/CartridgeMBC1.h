@@ -3,6 +3,7 @@
 
 #include <array>
 #include <cstdint>
+#include <memory>
 
 #include "BaseCartridge.h"
 
@@ -12,7 +13,7 @@ class CartridgeMBC1
         : public BaseCartridge {
 
 public:
-    explicit CartridgeMBC1(CartridgeDataSource& cartridgeDataSource);
+    explicit CartridgeMBC1(std::unique_ptr<CartridgeDataSource> cartridgeDataSource);
     ~CartridgeMBC1() override = default;
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;

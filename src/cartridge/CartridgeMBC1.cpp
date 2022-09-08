@@ -1,7 +1,7 @@
 #include "CartridgeMBC1.h"
 
-gbtest::CartridgeMBC1::CartridgeMBC1(gbtest::CartridgeDataSource& cartridgeDataSource)
-        : BaseCartridge(cartridgeDataSource)
+gbtest::CartridgeMBC1::CartridgeMBC1(std::unique_ptr<CartridgeDataSource> cartridgeDataSource)
+        : BaseCartridge(std::move(cartridgeDataSource))
         , m_ram()
         , m_currentRomBank(1)
         , m_currentRamAndUpperRomBank(0)
@@ -22,16 +22,16 @@ bool gbtest::CartridgeMBC1::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequ
     if (addr <= 0x3FFF) {
         // The read is for ROM Bank X0
         if (m_advancedBankingMode && m_cartridgeHeaderData.romSize >= CartridgeHeaderROMSize::ROM1M) {
-            m_cartridgeDataSource.read((0x4000 * (m_currentRamAndUpperRomBank << 5)) + addr, val);
+            m_cartridgeDataSource->read((0x4000 * (m_currentRamAndUpperRomBank << 5)) + addr, val);
         }
         else {
-            m_cartridgeDataSource.read(addr, val);
+            m_cartridgeDataSource->read(addr, val);
         }
     }
     else if (addr >= 0x4000 && addr <= 0x7FFF) {
         // The read is for ROM Bank 01-7F
-        m_cartridgeDataSource.read((0x4000 * (m_currentRomBank | (m_currentRamAndUpperRomBank << 5))) +
-                                    (addr - 0x4000), val);
+        m_cartridgeDataSource->read((0x4000 * (m_currentRomBank | (m_currentRamAndUpperRomBank << 5))) +
+                (addr - 0x4000), val);
     }
     else if (m_ramEnable && (addr >= 0xA000 && addr <= 0xBFFF)) {
         // The read is for RAM Bank 00-03

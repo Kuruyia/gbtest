@@ -55,6 +55,8 @@ set(SOURCE_FILES
         exceptions/bus/BusLockedAddressException.h
         exceptions/bus/BusNoHandlerException.cpp
         exceptions/bus/BusNoHandlerException.h
+        exceptions/cartridge/UnsupportedCartridgeTypeException.cpp
+        exceptions/cartridge/UnsupportedCartridgeTypeException.h
         exceptions/ppu/UnknownPPUModeException.cpp
         exceptions/ppu/UnknownPPUModeException.h
         joypad/Joypad.cpp

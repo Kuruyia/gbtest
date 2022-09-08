@@ -48,6 +48,8 @@ public:
     [[nodiscard]] const Timer& getTimer() const;
 
     void loadCartridge(std::unique_ptr<BaseCartridge> cartridge);
+    void loadCartridgeFromDataSource(std::unique_ptr<gbtest::CartridgeDataSource> dataSource);
+
     [[nodiscard]] BaseCartridge* getCartridge();
     [[nodiscard]] const BaseCartridge* getCartridge() const;
 

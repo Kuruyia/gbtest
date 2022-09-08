@@ -2,8 +2,8 @@
 
 #include "BaseCartridge.h"
 
-gbtest::BaseCartridge::BaseCartridge(gbtest::CartridgeDataSource& cartridgeDataSource)
-        : m_cartridgeDataSource(cartridgeDataSource)
+gbtest::BaseCartridge::BaseCartridge(std::unique_ptr<CartridgeDataSource> cartridgeDataSource)
+        : m_cartridgeDataSource(std::move(cartridgeDataSource))
         , m_cartridgeHeaderData()
 {
     // Parse the cartridge header
@@ -182,70 +182,70 @@ void gbtest::BaseCartridge::parseHeader()
 
     // Extract the logo
     for (size_t i = 0; i < 48; ++i) {
-        m_cartridgeDataSource.read(0x0104 + i, m_cartridgeHeaderData.logo[i]);
+        m_cartridgeDataSource->read(0x0104 + i, m_cartridgeHeaderData.logo[i]);
     }
 
     // Extract the manufacturer code
-    m_cartridgeDataSource.read(0x013F, buff);
+    m_cartridgeDataSource->read(0x013F, buff);
     m_cartridgeHeaderData.manufacturerCode = buff;
 
-    m_cartridgeDataSource.read(0x0140, buff);
+    m_cartridgeDataSource->read(0x0140, buff);
     m_cartridgeHeaderData.manufacturerCode <<= 8;
     m_cartridgeHeaderData.manufacturerCode |= buff;
 
-    m_cartridgeDataSource.read(0x0141, buff);
+    m_cartridgeDataSource->read(0x0141, buff);
     m_cartridgeHeaderData.manufacturerCode <<= 8;
     m_cartridgeHeaderData.manufacturerCode |= buff;
 
-    m_cartridgeDataSource.read(0x0142, buff);
+    m_cartridgeDataSource->read(0x0142, buff);
     m_cartridgeHeaderData.manufacturerCode <<= 8;
     m_cartridgeHeaderData.manufacturerCode |= buff;
 
     // Extract the CGB flag
-    m_cartridgeDataSource.read(0x0143, buff);
+    m_cartridgeDataSource->read(0x0143, buff);
     m_cartridgeHeaderData.cgbFlag = CartridgeHeaderCGBFlag(buff);
 
     // Extract the new licensee code
-    m_cartridgeDataSource.read(0x0144, buff);
+    m_cartridgeDataSource->read(0x0144, buff);
     m_cartridgeHeaderData.newLicenseeCode = buff;
 
-    m_cartridgeDataSource.read(0x0145, buff);
+    m_cartridgeDataSource->read(0x0145, buff);
     m_cartridgeHeaderData.newLicenseeCode <<= 8;
     m_cartridgeHeaderData.newLicenseeCode |= buff;
 
     // Extract the SGB flag
-    m_cartridgeDataSource.read(0x0146, buff);
+    m_cartridgeDataSource->read(0x0146, buff);
     m_cartridgeHeaderData.sgbFlag = CartridgeHeaderSGBFlag(buff);
 
     // Extract the cartridge type
-    m_cartridgeDataSource.read(0x0147, buff);
+    m_cartridgeDataSource->read(0x0147, buff);
     m_cartridgeHeaderData.cartridgeType = CartridgeHeaderCartridgeType(buff);
 
     // Extract the ROM size
-    m_cartridgeDataSource.read(0x0148, buff);
+    m_cartridgeDataSource->read(0x0148, buff);
     m_cartridgeHeaderData.romSize = CartridgeHeaderROMSize(buff);
 
     // Extract the RAM size
-    m_cartridgeDataSource.read(0x0149, buff);
+    m_cartridgeDataSource->read(0x0149, buff);
     m_cartridgeHeaderData.ramSize = CartridgeHeaderRAMSize(buff);
 
     // Extract the destination code
-    m_cartridgeDataSource.read(0x014A, buff);
+    m_cartridgeDataSource->read(0x014A, buff);
     m_cartridgeHeaderData.destinationCode = CartridgeHeaderDestinationCode(buff);
 
     // Extract the old licensee code
-    m_cartridgeDataSource.read(0x014B, m_cartridgeHeaderData.oldLicenseeCode);
+    m_cartridgeDataSource->read(0x014B, m_cartridgeHeaderData.oldLicenseeCode);
 
     // Extract the version number
-    m_cartridgeDataSource.read(0x014C, m_cartridgeHeaderData.versionNumber);
+    m_cartridgeDataSource->read(0x014C, m_cartridgeHeaderData.versionNumber);
 
     // Extract the checksums
-    m_cartridgeDataSource.read(0x014D, m_cartridgeHeaderData.headerChecksum);
+    m_cartridgeDataSource->read(0x014D, m_cartridgeHeaderData.headerChecksum);
 
-    m_cartridgeDataSource.read(0x014E, buff);
+    m_cartridgeDataSource->read(0x014E, buff);
     m_cartridgeHeaderData.globalChecksum = buff;
 
-    m_cartridgeDataSource.read(0x014F, buff);
+    m_cartridgeDataSource->read(0x014F, buff);
     m_cartridgeHeaderData.globalChecksum <<= 8;
     m_cartridgeHeaderData.globalChecksum |= buff;
 }

@@ -8,9 +8,6 @@
 #include <raylib.h>
 
 #include "cartridge/datasource/InMemoryCartridgeDataSource.h"
-#include "cartridge/CartridgeNoMBC.h"
-#include "cartridge/CartridgeMBC1.h"
-#include "cartridge/CartridgeMBC3.h"
 #include "platform/GameBoy.h"
 
 #define SYNC_ON_AUDIO
@@ -72,11 +69,11 @@ int main()
     gameboy->init();
 
     // Load a ROM file
-    gbtest::InMemoryCartridgeDataSource cartridgeDataSource;
-    loadROM("rtc.bin", cartridgeDataSource);
+    auto cartridgeDataSource = std::make_unique<gbtest::InMemoryCartridgeDataSource>();
+    loadROM("rtc.bin", *(cartridgeDataSource.get()));
+    gameboy->loadCartridgeFromDataSource(std::move(cartridgeDataSource));
 
-    auto cartridge = std::make_unique<gbtest::CartridgeMBC3>(cartridgeDataSource);
-    gameboy->loadCartridge(std::move(cartridge));
+    std::cout << "Loaded cartridge type: " << (unsigned) gameboy->getCartridge()->getMBCType() << std::endl;
 
     // Init the window
     InitWindow(680, 616, "gbtest");

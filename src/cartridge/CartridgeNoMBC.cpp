@@ -1,7 +1,7 @@
 #include "CartridgeNoMBC.h"
 
-gbtest::CartridgeNoMBC::CartridgeNoMBC(CartridgeDataSource& cartridgeDataSource)
-        : BaseCartridge(cartridgeDataSource)
+gbtest::CartridgeNoMBC::CartridgeNoMBC(std::unique_ptr<CartridgeDataSource> cartridgeDataSource)
+        : BaseCartridge(std::move(cartridgeDataSource))
 {
 
 }
@@ -14,7 +14,7 @@ bool gbtest::CartridgeNoMBC::busRead(uint16_t addr, uint8_t& val, gbtest::BusReq
     }
 
     // Return the value from the data source
-    m_cartridgeDataSource.read(addr, val);
+    m_cartridgeDataSource->read(addr, val);
 
     return true;
 }

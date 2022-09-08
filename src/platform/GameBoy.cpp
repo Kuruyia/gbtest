@@ -1,5 +1,12 @@
 #include "GameBoy.h"
 
+#include <memory>
+
+#include "../cartridge/CartridgeNoMBC.h"
+#include "../cartridge/CartridgeMBC1.h"
+#include "../cartridge/CartridgeMBC3.h"
+#include "../exceptions/cartridge/UnsupportedCartridgeTypeException.h"
+
 gbtest::GameBoy::GameBoy()
         : m_cpu(m_bus)
         , m_wholeMemory(0xC000, 0x4000)
@@ -122,6 +129,43 @@ void gbtest::GameBoy::loadCartridge(std::unique_ptr<BaseCartridge> cartridge)
     // Register the new cartridge to the bus
     if (m_cartridge) {
         m_bus.registerBusProvider(m_cartridge.get());
+    }
+}
+
+void gbtest::GameBoy::loadCartridgeFromDataSource(std::unique_ptr<gbtest::CartridgeDataSource> dataSource)
+{
+    // Get the MBC type from the data source
+    uint8_t rawMBCType;
+    dataSource->read(0x0147, rawMBCType);
+
+    auto mbcType = CartridgeHeaderCartridgeType(rawMBCType);
+
+    // Instantiate the correct class according to the MBC type
+    switch (mbcType) {
+    case CartridgeHeaderCartridgeType::ROMOnly:
+        // No MBC
+        loadCartridge(std::make_unique<gbtest::CartridgeNoMBC>(std::move(dataSource)));
+        break;
+
+    case CartridgeHeaderCartridgeType::MBC1:
+    case CartridgeHeaderCartridgeType::MBC1AndRAM:
+    case CartridgeHeaderCartridgeType::MBC1AndRAMAndBattery:
+        // MBC1
+        loadCartridge(std::make_unique<gbtest::CartridgeMBC1>(std::move(dataSource)));
+        break;
+
+    case CartridgeHeaderCartridgeType::MBC3:
+    case CartridgeHeaderCartridgeType::MBC3AndRAM:
+    case CartridgeHeaderCartridgeType::MBC3AndRAMAndBattery:
+    case CartridgeHeaderCartridgeType::MBC3AndTimerAndBattery:
+    case CartridgeHeaderCartridgeType::MBC3AndTimerAndRAMAndBattery:
+        // MBC3
+        loadCartridge(std::make_unique<gbtest::CartridgeMBC3>(std::move(dataSource)));
+        break;
+
+    default:
+        // Unsupported cartridge type
+        throw gbtest::UnsupportedCartridgeTypeException(mbcType);
     }
 }
 

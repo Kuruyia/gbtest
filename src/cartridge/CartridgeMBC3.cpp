@@ -1,7 +1,7 @@
 #include "CartridgeMBC3.h"
 
-gbtest::CartridgeMBC3::CartridgeMBC3(gbtest::CartridgeDataSource& cartridgeDataSource)
-        : BaseCartridge(cartridgeDataSource)
+gbtest::CartridgeMBC3::CartridgeMBC3(std::unique_ptr<CartridgeDataSource> cartridgeDataSource)
+        : BaseCartridge(std::move(cartridgeDataSource))
         , m_ram()
         , m_currentRomBank(1)
         , m_currentRamBankAndRTCRegister(0)
@@ -22,11 +22,11 @@ bool gbtest::CartridgeMBC3::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequ
     // Check what part of the memory is being read
     if (addr <= 0x3FFF) {
         // The read is for ROM Bank 00
-        m_cartridgeDataSource.read(addr, val);
+        m_cartridgeDataSource->read(addr, val);
     }
     else if (addr >= 0x4000 && addr <= 0x7FFF) {
         // The read is for ROM Bank 01-7F
-        m_cartridgeDataSource.read((0x4000 * m_currentRomBank) + (addr - 0x4000), val);
+        m_cartridgeDataSource->read((0x4000 * m_currentRomBank) + (addr - 0x4000), val);
     }
     else if (m_ramAndRTCEnable && (addr >= 0xA000 && addr <= 0xBFFF)) {
         // Check if the read is for RAM Bank 00-03 or RTC Register 08-0C
