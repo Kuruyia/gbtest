@@ -10,6 +10,7 @@
 #include <raylib.h>
 
 #include "cartridge/datasource/InMemoryCartridgeDataSource.h"
+#include "platform/revision/GameBoyRevisionType.h"
 #include "platform/GameBoy.h"
 
 #define SYNC_ON_AUDIO
@@ -98,12 +99,12 @@ void updateWindowTitle(gbtest::GameBoy* gb)
 int main()
 {
     // Init the core emulator
-    std::unique_ptr<gbtest::GameBoy> gameboy = std::make_unique<gbtest::GameBoy>();
+    std::unique_ptr<gbtest::GameBoy> gameboy = std::make_unique<gbtest::GameBoy>(gbtest::GameBoyRevisionType::DMG);
     gameboy->init();
 
     // Load a ROM file
     auto cartridgeDataSource = std::make_unique<gbtest::InMemoryCartridgeDataSource>();
-    loadROM("pkmn_red.bin", *(cartridgeDataSource.get()));
+    loadROM("pkmn_gold.bin", *(cartridgeDataSource.get()));
     gameboy->loadCartridgeFromDataSource(std::move(cartridgeDataSource));
 
     std::cout << "Loaded cartridge type: " << (unsigned) gameboy->getCartridge()->getMBCType() << std::endl;

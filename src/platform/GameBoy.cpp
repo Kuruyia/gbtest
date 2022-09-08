@@ -6,14 +6,16 @@
 #include "../cartridge/CartridgeMBC1.h"
 #include "../cartridge/CartridgeMBC3.h"
 #include "../exceptions/cartridge/UnsupportedCartridgeTypeException.h"
+#include "revision/GameBoyStartupRegisters.h"
 
-gbtest::GameBoy::GameBoy()
+gbtest::GameBoy::GameBoy(gbtest::GameBoyRevisionType&& revisionType)
         : m_cpu(m_bus)
         , m_wholeMemory(0xC000, 0x4000)
         , m_ppu(m_bus)
         , m_joypad(m_bus)
         , m_divider(m_cpu.getHaltState())
         , m_timer(m_bus)
+        , m_revision(revisionType)
         , m_running(false)
 {
 
@@ -35,8 +37,20 @@ void gbtest::GameBoy::init()
 
 void gbtest::GameBoy::reset()
 {
+    // Stop emulation
+    stop();
+
     // Reset CPU registers
-    resetCpuRegisters();
+    resetRegisters();
+}
+
+void gbtest::GameBoy::reset(gbtest::GameBoyRevisionType&& revisionType)
+{
+    // Set the new revision
+    m_revision = GameBoyRevision(revisionType);
+
+    // Reset the emulator
+    reset();
 }
 
 void gbtest::GameBoy::update(float secondsToEmulate)
@@ -80,6 +94,11 @@ void gbtest::GameBoy::stop()
 bool gbtest::GameBoy::isRunning() const
 {
     return m_running;
+}
+
+const gbtest::GameBoyRevision& gbtest::GameBoy::getRevision() const
+{
+    return m_revision;
 }
 
 gbtest::Bus& gbtest::GameBoy::getBus()
@@ -205,85 +224,22 @@ const gbtest::BaseCartridge* gbtest::GameBoy::getCartridge() const
     return m_cartridge.get();
 }
 
-void gbtest::GameBoy::resetCpuRegisters()
+void gbtest::GameBoy::resetRegisters()
 {
-    // DMG registers
+    // Load the startup registers
+    GameBoyStartupRegisters startupRegisters(m_revision.getRevisionType());
 
     // CPU
     LR35902Registers registers{};
-    registers.af = 0x0180;
-    registers.bc = 0x0013;
-    registers.de = 0x00D8;
-    registers.hl = 0x014D;
-    registers.pc = 0x0100;
-    registers.sp = 0xFFFE;
+    startupRegisters.loadCPURegisters(registers);
 
     m_cpu.setRegisters(registers);
 
-    // Divider
-    m_divider.getRegister().value = 0x18;
-
-    // Timer
-    m_timer.getTimerCounterRegister().raw = 0x00;
-    m_timer.getTimerModuloRegister().raw = 0x00;
-    m_timer.getTimerControlRegister().raw = 0xF8;
-
-    // PPU
-    PPURegisters& ppuRegisters = m_ppu.getPpuRegisters();
-
-    ppuRegisters.lcdControl.raw = 0x91;
-    ppuRegisters.lcdStatus.raw = 0x80;
-
-    ppuRegisters.lcdPositionAndScrolling.xScroll = 0x00;
-    ppuRegisters.lcdPositionAndScrolling.yScroll = 0x00;
-    ppuRegisters.lcdPositionAndScrolling.lyCompare = 0x00;
-    ppuRegisters.lcdPositionAndScrolling.xWindowPosition = 0x00;
-    ppuRegisters.lcdPositionAndScrolling.yWindowPosition = 0x00;
-
-    ppuRegisters.dmgPalettes.bgPaletteData.raw = 0xFC;
-    ppuRegisters.dmgPalettes.objectPaletteData0.raw = 0xFF;
-    ppuRegisters.dmgPalettes.objectPaletteData1.raw = 0xFF;
-
-    // APU
-    SoundControlRegisters& soundControlRegisters = m_apu.getSoundControlRegisters();
-
-    soundControlRegisters.channelControl.raw = 0x77;
-    soundControlRegisters.soundOutputTerminalSelection.raw = 0xF3;
-    soundControlRegisters.soundOnOff.raw = 0xF1;
-
-    // APU Channel 1
-    Channel1Registers& channel1Registers = m_apu.getChannel1().getRegisters();
-
-    channel1Registers.sweep.raw = 0x80;
-    channel1Registers.soundLengthWavePatternDuty.raw = 0xBF;
-    channel1Registers.volumeEnvelope.raw = 0xF3;
-    channel1Registers.frequencyLow.raw = 0xFF;
-    channel1Registers.frequencyHigh.raw = 0xBF;
-
-    // APU Channel 2
-    Channel2Registers& channel2Registers = m_apu.getChannel2().getRegisters();
-
-    channel2Registers.soundLengthWavePatternDuty.raw = 0x3F;
-    channel2Registers.volumeEnvelope.raw = 0x00;
-    channel2Registers.frequencyLow.raw = 0xFF;
-    channel2Registers.frequencyHigh.raw = 0xBF;
-
-    // APU Channel 3
-    Channel3Registers& channel3Registers = m_apu.getChannel3().getRegisters();
-
-    channel3Registers.soundOnOff.raw = 0x7F;
-    channel3Registers.soundLength.raw = 0xFF;
-    channel3Registers.selectOutputLevel.raw = 0x9F;
-    channel3Registers.frequencyLow.raw = 0xFF;
-    channel3Registers.frequencyHigh.raw = 0xBF;
-
-    // APU Channel 4
-    Channel4Registers& channel4Registers = m_apu.getChannel4().getRegisters();
-
-    channel4Registers.soundLength.raw = 0xFF;
-    channel4Registers.volumeEnvelope.raw = 0x00;
-    channel4Registers.polynomialCounter.raw = 0x00;
-    channel4Registers.counterConsecutiveAndInitial.raw = 0xBF;
+    // Peripherals
+    startupRegisters.loadDividerRegisters(m_divider);
+    startupRegisters.loadTimerRegisters(m_timer);
+    startupRegisters.loadPPURegisters(m_ppu);
+    startupRegisters.loadAPURegisters(m_apu);
 }
 
 void gbtest::GameBoy::registerBusProviders()

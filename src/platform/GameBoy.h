@@ -4,6 +4,8 @@
 #include <memory>
 
 #include "bus/Bus.h"
+#include "revision/GameBoyRevision.h"
+#include "revision/GameBoyRevisionType.h"
 #include "GameBoyFrequencies.h"
 
 #include "../apu/APU.h"
@@ -21,11 +23,12 @@ namespace gbtest {
 class GameBoy {
 
 public:
-    GameBoy();
+    explicit GameBoy(GameBoyRevisionType&& revisionType);
     ~GameBoy();
 
     void init();
     void reset();
+    void reset(GameBoyRevisionType&& revisionType);
 
     void update(float secondsToEmulate);
     void tick(bool force = false);
@@ -33,6 +36,8 @@ public:
     void start();
     void stop();
     [[nodiscard]] bool isRunning() const;
+
+    [[nodiscard]] const GameBoyRevision& getRevision() const;
 
     [[nodiscard]] Bus& getBus();
     [[nodiscard]] const Bus& getBus() const;
@@ -69,9 +74,10 @@ private:
     Timer m_timer;
     std::unique_ptr<BaseCartridge> m_cartridge;
 
+    GameBoyRevision m_revision;
     bool m_running;
 
-    void resetCpuRegisters();
+    void resetRegisters();
 
     void registerBusProviders();
     void unregisterBusProviders();

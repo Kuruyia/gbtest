@@ -57,6 +57,8 @@ set(SOURCE_FILES
         exceptions/bus/BusNoHandlerException.h
         exceptions/cartridge/UnsupportedCartridgeTypeException.cpp
         exceptions/cartridge/UnsupportedCartridgeTypeException.h
+        exceptions/platform/UnsupportedRevisionException.cpp
+        exceptions/platform/UnsupportedRevisionException.h
         exceptions/ppu/UnknownPPUModeException.cpp
         exceptions/ppu/UnknownPPUModeException.h
         joypad/Joypad.cpp
@@ -66,6 +68,11 @@ set(SOURCE_FILES
         memory/Memory.h
         platform/bus/Bus.cpp
         platform/bus/Bus.h
+        platform/revision/GameBoyRevision.cpp
+        platform/revision/GameBoyRevision.h
+        platform/revision/GameBoyRevisionType.h
+        platform/revision/GameBoyStartupRegisters.cpp
+        platform/revision/GameBoyStartupRegisters.h
         platform/GameBoy.cpp
         platform/GameBoy.h
         platform/GameBoyFrequencies.h
