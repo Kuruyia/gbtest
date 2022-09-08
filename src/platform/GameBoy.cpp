@@ -14,6 +14,7 @@ gbtest::GameBoy::GameBoy()
         , m_joypad(m_bus)
         , m_divider(m_cpu.getHaltState())
         , m_timer(m_bus)
+        , m_running(false)
 {
 
 }
@@ -25,35 +26,60 @@ gbtest::GameBoy::~GameBoy()
 
 void gbtest::GameBoy::init()
 {
-    // Reset CPU registers
-    resetCpuRegisters();
+    // Reset the emulator
+    reset();
 
     // Register bus providers
     registerBusProviders();
 }
 
+void gbtest::GameBoy::reset()
+{
+    // Reset CPU registers
+    resetCpuRegisters();
+}
+
 void gbtest::GameBoy::update(float secondsToEmulate)
 {
+    // Check if the emulator is running
+    if (!m_running) {
+        return;
+    }
+
+    // Compute how many ticks there are to emulate
     const auto ticksToEmulate = static_cast<unsigned>(secondsToEmulate * GAMEBOY_FREQUENCY);
 //    std::cout << "Emulating " << ticksToEmulate << " ticks" << std::endl;
 
+    // Tick the emulator
     for (unsigned i = 0; i < ticksToEmulate; ++i) {
-        tick();
+        tickEmulator();
     }
 }
 
-void gbtest::GameBoy::tick()
+void gbtest::GameBoy::tick(bool force)
 {
-    m_timer.tick();
-    m_divider.tick();
-    m_joypad.tick();
-    m_cpu.tick();
-    m_ppu.tick();
-    m_apu.tick();
-
-    if (m_cartridge) {
-        m_cartridge->tick();
+    // Check if the emulator is running
+    if (!m_running && !force) {
+        return;
     }
+
+    // Tick the emulator
+    tickEmulator();
+}
+
+void gbtest::GameBoy::start()
+{
+    m_running = true;
+}
+
+void gbtest::GameBoy::stop()
+{
+    m_running = false;
+}
+
+bool gbtest::GameBoy::isRunning() const
+{
+    return m_running;
 }
 
 gbtest::Bus& gbtest::GameBoy::getBus()
@@ -285,4 +311,19 @@ void gbtest::GameBoy::unregisterBusProviders()
     m_bus.unregisterBusProvider(&m_joypad);
     m_bus.unregisterBusProvider(&m_ppu);
     m_bus.unregisterBusProvider(&(m_cpu.getInterruptController()));
+}
+
+void gbtest::GameBoy::tickEmulator()
+{
+    // Tick everything
+    m_timer.tick();
+    m_divider.tick();
+    m_joypad.tick();
+    m_cpu.tick();
+    m_ppu.tick();
+    m_apu.tick();
+
+    if (m_cartridge) {
+        m_cartridge->tick();
+    }
 }

@@ -2,6 +2,7 @@
 #include <chrono>
 #include <iostream>
 #include <memory>
+#include <mutex>
 #include <sys/stat.h>
 
 #include "miniaudio.h"
@@ -16,18 +17,28 @@ static constexpr unsigned TARGET_FPS = 60;
 static constexpr float FRAME_TIME = 1.f / TARGET_FPS;
 static constexpr size_t AUDIO_FRAMES_REQUIRED = 512;
 
-ma_lpf lpf;
+ma_lpf g_lpf;
+std::mutex g_audioMutex;
 
 void maDataCallback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uint32 frameCount)
 {
+    // Lock the audio mutex
+    const std::lock_guard<std::mutex> lock(g_audioMutex);
+
     // Grab the emulator core from user data
     auto* ctx = static_cast<gbtest::GameBoy*>(pDevice->pUserData);
+
+    // If the emulator is paused, output silence
+    if (!ctx->isRunning()) {
+//        memset(pOutput, 0x00, frameCount * ma_get_bytes_per_frame(ma_format_f32, gbtest::APU::CHANNELS));
+        return;
+    }
 
     // Consume the samples if there are enough available
     if (ctx->getApu().getFrameCount() >= frameCount) {
         ma_copy_pcm_frames(pOutput, ctx->getApu().getFramebuffer().data(), frameCount, ma_format_f32,
                 gbtest::APU::CHANNELS);
-        ma_lpf_process_pcm_frames(&lpf, pOutput, pOutput, frameCount);
+        ma_lpf_process_pcm_frames(&g_lpf, pOutput, pOutput, frameCount);
 
         ctx->getApu().consumeFrames(frameCount);
     }
@@ -70,7 +81,7 @@ int main()
 
     // Load a ROM file
     auto cartridgeDataSource = std::make_unique<gbtest::InMemoryCartridgeDataSource>();
-    loadROM("rtc.bin", *(cartridgeDataSource.get()));
+    loadROM("pkmn_red.bin", *(cartridgeDataSource.get()));
     gameboy->loadCartridgeFromDataSource(std::move(cartridgeDataSource));
 
     std::cout << "Loaded cartridge type: " << (unsigned) gameboy->getCartridge()->getMBCType() << std::endl;
@@ -104,7 +115,7 @@ int main()
     // Init miniaudio
     ma_lpf_config lpfConfig = ma_lpf_config_init(ma_format_f32, gbtest::APU::CHANNELS, gbtest::APU::SAMPLE_RATE,
             (float) gbtest::APU::SAMPLE_RATE / 2, 3);
-    ma_result result = ma_lpf_init(&lpfConfig, nullptr, &lpf);
+    ma_result result = ma_lpf_init(&lpfConfig, nullptr, &g_lpf);
     if (result != MA_SUCCESS) {
         return -1;
     }
@@ -122,6 +133,8 @@ int main()
         return -1;
     }
 
+    // Start the emulator
+    gameboy->start();
     ma_device_start(&device);
 
     while (!WindowShouldClose()) {
@@ -141,6 +154,21 @@ int main()
                 IsKeyDown(KEY_LEFT_SHIFT),
                 IsKeyDown(KEY_ENTER)
         );
+
+        // Handle the start/stop key
+        if (IsKeyPressed(KEY_P)) {
+            // Lock the audio mutex
+            const std::lock_guard<std::mutex> lock(g_audioMutex);
+
+            if (gameboy->isRunning()) {
+                gameboy->stop();
+                std::cout << "Emulator stopped" << std::endl;
+            }
+            else {
+                gameboy->start();
+                std::cout << "Emulator started" << std::endl;
+            }
+        }
 
 #ifdef SYNC_ON_AUDIO
         if (framebufferReady) {

@@ -18,16 +18,21 @@
 
 namespace gbtest {
 
-class GameBoy
-        : public Tickable {
+class GameBoy {
 
 public:
     GameBoy();
-    ~GameBoy() override;
+    ~GameBoy();
 
     void init();
+    void reset();
+
     void update(float secondsToEmulate);
-    void tick() override;
+    void tick(bool force = false);
+
+    void start();
+    void stop();
+    [[nodiscard]] bool isRunning() const;
 
     [[nodiscard]] Bus& getBus();
     [[nodiscard]] const Bus& getBus() const;
@@ -64,10 +69,14 @@ private:
     Timer m_timer;
     std::unique_ptr<BaseCartridge> m_cartridge;
 
+    bool m_running;
+
     void resetCpuRegisters();
 
     void registerBusProviders();
     void unregisterBusProviders();
+
+    void tickEmulator();
 
 }; // class GameBoy
 
