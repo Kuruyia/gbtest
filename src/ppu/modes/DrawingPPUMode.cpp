@@ -184,25 +184,37 @@ void gbtest::DrawingPPUMode::mixPixelsCGB(const gbtest::FIFOPixelData& backgroun
 {
     /*
      * Choose the sprite pixel if:
-     *  -
+     *  - The sprite pixel color index != 0 (pixel considered transparent), and
+     *  - Sprites are enabled, and
+     *      - Background/window lost their priority due to bit LCDC.0, or
+     *          - The background pixel doesn't override the OAM priority bit, and
+     *              - The sprite has priority over the background, or
+     *              - The background pixel color index == 0 (pixel considered transparent)
      */
 
     if (spritePixelData.colorIndex != 0 && m_ppuRegisters.lcdControl.objEnable == 1 &&
             (m_ppuRegisters.lcdControl.bgAndWindowEnable == 0 || (backgroundPixelData.backgroundPriority == 0 &&
                     (backgroundPixelData.colorIndex == 0 || spritePixelData.backgroundPriority == 0)))) {
-        // Use the sprite pixel
-        ColorUtils::dmgPaletteIndexToRGBA8888(
-                (spritePixelData.palette == 0) ? m_ppuRegisters.dmgPalettes.objectPaletteData0
-                                               : m_ppuRegisters.dmgPalettes.objectPaletteData1,
-                spritePixelData.colorIndex,
-                mixedPixel);
+        // Get the color for this sprite
+        uint8_t lowColorByte = m_ppuRegisters.cgbObjPalettes[8 * spritePixelData.palette +
+                2 * spritePixelData.colorIndex];
+
+        uint8_t highColorByte = m_ppuRegisters.cgbObjPalettes[8 * spritePixelData.palette +
+                2 * spritePixelData.colorIndex + 1];
+
+        // Apply the color
+        ColorUtils::cgbPaletteColorToRGBA8888(lowColorByte, highColorByte, mixedPixel);
     }
     else {
-        // Use the background pixel
-        ColorUtils::dmgPaletteIndexToRGBA8888(
-                m_ppuRegisters.dmgPalettes.bgPaletteData,
-                backgroundPixelData.colorIndex,
-                mixedPixel);
+        // Get the color for this background
+        uint8_t lowColorByte = m_ppuRegisters.cgbBackgroundPalettes[8 * backgroundPixelData.palette +
+                2 * backgroundPixelData.colorIndex];
+
+        uint8_t highColorByte = m_ppuRegisters.cgbBackgroundPalettes[8 * backgroundPixelData.palette +
+                2 * backgroundPixelData.colorIndex + 1];
+
+        // Apply the color
+        ColorUtils::cgbPaletteColorToRGBA8888(lowColorByte, highColorByte, mixedPixel);
     }
 }
 

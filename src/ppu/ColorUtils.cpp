@@ -16,3 +16,13 @@ void gbtest::ColorUtils::dmgPaletteIndexToRGBA8888(const MonochromePaletteReg& p
     // Set the correct color
     pixel.raw = colors[(palette.raw >> (index * 2)) & 0x3];
 }
+
+void gbtest::ColorUtils::cgbPaletteColorToRGBA8888(uint8_t lowColorByte, uint8_t highColorByte,
+        gbtest::ColorUtils::ColorRGBA8888& pixel)
+{
+    // Convert RGB555 to RGBA8888
+    pixel.r = (lowColorByte << 3);
+    pixel.g = (((lowColorByte >> 2) | (highColorByte << 6)) & 0xF8);
+    pixel.b = ((highColorByte << 1) & 0xF8);
+    pixel.a = 0xFF;
+}

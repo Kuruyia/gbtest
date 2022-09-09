@@ -1,6 +1,7 @@
 #ifndef GBTEST_PPUREGISTERS_H
 #define GBTEST_PPUREGISTERS_H
 
+#include <array>
 #include <cstdint>
 
 namespace gbtest {
@@ -63,20 +64,38 @@ union MonochromePaletteReg {
 
 static_assert(sizeof(MonochromePaletteReg) == 1, "Monochrome Palette register structure size is incorrect");
 
-struct DMGPalettesRegs {
+struct DMGPaletteRegs {
     MonochromePaletteReg bgPaletteData;        // [ BGP] Data for the BG palette
     MonochromePaletteReg objectPaletteData0;   // [OBP0] Data for the first OBJ palette
     MonochromePaletteReg objectPaletteData1;   // [OBP1] Data for the second OBJ palette
-}; // struct DMGPalettesRegs
+}; // struct DMGPaletteRegs
 
-static_assert(sizeof(DMGPalettesRegs) == 3, "DMG Palette registers register structure size is incorrect");
+static_assert(sizeof(DMGPaletteRegs) == 3, "DMG Palette registers register structure size is incorrect");
+
+union CGBPaletteIndex {
+    struct {
+        uint8_t address: 6;         // Address of the palette data register to expose
+        uint8_t unused: 1;
+        uint8_t autoIncrement: 1;   // Increment the address after writing the data register (0: Disabled; 1: Enabled)
+    };
+    uint8_t raw;
+}; // union CGBPaletteIndex
+
+static_assert(sizeof(CGBPaletteIndex) == 1, "CGB Palette Index register structure size is incorrect");
+
+// CGB palette registers
+using CGBPaletteRegs = std::array<uint8_t, 64>;
 
 // Registers
 struct PPURegisters {
     LCDControlReg lcdControl;
     LCDStatusReg lcdStatus;
     LCDPositionAndScrollingRegs lcdPositionAndScrolling;
-    DMGPalettesRegs dmgPalettes;
+    DMGPaletteRegs dmgPalettes;
+    CGBPaletteIndex cgbBackgroundPaletteIndex;
+    CGBPaletteRegs cgbBackgroundPalettes;
+    CGBPaletteIndex cgbObjPaletteIndex;
+    CGBPaletteRegs cgbObjPalettes;
 }; // struct PPURegisters
 
 } // namespace gbtest

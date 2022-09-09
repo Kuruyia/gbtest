@@ -105,19 +105,19 @@ bool gbtest::PPU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource 
 
         return true;
 
-    case 0xFF42: // [SCY] BG Y scroll coordinate
+    case 0xFF42: // [ SCY] BG Y scroll coordinate
         val = m_ppuRegisters.lcdPositionAndScrolling.yScroll;
         return true;
 
-    case 0xFF43: // [SCX] BG X scroll coordinate
+    case 0xFF43: // [ SCX] BG X scroll coordinate
         val = m_ppuRegisters.lcdPositionAndScrolling.xScroll;
         return true;
 
-    case 0xFF44: // [ LY] LCD Y coordinate
+    case 0xFF44: // [  LY] LCD Y coordinate
         val = m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate;
         return true;
 
-    case 0xFF45: // [LYC] LY compare
+    case 0xFF45: // [ LYC] LY compare
         val = m_ppuRegisters.lcdPositionAndScrolling.lyCompare;
         return true;
 
@@ -133,12 +133,28 @@ bool gbtest::PPU::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource 
         val = m_ppuRegisters.dmgPalettes.objectPaletteData1.raw;
         return true;
 
-    case 0xFF4A: // [ WY] Window Y position
+    case 0xFF4A: // [  WY] Window Y position
         val = m_ppuRegisters.lcdPositionAndScrolling.yWindowPosition;
         return true;
 
-    case 0xFF4B: // [ WX] Window X position
+    case 0xFF4B: // [  WX] Window X position
         val = m_ppuRegisters.lcdPositionAndScrolling.xWindowPosition;
+        return true;
+
+    case 0xFF68: // [BGPI] Background Palette Index
+        val = m_ppuRegisters.cgbBackgroundPaletteIndex.raw;
+        return true;
+
+    case 0xFF69: // [BGPD] Background Palette Data
+        val = m_ppuRegisters.cgbBackgroundPalettes[m_ppuRegisters.cgbBackgroundPaletteIndex.address];
+        return true;
+
+    case 0xFF6A: // [OBPI] Object Palette Index
+        val = m_ppuRegisters.cgbObjPaletteIndex.raw;
+        return true;
+
+    case 0xFF6B: // [OBPD] Object Palette Data
+        val = m_ppuRegisters.cgbObjPalettes[m_ppuRegisters.cgbObjPaletteIndex.address];
         return true;
 
     default:
@@ -171,18 +187,18 @@ bool gbtest::PPU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource 
 
         return true;
 
-    case 0xFF42: // [SCY] BG Y scroll coordinate
+    case 0xFF42: // [ SCY] BG Y scroll coordinate
         m_ppuRegisters.lcdPositionAndScrolling.yScroll = val;
         return true;
 
-    case 0xFF43: // [SCX] BG X scroll coordinate
+    case 0xFF43: // [ SCX] BG X scroll coordinate
         m_ppuRegisters.lcdPositionAndScrolling.xScroll = val;
         return true;
 
-    case 0xFF44: // [ LY] LCD Y coordinate
+    case 0xFF44: // [  LY] LCD Y coordinate
         return true;
 
-    case 0xFF45: // [LYC] LY compare
+    case 0xFF45: // [ LYC] LY compare
         m_ppuRegisters.lcdPositionAndScrolling.lyCompare = val;
 
         // Notify the Mode manager that the LYC register was written to
@@ -190,7 +206,7 @@ bool gbtest::PPU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource 
 
         return true;
 
-    case 0xFF47: // [ BGP] Data for the BG palette
+    case 0xFF47: // [  BGP] Data for the BG palette
         m_ppuRegisters.dmgPalettes.bgPaletteData.raw = val;
         return true;
 
@@ -202,12 +218,38 @@ bool gbtest::PPU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource 
         m_ppuRegisters.dmgPalettes.objectPaletteData1.raw = val;
         return true;
 
-    case 0xFF4A: // [ WY] Window Y position
+    case 0xFF4A: // [  WY] Window Y position
         m_ppuRegisters.lcdPositionAndScrolling.yWindowPosition = val;
         return true;
 
-    case 0xFF4B: // [ WX] Window X position
+    case 0xFF4B: // [  WX] Window X position
         m_ppuRegisters.lcdPositionAndScrolling.xWindowPosition = val;
+        return true;
+
+    case 0xFF68: // [BGPI] Background Palette Index
+        m_ppuRegisters.cgbBackgroundPaletteIndex.raw = val;
+        return true;
+
+    case 0xFF69: // [BGPD] Background Palette Data
+        m_ppuRegisters.cgbBackgroundPalettes[m_ppuRegisters.cgbBackgroundPaletteIndex.address] = val;
+
+        if (m_ppuRegisters.cgbBackgroundPaletteIndex.autoIncrement == 1) {
+            ++m_ppuRegisters.cgbBackgroundPaletteIndex.address;
+        }
+
+        return true;
+
+    case 0xFF6A: // [OBPI] Object Palette Index
+        m_ppuRegisters.cgbObjPaletteIndex.raw = val;
+        return true;
+
+    case 0xFF6B: // [OBPD] Object Palette Data
+        m_ppuRegisters.cgbObjPalettes[m_ppuRegisters.cgbObjPaletteIndex.address] = val;
+
+        if (m_ppuRegisters.cgbObjPaletteIndex.autoIncrement == 1) {
+            ++m_ppuRegisters.cgbObjPaletteIndex.address;
+        }
+
         return true;
 
     default:
