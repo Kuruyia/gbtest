@@ -76,19 +76,13 @@ void gbtest::SpriteFetcher::executeState()
         }
 
         // Get the VRAM bank if in CGB mode
-        // TODO: Optimize that with an array access instead of a condition
         uint8_t tileBank = 0;
 
         if (m_cgbMode) {
             tileBank = m_spriteToFetch.flags.tileVramBank;
         }
 
-        if (tileBank == 1) {
-            m_currentTileData = m_vram.getVramTileData1().getTileLineUsingFirstMethod(tileIndex, lineNumber);
-        }
-        else {
-            m_currentTileData = m_vram.getVramTileData0().getTileLineUsingFirstMethod(tileIndex, lineNumber);
-        }
+        m_currentTileData = m_vram.getVramTileDataBanks()[tileBank].getTileLineUsingFirstMethod(tileIndex, lineNumber);
 
         // Continue to the next state
         m_fetcherState = FetcherState::PushFIFO;

@@ -1,6 +1,8 @@
 #ifndef GBTEST_VRAM_H
 #define GBTEST_VRAM_H
 
+#include <array>
+
 #include "VRAMMapAttributes.h"
 #include "VRAMTileData.h"
 #include "VRAMTileMaps.h"
@@ -13,17 +15,16 @@ class VRAM
         : public BusProvider {
 
 public:
+    using VRAMTileDataBanks = std::array<VRAMTileData, 2>;
+
     VRAM();
     ~VRAM() override = default;
 
     [[nodiscard]] VRAMTileData& getCurrentVramTileData();
     [[nodiscard]] const VRAMTileData& getCurrentVramTileData() const;
 
-    [[nodiscard]] VRAMTileData& getVramTileData0();
-    [[nodiscard]] const VRAMTileData& getVramTileData0() const;
-
-    [[nodiscard]] VRAMTileData& getVramTileData1();
-    [[nodiscard]] const VRAMTileData& getVramTileData1() const;
+    [[nodiscard]] VRAMTileDataBanks& getVramTileDataBanks();
+    [[nodiscard]] const VRAMTileDataBanks& getVramTileDataBanks() const;
 
     [[nodiscard]] VRAMTileMaps& getVramTileMaps();
     [[nodiscard]] const VRAMTileMaps& getVramTileMaps() const;
@@ -44,8 +45,7 @@ public:
     bool busWriteOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
 private:
-    VRAMTileData m_vramTileData0;
-    VRAMTileData m_vramTileData1;
+    VRAMTileDataBanks m_vramTileDataBanks;
 
     VRAMMapAttributes m_vramMapAttributes;
     VRAMTileMaps m_vramTileMaps;

@@ -10,40 +10,22 @@ gbtest::VRAM::VRAM()
 
 gbtest::VRAMTileData& gbtest::VRAM::getCurrentVramTileData()
 {
-    if (m_currentBank == 1) {
-        return m_vramTileData1;
-    }
-
-    return m_vramTileData0;
+    return m_vramTileDataBanks[m_currentBank];
 }
 
 const gbtest::VRAMTileData& gbtest::VRAM::getCurrentVramTileData() const
 {
-    if (m_currentBank == 1) {
-        return m_vramTileData1;
-    }
-
-    return m_vramTileData0;
+    return m_vramTileDataBanks[m_currentBank];
 }
 
-gbtest::VRAMTileData& gbtest::VRAM::getVramTileData0()
+gbtest::VRAM::VRAMTileDataBanks& gbtest::VRAM::getVramTileDataBanks()
 {
-    return m_vramTileData0;
+    return m_vramTileDataBanks;
 }
 
-const gbtest::VRAMTileData& gbtest::VRAM::getVramTileData0() const
+const gbtest::VRAM::VRAMTileDataBanks& gbtest::VRAM::getVramTileDataBanks() const
 {
-    return m_vramTileData0;
-}
-
-gbtest::VRAMTileData& gbtest::VRAM::getVramTileData1()
-{
-    return m_vramTileData1;
-}
-
-const gbtest::VRAMTileData& gbtest::VRAM::getVramTileData1() const
-{
-    return m_vramTileData1;
+    return m_vramTileDataBanks;
 }
 
 gbtest::VRAMTileMaps& gbtest::VRAM::getVramTileMaps()
@@ -107,7 +89,7 @@ bool gbtest::VRAM::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource
     }
 
     // Dispatch the read request
-    if (getCurrentVramTileData().busRead(addr, val, requestSource)) { return true; }
+    if (m_vramTileDataBanks[m_currentBank].busRead(addr, val, requestSource)) { return true; }
 
     if (m_currentBank == 1) {
         if (m_vramMapAttributes.busRead(addr, val, requestSource)) { return true; }
@@ -130,7 +112,7 @@ bool gbtest::VRAM::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource
     }
 
     // Dispatch the write request
-    if (getCurrentVramTileData().busWrite(addr, val, requestSource)) { return true; }
+    if (m_vramTileDataBanks[m_currentBank].busWrite(addr, val, requestSource)) { return true; }
 
     if (m_currentBank == 1) {
         if (m_vramMapAttributes.busWrite(addr, val, requestSource)) { return true; }
@@ -145,7 +127,7 @@ bool gbtest::VRAM::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource
 bool gbtest::VRAM::busReadOverride(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
     // Dispatch the read override request
-    if (getCurrentVramTileData().busReadOverride(addr, val, requestSource)) { return true; }
+    if (m_vramTileDataBanks[m_currentBank].busReadOverride(addr, val, requestSource)) { return true; }
 
     if (m_currentBank == 1) {
         if (m_vramMapAttributes.busReadOverride(addr, val, requestSource)) { return true; }
@@ -160,7 +142,7 @@ bool gbtest::VRAM::busReadOverride(uint16_t addr, uint8_t& val, gbtest::BusReque
 bool gbtest::VRAM::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusRequestSource requestSource)
 {
     // Dispatch the write override request
-    if (getCurrentVramTileData().busWriteOverride(addr, val, requestSource)) { return true; }
+    if (m_vramTileDataBanks[m_currentBank].busWriteOverride(addr, val, requestSource)) { return true; }
 
     if (m_currentBank == 1) {
         if (m_vramMapAttributes.busWriteOverride(addr, val, requestSource)) { return true; }
