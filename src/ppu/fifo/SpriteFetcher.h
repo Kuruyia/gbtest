@@ -16,7 +16,7 @@ class SpriteFetcher
 public:
     SpriteFetcher(const PPURegisters& ppuRegisters, const VRAM& vram, PixelFIFO& pixelFifo);
 
-    void fetchSprite(const OAMEntry& spriteToFetch);
+    void fetchSprite(const OAMEntry& spriteToFetch, size_t oamIndex);
     void stopFetchingSprite();
     [[nodiscard]] bool isFetchingSprite() const;
     [[nodiscard]] const OAMEntry& getSpriteToFetch() const;
@@ -28,6 +28,7 @@ public:
 private:
     bool m_fetchingSprite;
     OAMEntry m_spriteToFetch;
+    size_t m_oamIndex;
 
     uint16_t m_currentTileData;
 

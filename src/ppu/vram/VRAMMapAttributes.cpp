@@ -1,7 +1,5 @@
 #include "VRAMMapAttributes.h"
 
-#include <iostream>
-
 gbtest::VRAMMapAttributes::VRAMMapAttributes()
     : m_memory()
 {
@@ -32,8 +30,6 @@ bool gbtest::VRAMMapAttributes::busWrite(uint16_t addr, uint8_t val, gbtest::Bus
 
     // Write to the memory
     m_memory[addr - 0x9800].raw = val;
-
-    std::cout << "Writing map attributes to 0x" << std::hex << addr << std::dec << std::endl;
 
     return true;
 }

@@ -202,7 +202,7 @@ void gbtest::DrawingPPUMode::checkSprite()
         m_backgroundFetcher.resetForSpriteFetch();
 
         // Fetch the sprite
-        m_spriteFetcher.fetchSprite(m_spriteBuffer[m_spriteToCheckIdx]);
+        m_spriteFetcher.fetchSprite(m_spriteBuffer[m_spriteToCheckIdx], m_spriteToCheckIdx);
 
         // Next time, check the next sprite
         ++m_spriteToCheckIdx;

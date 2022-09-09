@@ -7,15 +7,17 @@ gbtest::SpriteFetcher::SpriteFetcher(const gbtest::PPURegisters& ppuRegisters, c
         : Fetcher(ppuRegisters, vram, pixelFifo)
         , m_fetchingSprite(false)
         , m_spriteToFetch()
+        , m_oamIndex(0)
         , m_currentTileData(0)
 {
 
 }
 
-void gbtest::SpriteFetcher::fetchSprite(const OAMEntry& spriteToFetch)
+void gbtest::SpriteFetcher::fetchSprite(const OAMEntry& spriteToFetch, size_t oamIndex)
 {
     m_fetchingSprite = true;
     m_spriteToFetch = spriteToFetch;
+    m_oamIndex = oamIndex;
 }
 
 void gbtest::SpriteFetcher::stopFetchingSprite()
@@ -73,7 +75,19 @@ void gbtest::SpriteFetcher::executeState()
             tileIndex &= 0xFE;
         }
 
-        m_currentTileData = m_vram.getCurrentVramTileData().getTileLineUsingFirstMethod(tileIndex, lineNumber);
+        // Get the VRAM bank if in CGB mode
+        uint8_t tileBank = 0;
+
+        if (m_cgbMode) {
+            tileBank = m_spriteToFetch.flags.tileVramBank;
+        }
+
+        if (tileBank == 1) {
+            m_currentTileData = m_vram.getVramTileData1().getTileLineUsingFirstMethod(tileIndex, lineNumber);
+        }
+        else {
+            m_currentTileData = m_vram.getVramTileData0().getTileLineUsingFirstMethod(tileIndex, lineNumber);
+        }
 
         // Continue to the next state
         m_fetcherState = FetcherState::PushFIFO;
@@ -113,7 +127,7 @@ void gbtest::SpriteFetcher::executeState()
                 // Overwrite the pixel
                 fifoIter->colorIndex = getPixelFromTileData(m_currentTileData, currentPixel, m_spriteToFetch.flags.xFlip);
                 fifoIter->palette = paletteNumber;
-                fifoIter->spriteOamIndex = 0;
+                fifoIter->spriteOamIndex = m_oamIndex;
                 fifoIter->backgroundPriority = (m_spriteToFetch.flags.bgAndWindowsOverObj == 1);
             }
 
@@ -128,7 +142,7 @@ void gbtest::SpriteFetcher::executeState()
             m_pixelFifo.emplace_back(
                     getPixelFromTileData(m_currentTileData, currentPixel, m_spriteToFetch.flags.xFlip),
                     paletteNumber,
-                    0,
+                    m_oamIndex,
                     m_spriteToFetch.flags.bgAndWindowsOverObj == 1);
         }
 
