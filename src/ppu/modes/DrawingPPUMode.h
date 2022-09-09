@@ -24,8 +24,8 @@ class DrawingPPUMode
         : public PPUMode {
 
 public:
-    DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram, const OAM& oam,
-            const SpriteBuffer& spriteBuffer);
+    DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram,
+            SpriteBuffer& spriteBuffer);
     ~DrawingPPUMode() override = default;
 
     [[nodiscard]] static PPUModeType getModeType();
@@ -41,7 +41,7 @@ private:
     PixelFIFO m_backgroundPixelFifo;
     BackgroundFetcher m_backgroundFetcher;
 
-    const SpriteBuffer& m_spriteBuffer;
+    SpriteBuffer& m_spriteBuffer;
     PixelFIFO m_spritePixelFifo;
     SpriteFetcher m_spriteFetcher;
 
@@ -54,14 +54,14 @@ private:
 
     Framebuffer& m_framebuffer;
     const PPURegisters& m_ppuRegisters;
-    const OAM& m_oam;
 
     void drawPixel();
     void mixPixels(const FIFOPixelData& backgroundPixelData, const FIFOPixelData& spritePixelData,
             ColorUtils::ColorRGBA8888& mixedPixel);
 
     void checkWindow();
-    void checkSprite();
+    void checkSpriteDMG();
+    void checkSpriteCGB();
 
 }; // class DrawingPPUMode
 

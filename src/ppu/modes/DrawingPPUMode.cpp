@@ -1,7 +1,7 @@
 #include "DrawingPPUMode.h"
 
 gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegisters& ppuRegisters, const VRAM& vram,
-        const OAM& oam, const SpriteBuffer& spriteBuffer)
+        SpriteBuffer& spriteBuffer)
         : m_backgroundFetcher(ppuRegisters, vram, m_backgroundPixelFifo)
         , m_spriteBuffer(spriteBuffer)
         , m_spriteFetcher(ppuRegisters, vram, m_spritePixelFifo)
@@ -12,7 +12,6 @@ gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegist
         , m_reachedWindowLine(false)
         , m_framebuffer(framebuffer)
         , m_ppuRegisters(ppuRegisters)
-        , m_oam(oam)
 {
 
 }
@@ -80,7 +79,13 @@ void gbtest::DrawingPPUMode::executeMode()
     // Check for window and sprite
     if (!m_spriteFetcher.isFetchingSprite()) {
         checkWindow();
-        checkSprite();
+
+        if (m_cgbMode) {
+            checkSpriteCGB();
+        }
+        else {
+            checkSpriteDMG();
+        }
     }
 
     // Only do the rest if we're not suspended due to sprite fetching
@@ -187,7 +192,7 @@ void gbtest::DrawingPPUMode::checkWindow()
     m_pixelsToDiscard = 0;
 }
 
-void gbtest::DrawingPPUMode::checkSprite()
+void gbtest::DrawingPPUMode::checkSpriteDMG()
 {
     /*
      * In order to fetch a sprite, we must check that:
@@ -206,5 +211,28 @@ void gbtest::DrawingPPUMode::checkSprite()
 
         // Next time, check the next sprite
         ++m_spriteToCheckIdx;
+    }
+}
+
+void gbtest::DrawingPPUMode::checkSpriteCGB()
+{
+    /*
+     * In order to fetch a sprite, we must check that:
+     *  - We reached the X position of any sprite (minus 8)
+     */
+    for (size_t i = 0; i < m_spriteBuffer.getSize(); ++i) {
+        OAMEntry& currentEntry = m_spriteBuffer[i];
+
+        if (currentEntry.xPosition <= m_currentXCoordinate + 8) {
+            // Ensure that we're not going to process the same sprite again
+            // TODO: Remove the sprite from the buffer entirely
+            currentEntry.xPosition = 255;
+
+            // Background fetched is paused and reset to step 1, pixel shifting is paused
+            m_backgroundFetcher.resetForSpriteFetch();
+
+            // Fetch the sprite
+            m_spriteFetcher.fetchSprite(currentEntry, i);
+        }
     }
 }

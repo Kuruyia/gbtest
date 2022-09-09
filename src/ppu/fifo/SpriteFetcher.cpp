@@ -76,6 +76,7 @@ void gbtest::SpriteFetcher::executeState()
         }
 
         // Get the VRAM bank if in CGB mode
+        // TODO: Optimize that with an array access instead of a condition
         uint8_t tileBank = 0;
 
         if (m_cgbMode) {

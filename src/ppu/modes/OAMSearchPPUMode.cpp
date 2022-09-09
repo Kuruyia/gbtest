@@ -17,6 +17,11 @@ inline gbtest::PPUModeType gbtest::OAMSearchPPUMode::getModeType()
     return PPUModeType::OAM_Search;
 }
 
+gbtest::SpriteBuffer& gbtest::OAMSearchPPUMode::getSpriteBuffer()
+{
+    return m_spriteBuffer;
+}
+
 const gbtest::SpriteBuffer& gbtest::OAMSearchPPUMode::getSpriteBuffer() const
 {
     return m_spriteBuffer;
@@ -46,13 +51,15 @@ void gbtest::OAMSearchPPUMode::executeMode()
         // There are no more sprites to check
         m_finished = true;
 
-        // Sort the sprite buffer by the sprite's X coordinate
-        auto iterEnd = m_spriteBuffer.getRawBuffer().begin();
-        std::advance(iterEnd, m_spriteBuffer.getSize());
+        // Sort the sprite buffer by the sprite's X coordinate in non-CGB mode
+        if (!m_cgbMode) {
+            auto iterEnd = m_spriteBuffer.getRawBuffer().begin();
+            std::advance(iterEnd, m_spriteBuffer.getSize());
 
-        std::sort(m_spriteBuffer.getRawBuffer().begin(), iterEnd, [](const OAMEntry& a, const OAMEntry& b) {
-            return a.xPosition < b.xPosition;
-        });
+            std::sort(m_spriteBuffer.getRawBuffer().begin(), iterEnd, [](const OAMEntry& a, const OAMEntry& b) {
+                return a.xPosition < b.xPosition;
+            });
+        }
     }
 }
 

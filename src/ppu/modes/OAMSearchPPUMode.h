@@ -22,6 +22,7 @@ public:
 
     [[nodiscard]] static PPUModeType getModeType();
 
+    [[nodiscard]] SpriteBuffer& getSpriteBuffer();
     [[nodiscard]] const SpriteBuffer& getSpriteBuffer() const;
 
     void restart() override;
