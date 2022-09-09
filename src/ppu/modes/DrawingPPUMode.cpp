@@ -187,14 +187,16 @@ void gbtest::DrawingPPUMode::mixPixelsCGB(const gbtest::FIFOPixelData& backgroun
      *  - The sprite pixel color index != 0 (pixel considered transparent), and
      *  - Sprites are enabled, and
      *      - Background/window lost their priority due to bit LCDC.0, or
+     *      - The background pixel color index == 0 (pixel considered transparent), or
      *          - The background pixel doesn't override the OAM priority bit, and
-     *              - The sprite has priority over the background, or
-     *              - The background pixel color index == 0 (pixel considered transparent)
+     *          - The sprite has priority over the background
      */
 
     if (spritePixelData.colorIndex != 0 && m_ppuRegisters.lcdControl.objEnable == 1 &&
-            (m_ppuRegisters.lcdControl.bgAndWindowEnable == 0 || (backgroundPixelData.backgroundPriority == 0 &&
-                    (backgroundPixelData.colorIndex == 0 || spritePixelData.backgroundPriority == 0)))) {
+            (m_ppuRegisters.lcdControl.bgAndWindowEnable == 0 ||
+                    backgroundPixelData.colorIndex == 0 ||
+                    (backgroundPixelData.backgroundPriority == 0 && spritePixelData.backgroundPriority == 0))
+            ) {
         // Get the color for this sprite
         uint8_t lowColorByte = m_ppuRegisters.cgbObjPalettes[8 * spritePixelData.palette +
                 2 * spritePixelData.colorIndex];
