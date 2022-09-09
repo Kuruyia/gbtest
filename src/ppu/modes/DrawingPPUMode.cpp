@@ -278,6 +278,8 @@ void gbtest::DrawingPPUMode::checkSpriteCGB()
 
             // Ensure that we're not going to process the same sprite again
             currentEntry.xPosition = 255;
+
+            break;
         }
     }
 }

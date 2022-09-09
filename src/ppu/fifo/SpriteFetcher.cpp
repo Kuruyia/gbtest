@@ -118,9 +118,10 @@ void gbtest::SpriteFetcher::executeState()
         auto fifoIter = m_pixelFifo.begin();
 
         for (; currentPixel-- > endPixelOverwrite;) {
-            if (fifoIter->colorIndex == 0x00) {
+            if (fifoIter->colorIndex == 0x00 || (m_oamIndex < fifoIter->spriteOamIndex && m_cgbMode)) {
                 // Overwrite the pixel
-                fifoIter->colorIndex = getPixelFromTileData(m_currentTileData, currentPixel, m_spriteToFetch.flags.xFlip);
+                fifoIter->colorIndex = getPixelFromTileData(m_currentTileData, currentPixel,
+                        m_spriteToFetch.flags.xFlip);
                 fifoIter->palette = paletteNumber;
                 fifoIter->spriteOamIndex = m_oamIndex;
                 fifoIter->backgroundPriority = (m_spriteToFetch.flags.bgAndWindowsOverObj == 1);
