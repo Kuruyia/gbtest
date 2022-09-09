@@ -2,6 +2,7 @@
 
 gbtest::Fetcher::Fetcher(const PPURegisters& ppuRegisters, const VRAM& vram, PixelFIFO& pixelFifo)
         : m_fetcherState(FetcherState::FetchTileMap)
+        , m_cgbMode(false)
         , m_paused(false)
         , m_cyclesToWait(0)
         , m_ppuRegisters(ppuRegisters)
@@ -9,6 +10,16 @@ gbtest::Fetcher::Fetcher(const PPURegisters& ppuRegisters, const VRAM& vram, Pix
         , m_pixelFifo(pixelFifo)
 {
 
+}
+
+void gbtest::Fetcher::setCGBMode(bool cgbMode)
+{
+    m_cgbMode = cgbMode;
+}
+
+bool gbtest::Fetcher::isCGBMode() const
+{
+    return m_cgbMode;
 }
 
 void gbtest::Fetcher::setPaused(bool paused)

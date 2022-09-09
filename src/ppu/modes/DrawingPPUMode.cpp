@@ -17,6 +17,14 @@ gbtest::DrawingPPUMode::DrawingPPUMode(Framebuffer& framebuffer, const PPURegist
 
 }
 
+void gbtest::DrawingPPUMode::setCGBMode(bool cgbMode)
+{
+    PPUMode::setCGBMode(cgbMode);
+
+    m_backgroundFetcher.setCGBMode(cgbMode);
+    m_spriteFetcher.setCGBMode(cgbMode);
+}
+
 inline gbtest::PPUModeType gbtest::DrawingPPUMode::getModeType()
 {
     return PPUModeType::Drawing;

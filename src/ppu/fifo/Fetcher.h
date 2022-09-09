@@ -18,6 +18,9 @@ public:
     Fetcher(const PPURegisters& ppuRegisters, const VRAM& vram, PixelFIFO& pixelFifo);
     ~Fetcher() override = default;
 
+    virtual void setCGBMode(bool cgbMode);
+    [[nodiscard]] bool isCGBMode() const;
+
     void setPaused(bool paused);
     [[nodiscard]] bool isPaused() const;
 
@@ -33,6 +36,7 @@ protected:
     static uint8_t getPixelFromTileData(uint16_t tileData, uint8_t bitNb, bool xFlipped);
 
     FetcherState m_fetcherState;
+    bool m_cgbMode;
     bool m_paused;
     unsigned m_cyclesToWait;
 

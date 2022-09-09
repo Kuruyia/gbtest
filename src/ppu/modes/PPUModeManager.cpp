@@ -7,6 +7,7 @@ gbtest::PPUModeManager::PPUModeManager(Bus& bus, Framebuffer& framebuffer, PPURe
         : m_oamSearchPpuMode(ppuRegisters, oam)
         , m_drawingPpuMode(framebuffer, ppuRegisters, vram, oam, m_oamSearchPpuMode.getSpriteBuffer())
         , m_currentMode(PPUModeType::OAM_Search)
+        , m_cgbMode(false)
         , m_bus(bus)
         , m_framebuffer(framebuffer)
         , m_ppuRegisters(ppuRegisters)
@@ -18,6 +19,21 @@ gbtest::PPUModeManager::PPUModeManager(Bus& bus, Framebuffer& framebuffer, PPURe
 gbtest::PPUModeType gbtest::PPUModeManager::getCurrentMode() const
 {
     return m_currentMode;
+}
+
+void gbtest::PPUModeManager::setCGBMode(bool cgbMode)
+{
+    m_cgbMode = cgbMode;
+
+    m_oamSearchPpuMode.setCGBMode(cgbMode);
+    m_drawingPpuMode.setCGBMode(cgbMode);
+    m_hblankPpuMode.setCGBMode(cgbMode);
+    m_vblankPpuMode.setCGBMode(cgbMode);
+}
+
+bool gbtest::PPUModeManager::isCGBMode() const
+{
+    return m_cgbMode;
 }
 
 void gbtest::PPUModeManager::reset()

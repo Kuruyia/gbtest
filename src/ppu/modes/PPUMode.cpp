@@ -1,10 +1,21 @@
 #include "PPUMode.h"
 
 gbtest::PPUMode::PPUMode()
-        : m_finished(true)
+        : m_cgbMode(false)
+        , m_finished(true)
         , m_cyclesToWait(0)
 {
 
+}
+
+void gbtest::PPUMode::setCGBMode(bool cgbMode)
+{
+    m_cgbMode = cgbMode;
+}
+
+bool gbtest::PPUMode::isCGBMode() const
+{
+    return m_cgbMode;
 }
 
 void gbtest::PPUMode::restart()

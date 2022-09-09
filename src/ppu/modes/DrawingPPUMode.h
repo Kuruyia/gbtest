@@ -35,6 +35,7 @@ public:
     void restart() override;
 
     void executeMode() override;
+    void setCGBMode(bool cgbMode) override;
 
 private:
     PixelFIFO m_backgroundPixelFifo;

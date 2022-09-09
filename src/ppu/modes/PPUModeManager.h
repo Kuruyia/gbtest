@@ -24,6 +24,9 @@ public:
 
     [[nodiscard]] PPUModeType getCurrentMode() const;
 
+    void setCGBMode(bool cgbMode);
+    [[nodiscard]] bool isCGBMode() const;
+
     void reset();
 
     void notifyLycRegisterChange();
@@ -38,6 +41,8 @@ private:
     VBlankPPUMode m_vblankPpuMode;
 
     PPUModeType m_currentMode;
+
+    bool m_cgbMode;
 
     Bus& m_bus;
     Framebuffer& m_framebuffer;

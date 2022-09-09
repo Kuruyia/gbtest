@@ -13,6 +13,9 @@ public:
     PPUMode();
     ~PPUMode() override = default;
 
+    virtual void setCGBMode(bool cgbMode);
+    [[nodiscard]] bool isCGBMode() const;
+
     virtual void restart();
     [[nodiscard]] bool isFinished() const;
     [[nodiscard]] bool isFullyFinished() const;
@@ -22,6 +25,7 @@ public:
     void tick() override;
 
 protected:
+    bool m_cgbMode;
     bool m_finished;
     unsigned m_cyclesToWait;
 

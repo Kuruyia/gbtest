@@ -95,8 +95,15 @@ void gbtest::SpriteFetcher::executeState()
             endPixelOverwrite -= std::min<uint8_t>(8 - m_spriteToFetch.xPosition, endPixelOverwrite);
         }
 
-        // Get the palette number
-        uint8_t paletteNumber = m_spriteToFetch.flags.dmgPaletteNumber;
+        // Get the palette number according to the current CGB mode
+        uint8_t paletteNumber;
+
+        if (!m_cgbMode) {
+            paletteNumber = m_spriteToFetch.flags.dmgPaletteNumber;
+        }
+        else {
+            paletteNumber = m_spriteToFetch.flags.cgbPaletteNumber;
+        }
 
         // First, overwrite any "invisible" pixel already in the FIFO
         auto fifoIter = m_pixelFifo.begin();

@@ -14,6 +14,8 @@ gbtest::PPU::PPU(Bus& bus)
 void gbtest::PPU::setCGBMode(bool cgbMode)
 {
     m_cgbMode = cgbMode;
+
+    m_modeManager.setCGBMode(cgbMode);
     m_vram.setCGBMode(cgbMode);
 }
 
