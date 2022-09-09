@@ -18,7 +18,8 @@ gbtest::GameBoy::GameBoy(gbtest::GameBoyRevisionType&& revisionType)
         , m_revision(revisionType)
         , m_running(false)
 {
-
+    // Update CGB mode
+    updateCGBMode();
 }
 
 gbtest::GameBoy::~GameBoy()
@@ -48,6 +49,9 @@ void gbtest::GameBoy::reset(gbtest::GameBoyRevisionType&& revisionType)
 {
     // Set the new revision
     m_revision = GameBoyRevision(revisionType);
+
+    // Update CGB mode
+    updateCGBMode();
 
     // Reset the emulator
     reset();
@@ -240,6 +244,12 @@ void gbtest::GameBoy::resetRegisters()
     startupRegisters.loadTimerRegisters(m_timer);
     startupRegisters.loadPPURegisters(m_ppu);
     startupRegisters.loadAPURegisters(m_apu);
+}
+
+void gbtest::GameBoy::updateCGBMode()
+{
+    // Update the CGB mode for the peripherals
+    m_ppu.setCGBMode(m_revision.isCGB());
 }
 
 void gbtest::GameBoy::registerBusProviders()

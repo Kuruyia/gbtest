@@ -2,6 +2,12 @@
 
 #include "VRAMTileData.h"
 
+gbtest::VRAMTileData::VRAMTileData()
+    : m_memory()
+{
+
+}
+
 uint16_t gbtest::VRAMTileData::getTileLineUsingFirstMethod(uint8_t tileNumber, uint8_t lineNumber) const
 {
     const size_t offset = ((16 * tileNumber) + (2 * lineNumber));

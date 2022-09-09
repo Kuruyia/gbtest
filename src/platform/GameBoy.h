@@ -78,6 +78,7 @@ private:
     bool m_running;
 
     void resetRegisters();
+    void updateCGBMode();
 
     void registerBusProviders();
     void unregisterBusProviders();

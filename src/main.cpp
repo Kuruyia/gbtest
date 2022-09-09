@@ -17,7 +17,7 @@
 
 static constexpr unsigned TARGET_FPS = 60;
 static constexpr float FRAME_TIME = 1.f / TARGET_FPS;
-static constexpr size_t AUDIO_FRAMES_REQUIRED = 512;
+static constexpr size_t AUDIO_FRAMES_REQUIRED = 1024;
 
 ma_lpf g_lpf;
 std::mutex g_audioMutex;
@@ -99,7 +99,7 @@ void updateWindowTitle(gbtest::GameBoy* gb)
 int main()
 {
     // Init the core emulator
-    std::unique_ptr<gbtest::GameBoy> gameboy = std::make_unique<gbtest::GameBoy>(gbtest::GameBoyRevisionType::DMG);
+    std::unique_ptr<gbtest::GameBoy> gameboy = std::make_unique<gbtest::GameBoy>(gbtest::GameBoyRevisionType::CGB);
     gameboy->init();
 
     // Load a ROM file

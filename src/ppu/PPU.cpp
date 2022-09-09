@@ -3,11 +3,23 @@
 #include "modes/PPUModeType.h"
 
 gbtest::PPU::PPU(Bus& bus)
-        : m_modeManager(bus, m_framebuffer, m_ppuRegisters, m_oam, m_vram)
+        : m_cgbMode(false)
+        , m_modeManager(bus, m_framebuffer, m_ppuRegisters, m_oam, m_vram)
         , m_ppuRegisters()
         , m_oamDma(bus, m_oam)
 {
 
+}
+
+void gbtest::PPU::setCGBMode(bool cgbMode)
+{
+    m_cgbMode = cgbMode;
+    m_vram.setCGBMode(cgbMode);
+}
+
+bool gbtest::PPU::isCGBMode() const
+{
+    return m_cgbMode;
 }
 
 gbtest::PPUModeManager& gbtest::PPU::getModeManager()

@@ -111,6 +111,9 @@ set(SOURCE_FILES
         ppu/oam/SpriteBuffer.h
         ppu/vram/VRAM.cpp
         ppu/vram/VRAM.h
+        ppu/vram/VRAMMapAttributes.cpp
+        ppu/vram/VRAMMapAttributes.h
+        ppu/vram/VRAMMapAttributesData.h
         ppu/vram/VRAMTileData.cpp
         ppu/vram/VRAMTileData.h
         ppu/vram/VRAMTileMaps.cpp

@@ -1,22 +1,22 @@
-#ifndef GBTEST_VRAMTILEDATA_H
-#define GBTEST_VRAMTILEDATA_H
+#ifndef GBTEST_VRAMMAPATTRIBUTES_H
+#define GBTEST_VRAMMAPATTRIBUTES_H
 
 #include <array>
+#include <cstddef>
 #include <cstdint>
 
 #include "../../platform/bus/BusProvider.h"
+#include "VRAMMapAttributesData.h"
 
 namespace gbtest {
 
-class VRAMTileData
-        : public BusProvider {
+class VRAMMapAttributes: public BusProvider {
 
 public:
-    VRAMTileData();
-    ~VRAMTileData() override = default;
+    VRAMMapAttributes();
+    ~VRAMMapAttributes() override = default;
 
-    [[nodiscard]] uint16_t getTileLineUsingFirstMethod(uint8_t tileNumber, uint8_t lineNumber) const;
-    [[nodiscard]] uint16_t getTileLineUsingSecondMethod(int8_t tileNumber, uint8_t lineNumber) const;
+    [[nodiscard]] const VRAMMapAttributesData& getTileAttributesFromTileMap(size_t offset, uint8_t whichMap) const;
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
@@ -25,10 +25,10 @@ public:
     bool busWriteOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
 private:
-    std::array<uint8_t, 0x1800> m_memory;
+    std::array<VRAMMapAttributesData, 0x800> m_memory;
 
-}; // class VRAMTileData
+}; // class VRAMMapAttributes
 
 } // namespace gbtest
 
-#endif //GBTEST_VRAMTILEDATA_H
+#endif //GBTEST_VRAMMAPATTRIBUTES_H

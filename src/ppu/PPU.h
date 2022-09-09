@@ -21,6 +21,9 @@ public:
     explicit PPU(Bus& bus);
     ~PPU() override = default;
 
+    void setCGBMode(bool cgbMode);
+    [[nodiscard]] bool isCGBMode() const;
+
     [[nodiscard]] PPUModeManager& getModeManager();
     [[nodiscard]] const PPUModeManager& getModeManager() const;
 
@@ -50,6 +53,8 @@ public:
     void tick() override;
 
 private:
+    bool m_cgbMode;
+
     PPUModeManager m_modeManager;
     PPURegisters m_ppuRegisters;
 

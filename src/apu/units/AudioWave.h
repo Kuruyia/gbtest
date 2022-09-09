@@ -2,6 +2,7 @@
 #define GBTEST_AUDIOWAVE_H
 
 #include <array>
+#include <cstddef>
 #include <cstdint>
 
 #include "../../utils/Tickable.h"

@@ -138,12 +138,12 @@ void gbtest::BackgroundFetcher::fetchBackgroundTileData()
 {
     // Emulation shortcut: Fetch both bytes during this step
     if (m_ppuRegisters.lcdControl.bgAndWindowTileDataArea == 1) {
-        m_currentTileData = m_vram.getVramTileData().getTileLineUsingFirstMethod(m_currentTileNumber,
+        m_currentTileData = m_vram.getCurrentVramTileData().getTileLineUsingFirstMethod(m_currentTileNumber,
                 (m_ppuRegisters.lcdPositionAndScrolling.yScroll
                         + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
     }
     else {
-        m_currentTileData = m_vram.getVramTileData().getTileLineUsingSecondMethod(
+        m_currentTileData = m_vram.getCurrentVramTileData().getTileLineUsingSecondMethod(
                 static_cast<int8_t>(m_currentTileNumber),
                 (m_ppuRegisters.lcdPositionAndScrolling.yScroll
                         + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
@@ -171,11 +171,11 @@ void gbtest::BackgroundFetcher::fetchWindowTileData()
 {
     // Emulation shortcut: Fetch both bytes during this step
     if (m_ppuRegisters.lcdControl.bgAndWindowTileDataArea == 1) {
-        m_currentTileData = m_vram.getVramTileData().getTileLineUsingFirstMethod(m_currentTileNumber,
+        m_currentTileData = m_vram.getCurrentVramTileData().getTileLineUsingFirstMethod(m_currentTileNumber,
                 m_windowLineCounter % 8);
     }
     else {
-        m_currentTileData = m_vram.getVramTileData().getTileLineUsingSecondMethod(
+        m_currentTileData = m_vram.getCurrentVramTileData().getTileLineUsingSecondMethod(
                 static_cast<int8_t>(m_currentTileNumber),
                 m_windowLineCounter % 8);
     }

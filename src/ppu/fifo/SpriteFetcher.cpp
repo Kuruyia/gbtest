@@ -73,7 +73,7 @@ void gbtest::SpriteFetcher::executeState()
             tileIndex &= 0xFE;
         }
 
-        m_currentTileData = m_vram.getVramTileData().getTileLineUsingFirstMethod(tileIndex, lineNumber);
+        m_currentTileData = m_vram.getCurrentVramTileData().getTileLineUsingFirstMethod(tileIndex, lineNumber);
 
         // Continue to the next state
         m_fetcherState = FetcherState::PushFIFO;
