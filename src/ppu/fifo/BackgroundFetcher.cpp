@@ -104,7 +104,7 @@ void gbtest::BackgroundFetcher::executeState()
             for (uint8_t i = 8; i-- > 0;) {
                 // Push the pixel to the FIFO
                 m_pixelFifo.emplace_back(
-                        getPixelFromTileData(m_currentTileData, i, false),
+                        getPixelFromTileData(m_currentTileData, i, m_currentTileAttributes.xFlip),
                         paletteNumber,
                         0,
                         m_currentTileAttributes.bgToOAMPriority == 1);
@@ -143,18 +143,22 @@ void gbtest::BackgroundFetcher::fetchBackgroundTileMap()
 
 void gbtest::BackgroundFetcher::fetchBackgroundTileData()
 {
+    // Compute the line number to fetch
+    uint8_t lineNumber = ((m_ppuRegisters.lcdPositionAndScrolling.yScroll +
+            m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
+
+    if (m_currentTileAttributes.yFlip == 1) {
+        lineNumber = (7 - lineNumber);
+    }
+
     // Emulation shortcut: Fetch both bytes during this step
     if (m_ppuRegisters.lcdControl.bgAndWindowTileDataArea == 1) {
         m_currentTileData = m_vram.getVramTileDataBanks()[m_currentTileAttributes.tileVRAMBankNumber]
-                .getTileLineUsingFirstMethod(m_currentTileNumber,
-                        (m_ppuRegisters.lcdPositionAndScrolling.yScroll
-                                + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
+                .getTileLineUsingFirstMethod(m_currentTileNumber, lineNumber);
     }
     else {
         m_currentTileData = m_vram.getVramTileDataBanks()[m_currentTileAttributes.tileVRAMBankNumber]
-                .getTileLineUsingSecondMethod(static_cast<int8_t>(m_currentTileNumber),
-                        (m_ppuRegisters.lcdPositionAndScrolling.yScroll
-                                + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
+                .getTileLineUsingSecondMethod(static_cast<int8_t>(m_currentTileNumber), lineNumber);
     }
 }
 
@@ -181,14 +185,20 @@ void gbtest::BackgroundFetcher::fetchWindowTileMap()
 
 void gbtest::BackgroundFetcher::fetchWindowTileData()
 {
+    // Compute the line number to fetch
+    uint8_t lineNumber = (m_windowLineCounter % 8);
+
+    if (m_currentTileAttributes.yFlip == 1) {
+        lineNumber = (7 - lineNumber);
+    }
+
     // Emulation shortcut: Fetch both bytes during this step
     if (m_ppuRegisters.lcdControl.bgAndWindowTileDataArea == 1) {
         m_currentTileData = m_vram.getVramTileDataBanks()[m_currentTileAttributes.tileVRAMBankNumber]
-                .getTileLineUsingFirstMethod(m_currentTileNumber, m_windowLineCounter % 8);
+                .getTileLineUsingFirstMethod(m_currentTileNumber, lineNumber);
     }
     else {
         m_currentTileData = m_vram.getVramTileDataBanks()[m_currentTileAttributes.tileVRAMBankNumber]
-                .getTileLineUsingSecondMethod(static_cast<int8_t>(m_currentTileNumber),
-                        m_windowLineCounter % 8);
+                .getTileLineUsingSecondMethod(static_cast<int8_t>(m_currentTileNumber), lineNumber);
     }
 }

@@ -79,7 +79,7 @@ void gbtest::SpriteFetcher::executeState()
         uint8_t tileBank = 0;
 
         if (m_cgbMode) {
-            tileBank = m_spriteToFetch.flags.tileVramBank;
+            tileBank = m_spriteToFetch.flags.tileVRAMBank;
         }
 
         m_currentTileData = m_vram.getVramTileDataBanks()[tileBank].getTileLineUsingFirstMethod(tileIndex, lineNumber);

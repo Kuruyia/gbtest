@@ -10,7 +10,7 @@ namespace gbtest {
 union OAMEntryFlags {
     struct {
         uint8_t cgbPaletteNumber: 3;    // Palette number (CGB only)
-        uint8_t tileVramBank: 1;        // VRAM bank containing the tile (CGB only)
+        uint8_t tileVRAMBank: 1;        // VRAM bank containing the tile (CGB only)
         uint8_t dmgPaletteNumber: 1;    // Palette number (DMG only)
         uint8_t xFlip: 1;               // Horizontal mirroring of the sprite (0: No; 1: Yes)
         uint8_t yFlip: 1;               // Vertical mirroring of the sprite (0: No; 1: Yes)
