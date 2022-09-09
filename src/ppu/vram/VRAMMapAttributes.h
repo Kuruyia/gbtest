@@ -10,13 +10,16 @@
 
 namespace gbtest {
 
-class VRAMMapAttributes: public BusProvider {
+class VRAMMapAttributes
+        : public BusProvider {
 
 public:
     VRAMMapAttributes();
     ~VRAMMapAttributes() override = default;
 
     [[nodiscard]] const VRAMMapAttributesData& getTileAttributesFromTileMap(size_t offset, uint8_t whichMap) const;
+
+    void clear();
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;

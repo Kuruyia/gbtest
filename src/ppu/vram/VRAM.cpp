@@ -61,6 +61,9 @@ void gbtest::VRAM::setCGBMode(bool cgbMode)
     if (!cgbMode) {
         m_currentBank = 0;
     }
+
+    // Clear the map attributes
+    m_vramMapAttributes.clear();
 }
 
 bool gbtest::VRAM::isCGBMode() const

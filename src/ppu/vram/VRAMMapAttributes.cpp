@@ -3,13 +3,22 @@
 gbtest::VRAMMapAttributes::VRAMMapAttributes()
     : m_memory()
 {
-
+    clear();
 }
 
 const gbtest::VRAMMapAttributesData&
 gbtest::VRAMMapAttributes::getTileAttributesFromTileMap(size_t offset, uint8_t whichMap) const
 {
     return m_memory.at((0x400 * whichMap) + offset);
+}
+
+void gbtest::VRAMMapAttributes::clear()
+{
+    // Fill the memory with 0x00 bytes
+    VRAMMapAttributesData emptyData{};
+    emptyData.raw = 0x00;
+
+    m_memory.fill(emptyData);
 }
 
 bool gbtest::VRAMMapAttributes::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
