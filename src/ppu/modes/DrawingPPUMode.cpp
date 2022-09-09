@@ -125,7 +125,13 @@ void gbtest::DrawingPPUMode::drawPixel()
 
         // Mix both pixels
         ColorUtils::ColorRGBA8888 mixedPixel{};
-        mixPixels(backgroundPixelData, spritePixelData, mixedPixel);
+
+        if (m_cgbMode) {
+            mixPixelsCGB(backgroundPixelData, spritePixelData, mixedPixel);
+        }
+        else {
+            mixPixelsDMG(backgroundPixelData, spritePixelData, mixedPixel);
+        }
 
         // Set the pixel in the framebuffer
         m_framebuffer.setPixel(m_currentXCoordinate, m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate,
@@ -139,7 +145,8 @@ void gbtest::DrawingPPUMode::drawPixel()
     }
 }
 
-void gbtest::DrawingPPUMode::mixPixels(const FIFOPixelData& backgroundPixelData, const FIFOPixelData& spritePixelData,
+void
+gbtest::DrawingPPUMode::mixPixelsDMG(const FIFOPixelData& backgroundPixelData, const FIFOPixelData& spritePixelData,
         ColorUtils::ColorRGBA8888& mixedPixel)
 {
     /*
@@ -169,6 +176,33 @@ void gbtest::DrawingPPUMode::mixPixels(const FIFOPixelData& backgroundPixelData,
     else {
         // Neither sprite nor background is enabled
         mixedPixel.raw = 0xFFFFFFFF;
+    }
+}
+
+void gbtest::DrawingPPUMode::mixPixelsCGB(const gbtest::FIFOPixelData& backgroundPixelData,
+        const gbtest::FIFOPixelData& spritePixelData, gbtest::ColorUtils::ColorRGBA8888& mixedPixel)
+{
+    /*
+     * Choose the sprite pixel if:
+     *  -
+     */
+
+    if (spritePixelData.colorIndex != 0 && m_ppuRegisters.lcdControl.objEnable == 1 &&
+            (m_ppuRegisters.lcdControl.bgAndWindowEnable == 0 || (backgroundPixelData.backgroundPriority == 0 &&
+                    (backgroundPixelData.colorIndex == 0 || spritePixelData.backgroundPriority == 0)))) {
+        // Use the sprite pixel
+        ColorUtils::dmgPaletteIndexToRGBA8888(
+                (spritePixelData.palette == 0) ? m_ppuRegisters.dmgPalettes.objectPaletteData0
+                                               : m_ppuRegisters.dmgPalettes.objectPaletteData1,
+                spritePixelData.colorIndex,
+                mixedPixel);
+    }
+    else {
+        // Use the background pixel
+        ColorUtils::dmgPaletteIndexToRGBA8888(
+                m_ppuRegisters.dmgPalettes.bgPaletteData,
+                backgroundPixelData.colorIndex,
+                mixedPixel);
     }
 }
 

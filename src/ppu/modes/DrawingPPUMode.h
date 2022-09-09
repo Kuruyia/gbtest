@@ -56,7 +56,9 @@ private:
     const PPURegisters& m_ppuRegisters;
 
     void drawPixel();
-    void mixPixels(const FIFOPixelData& backgroundPixelData, const FIFOPixelData& spritePixelData,
+    void mixPixelsDMG(const FIFOPixelData& backgroundPixelData, const FIFOPixelData& spritePixelData,
+            ColorUtils::ColorRGBA8888& mixedPixel);
+    void mixPixelsCGB(const FIFOPixelData& backgroundPixelData, const FIFOPixelData& spritePixelData,
             ColorUtils::ColorRGBA8888& mixedPixel);
 
     void checkWindow();

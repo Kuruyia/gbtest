@@ -97,14 +97,17 @@ void gbtest::BackgroundFetcher::executeState()
 
     case FetcherState::PushFIFO:
         if (m_pixelFifo.empty()) {
+            // Get the palette number for CGB mode
+            uint8_t paletteNumber = m_currentTileAttributes.backgroundPaletteNumber;
+
             // Fill the queue with the fetched pixels
             for (uint8_t i = 8; i-- > 0;) {
                 // Push the pixel to the FIFO
                 m_pixelFifo.emplace_back(
                         getPixelFromTileData(m_currentTileData, i, false),
+                        paletteNumber,
                         0,
-                        0,
-                        false);
+                        m_currentTileAttributes.bgToOAMPriority == 1);
             }
 
             ++m_fetcherX;
