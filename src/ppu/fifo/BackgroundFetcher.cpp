@@ -124,13 +124,17 @@ void gbtest::BackgroundFetcher::fetchBackgroundTileMap()
                     & 0xFF;
     const size_t offset = ((32 * (y / 8)) + x) & 0x3FF;
 
-    // Fetch the tile number
+    // Fetch the tile number and attributes
     if (!m_vram.isReadBlocked()) {
         m_currentTileNumber = m_vram.getVramTileMaps().getTileNumberFromTileMap(offset,
+                m_ppuRegisters.lcdControl.bgTileMapArea);
+
+        m_currentTileAttributes = m_vram.getVramMapAttributes().getTileAttributesFromTileMap(offset,
                 m_ppuRegisters.lcdControl.bgTileMapArea);
     }
     else {
         m_currentTileNumber = 0xFF;
+        m_currentTileAttributes.raw = 0x00;
     }
 }
 
@@ -138,15 +142,16 @@ void gbtest::BackgroundFetcher::fetchBackgroundTileData()
 {
     // Emulation shortcut: Fetch both bytes during this step
     if (m_ppuRegisters.lcdControl.bgAndWindowTileDataArea == 1) {
-        m_currentTileData = m_vram.getCurrentVramTileData().getTileLineUsingFirstMethod(m_currentTileNumber,
-                (m_ppuRegisters.lcdPositionAndScrolling.yScroll
-                        + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
+        m_currentTileData = m_vram.getVramTileDataBanks()[m_currentTileAttributes.tileVRAMBankNumber]
+                .getTileLineUsingFirstMethod(m_currentTileNumber,
+                        (m_ppuRegisters.lcdPositionAndScrolling.yScroll
+                                + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
     }
     else {
-        m_currentTileData = m_vram.getCurrentVramTileData().getTileLineUsingSecondMethod(
-                static_cast<int8_t>(m_currentTileNumber),
-                (m_ppuRegisters.lcdPositionAndScrolling.yScroll
-                        + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
+        m_currentTileData = m_vram.getVramTileDataBanks()[m_currentTileAttributes.tileVRAMBankNumber]
+                .getTileLineUsingSecondMethod(static_cast<int8_t>(m_currentTileNumber),
+                        (m_ppuRegisters.lcdPositionAndScrolling.yScroll
+                                + m_ppuRegisters.lcdPositionAndScrolling.yLcdCoordinate) % 8);
     }
 }
 
@@ -157,13 +162,17 @@ void gbtest::BackgroundFetcher::fetchWindowTileMap()
     const uint8_t y = m_windowLineCounter;
     const size_t offset = (32 * (y / 8)) + x;
 
-    // Fetch the tile number
+    // Fetch the tile number and attributes
     if (!m_vram.isReadBlocked()) {
         m_currentTileNumber = m_vram.getVramTileMaps().getTileNumberFromTileMap(offset,
+                m_ppuRegisters.lcdControl.windowTileMapArea);
+
+        m_currentTileAttributes = m_vram.getVramMapAttributes().getTileAttributesFromTileMap(offset,
                 m_ppuRegisters.lcdControl.windowTileMapArea);
     }
     else {
         m_currentTileNumber = 0xFF;
+        m_currentTileAttributes.raw = 0x00;
     }
 }
 
@@ -171,12 +180,12 @@ void gbtest::BackgroundFetcher::fetchWindowTileData()
 {
     // Emulation shortcut: Fetch both bytes during this step
     if (m_ppuRegisters.lcdControl.bgAndWindowTileDataArea == 1) {
-        m_currentTileData = m_vram.getCurrentVramTileData().getTileLineUsingFirstMethod(m_currentTileNumber,
-                m_windowLineCounter % 8);
+        m_currentTileData = m_vram.getVramTileDataBanks()[m_currentTileAttributes.tileVRAMBankNumber]
+                .getTileLineUsingFirstMethod(m_currentTileNumber, m_windowLineCounter % 8);
     }
     else {
-        m_currentTileData = m_vram.getCurrentVramTileData().getTileLineUsingSecondMethod(
-                static_cast<int8_t>(m_currentTileNumber),
-                m_windowLineCounter % 8);
+        m_currentTileData = m_vram.getVramTileDataBanks()[m_currentTileAttributes.tileVRAMBankNumber]
+                .getTileLineUsingSecondMethod(static_cast<int8_t>(m_currentTileNumber),
+                        m_windowLineCounter % 8);
     }
 }

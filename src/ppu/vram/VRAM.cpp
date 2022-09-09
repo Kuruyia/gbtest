@@ -38,6 +38,16 @@ const gbtest::VRAMTileMaps& gbtest::VRAM::getVramTileMaps() const
     return m_vramTileMaps;
 }
 
+gbtest::VRAMMapAttributes& gbtest::VRAM::getVramMapAttributes()
+{
+    return m_vramMapAttributes;
+}
+
+const gbtest::VRAMMapAttributes& gbtest::VRAM::getVramMapAttributes() const
+{
+    return m_vramMapAttributes;
+}
+
 void gbtest::VRAM::setReadBlocked(bool readBlocked)
 {
     m_readBlocked = readBlocked;

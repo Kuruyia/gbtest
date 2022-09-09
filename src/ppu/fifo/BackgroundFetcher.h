@@ -6,6 +6,7 @@
 
 #include "../PPURegisters.h"
 #include "../vram/VRAM.h"
+#include "../vram/VRAMMapAttributesData.h"
 
 namespace gbtest {
 
@@ -28,6 +29,7 @@ public:
 
 private:
     uint8_t m_currentTileNumber;
+    VRAMMapAttributesData m_currentTileAttributes;
     uint16_t m_currentTileData;
 
     uint8_t m_fetcherX;

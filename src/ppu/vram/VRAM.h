@@ -29,6 +29,9 @@ public:
     [[nodiscard]] VRAMTileMaps& getVramTileMaps();
     [[nodiscard]] const VRAMTileMaps& getVramTileMaps() const;
 
+    [[nodiscard]] VRAMMapAttributes& getVramMapAttributes();
+    [[nodiscard]] const VRAMMapAttributes& getVramMapAttributes() const;
+
     void setReadBlocked(bool readBlocked);
     [[nodiscard]] bool isReadBlocked() const;
 
@@ -47,8 +50,8 @@ public:
 private:
     VRAMTileDataBanks m_vramTileDataBanks;
 
-    VRAMMapAttributes m_vramMapAttributes;
     VRAMTileMaps m_vramTileMaps;
+    VRAMMapAttributes m_vramMapAttributes;
 
     bool m_readBlocked;
     bool m_cgbMode;
