@@ -224,15 +224,14 @@ void gbtest::DrawingPPUMode::checkSpriteCGB()
         OAMEntry& currentEntry = m_spriteBuffer[i];
 
         if (currentEntry.xPosition <= m_currentXCoordinate + 8) {
-            // Ensure that we're not going to process the same sprite again
-            // TODO: Remove the sprite from the buffer entirely
-            currentEntry.xPosition = 255;
-
             // Background fetched is paused and reset to step 1, pixel shifting is paused
             m_backgroundFetcher.resetForSpriteFetch();
 
             // Fetch the sprite
             m_spriteFetcher.fetchSprite(currentEntry, i);
+
+            // Ensure that we're not going to process the same sprite again
+            currentEntry.xPosition = 255;
         }
     }
 }
