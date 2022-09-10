@@ -1,5 +1,6 @@
 # Source files
 set(SOURCE_FILES
+        apu/channels/APUChannel.cpp
         apu/channels/APUChannel.h
         apu/channels/APUChannel1.cpp
         apu/channels/APUChannel1.h

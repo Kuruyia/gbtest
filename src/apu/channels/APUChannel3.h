@@ -34,6 +34,7 @@ public:
     [[nodiscard]] float sample() const override;
 
     [[nodiscard]] bool isChannelDisabled() const override;
+    [[nodiscard]] bool isDACOn() const override;
 
     void reset() override;
 

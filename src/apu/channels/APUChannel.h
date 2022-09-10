@@ -13,7 +13,7 @@ class APUChannel
         : public BusProvider {
 
 public:
-    APUChannel() = default;
+    APUChannel();
     ~APUChannel() override = default;
 
     virtual void tickUnits(uint8_t unitsToTick, bool isDoubleSpeedTick) = 0;
@@ -21,8 +21,12 @@ public:
     [[nodiscard]] virtual float sample() const = 0;
 
     [[nodiscard]] virtual bool isChannelDisabled() const = 0;
+    [[nodiscard]] virtual bool isDACOn() const = 0;
 
     virtual void reset() = 0;
+
+protected:
+    bool m_dacDisabledChannel;
 
 }; // class APUChannel
 

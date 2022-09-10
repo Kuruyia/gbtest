@@ -1,7 +1,8 @@
 #include "APUChannel3.h"
 
 gbtest::APUChannel3::APUChannel3()
-        : m_channel3Registers()
+        : APUChannel()
+        , m_channel3Registers()
         , m_lengthCounter(256)
 {
 
@@ -11,6 +12,11 @@ void gbtest::APUChannel3::commitNR30()
 {
     // Update the wave unit
     m_audioWave.setEnabled(m_channel3Registers.soundOnOff.soundOff);
+
+    // Disable channel if DAC is disabled
+    if (!isDACOn()) {
+        m_dacDisabledChannel = true;
+    }
 }
 
 void gbtest::APUChannel3::commitNR31()
@@ -107,7 +113,12 @@ float gbtest::APUChannel3::sample() const
 
 bool gbtest::APUChannel3::isChannelDisabled() const
 {
-    return m_lengthCounter.isChannelDisabled();
+    return m_lengthCounter.isChannelDisabled() || m_dacDisabledChannel;
+}
+
+bool gbtest::APUChannel3::isDACOn() const
+{
+    return m_channel3Registers.soundOnOff.soundOff;
 }
 
 void gbtest::APUChannel3::reset()
@@ -227,7 +238,13 @@ void gbtest::APUChannel3::updateFrequency()
 
 void gbtest::APUChannel3::doTrigger()
 {
+    // Don't do anything if the DAC is off
+    if (!isDACOn()) { return; }
+
     // Dispatch the trigger event to the units
     m_audioWave.doTrigger();
     m_lengthCounter.doTrigger();
+
+    // Enable the channel
+    m_dacDisabledChannel = false;
 }

@@ -1,7 +1,8 @@
 #include "APUChannel2.h"
 
 gbtest::APUChannel2::APUChannel2()
-        : m_channel2Registers()
+        : APUChannel()
+        , m_channel2Registers()
         , m_lengthCounter(64)
 {
 
@@ -32,6 +33,11 @@ void gbtest::APUChannel2::commitNR22()
     m_volumeEnvelope.setVolume(m_channel2Registers.volumeEnvelope.envelopeInitialVolume);
     m_volumeEnvelope.setIncreasing(m_channel2Registers.volumeEnvelope.envelopeDirection);
     m_volumeEnvelope.setPeriod(m_channel2Registers.volumeEnvelope.nbEnvelopeSweep);
+
+    // Disable channel if DAC is disabled
+    if (!isDACOn()) {
+        m_dacDisabledChannel = true;
+    }
 }
 
 void gbtest::APUChannel2::commitNR23()
@@ -100,7 +106,12 @@ float gbtest::APUChannel2::sample() const
 
 bool gbtest::APUChannel2::isChannelDisabled() const
 {
-    return m_lengthCounter.isChannelDisabled();
+    return m_lengthCounter.isChannelDisabled() || m_dacDisabledChannel;
+}
+
+bool gbtest::APUChannel2::isDACOn() const
+{
+    return (m_channel2Registers.volumeEnvelope.raw & 0xF8);
 }
 
 void gbtest::APUChannel2::reset()
@@ -226,8 +237,14 @@ inline void gbtest::APUChannel2::updatePatternDuty()
 
 void gbtest::APUChannel2::doTrigger()
 {
+    // Don't do anything if the DAC is off
+    if (!isDACOn()) { return; }
+
     // Dispatch the trigger event to the units
     m_audioPulseWave.doTrigger();
     m_lengthCounter.doTrigger();
     m_volumeEnvelope.doTrigger();
+
+    // Enable the channel
+    m_dacDisabledChannel = false;
 }
