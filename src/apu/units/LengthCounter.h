@@ -23,7 +23,7 @@ public:
     [[nodiscard]] bool isChannelDisabled() const;
     void setChannelDisabled(bool channelDisabled);
 
-    void doTrigger();
+    void doTrigger(bool canTick);
 
     void tick(bool isDoubleSpeedTick) override;
 

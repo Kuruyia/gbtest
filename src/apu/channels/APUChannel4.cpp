@@ -50,9 +50,8 @@ void gbtest::APUChannel4::commitNR44()
     // Check if the length counter must be ticked after enabling it
     bool tickLengthCounter = false;
 
-    if (m_channel4Registers.counterConsecutiveAndInitial.counterConsecutiveSelection
-            && (!m_lengthCounter.isEnabled() || m_channel4Registers.counterConsecutiveAndInitial.trigger)) {
-        // Disabled -> enabled or trigger while enabled
+    if (m_channel4Registers.counterConsecutiveAndInitial.counterConsecutiveSelection && !m_lengthCounter.isEnabled()) {
+        // Disabled -> enabled
         if (m_lastUnitsTicked & static_cast<uint8_t>(APUUnit::LengthCounter)) {
             tickLengthCounter = true;
         }
@@ -221,14 +220,13 @@ bool gbtest::APUChannel4::busWriteOverride(uint16_t addr, uint8_t val, gbtest::B
 
 void gbtest::APUChannel4::doTrigger()
 {
-    // Don't do anything if the DAC is off
-    if (!isDACOn()) { return; }
-
     // Dispatch the trigger event to the units
     m_audioNoise.doTrigger();
-    m_lengthCounter.doTrigger();
+    m_lengthCounter.doTrigger(m_lastUnitsTicked & static_cast<uint8_t>(APUUnit::LengthCounter));
     m_volumeEnvelope.doTrigger();
 
-    // Enable the channel
-    m_dacDisabledChannel = false;
+    // Enable the channel if the DAC is on
+    if (isDACOn()) {
+        m_dacDisabledChannel = false;
+    }
 }

@@ -39,11 +39,16 @@ void gbtest::LengthCounter::setChannelDisabled(bool channelDisabled)
     m_channelDisabled = channelDisabled;
 }
 
-void gbtest::LengthCounter::doTrigger()
+void gbtest::LengthCounter::doTrigger(bool canTick)
 {
     // Reload the countdown if necessary
     if (m_countdown == 0) {
         m_countdown = m_countdownReloadValue;
+
+        // When the length counter got unfrozen and the frame sequencer allows ticking, tick the counter
+        if (canTick) {
+            tick(false);
+        }
     }
 
     // Enable the channel

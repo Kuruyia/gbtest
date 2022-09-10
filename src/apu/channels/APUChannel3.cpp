@@ -54,9 +54,8 @@ void gbtest::APUChannel3::commitNR34()
     // Check if the length counter must be ticked after enabling it
     bool tickLengthCounter = false;
 
-    if (m_channel3Registers.frequencyHigh.counterConsecutiveSelection
-            && (!m_lengthCounter.isEnabled() || m_channel3Registers.frequencyHigh.trigger)) {
-        // Disabled -> enabled or trigger while enabled
+    if (m_channel3Registers.frequencyHigh.counterConsecutiveSelection && !m_lengthCounter.isEnabled()) {
+        // Disabled -> enabled
         if (m_lastUnitsTicked & static_cast<uint8_t>(APUUnit::LengthCounter)) {
             tickLengthCounter = true;
         }
@@ -256,13 +255,12 @@ void gbtest::APUChannel3::updateFrequency()
 
 void gbtest::APUChannel3::doTrigger()
 {
-    // Don't do anything if the DAC is off
-    if (!isDACOn()) { return; }
-
     // Dispatch the trigger event to the units
     m_audioWave.doTrigger();
-    m_lengthCounter.doTrigger();
+    m_lengthCounter.doTrigger(m_lastUnitsTicked & static_cast<uint8_t>(APUUnit::LengthCounter));
 
-    // Enable the channel
-    m_dacDisabledChannel = false;
+    // Enable the channel if the DAC is on
+    if (isDACOn()) {
+        m_dacDisabledChannel = false;
+    }
 }
