@@ -15,12 +15,15 @@ void gbtest::FrameSequencer::tick(bool isDoubleSpeedTick)
     // Decrease the tick countdown
     --m_tickCountdown;
 
-    // Reset the units to tick
-    m_unitsToTick = 0;
+    // Don't tick units on this tick
+    m_unitsToTick = 0xFF;
 
     if (m_tickCountdown == 0) {
         // Reset the tick countdown
         m_tickCountdown = (GAMEBOY_FREQUENCY / 512);
+
+        // Set the units to tick
+        m_unitsToTick = 0x00;
 
         // Ticking the length counter unit at 256 Hz
         if ((m_step & 0x01) == 0x00) {

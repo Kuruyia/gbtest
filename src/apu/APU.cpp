@@ -155,10 +155,12 @@ void gbtest::APU::tick(bool isDoubleSpeedTick)
     const uint8_t unitsToTick = m_frameSequencer.getUnitsToTick();
 
     // Tick the channels
-    m_apuChannel1.tickUnits(unitsToTick, isDoubleSpeedTick);
-    m_apuChannel2.tickUnits(unitsToTick, isDoubleSpeedTick);
-    m_apuChannel3.tickUnits(unitsToTick, isDoubleSpeedTick);
-    m_apuChannel4.tickUnits(unitsToTick, isDoubleSpeedTick);
+    if (unitsToTick != 0xFF) {
+        m_apuChannel1.tickUnits(unitsToTick, isDoubleSpeedTick);
+        m_apuChannel2.tickUnits(unitsToTick, isDoubleSpeedTick);
+        m_apuChannel3.tickUnits(unitsToTick, isDoubleSpeedTick);
+        m_apuChannel4.tickUnits(unitsToTick, isDoubleSpeedTick);
+    }
 
     // Check if we have to sample
     if (m_sampleCount < m_framebuffer.size() && --m_sampleCountdown == 0) {
