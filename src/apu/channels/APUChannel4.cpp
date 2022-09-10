@@ -47,8 +47,22 @@ void gbtest::APUChannel4::commitNR43()
 
 void gbtest::APUChannel4::commitNR44()
 {
+    // Check if the length counter must be ticked after enabling it
+    bool tickLengthCounter = false;
+
+    if (!m_lengthCounter.isEnabled() && m_channel4Registers.counterConsecutiveAndInitial.counterConsecutiveSelection) {
+        // Disabled -> enabled
+        if (m_lastUnitsTicked & static_cast<uint8_t>(APUUnit::LengthCounter)) {
+            tickLengthCounter = true;
+        }
+    }
+
     // Update the length counter enabled state
     m_lengthCounter.setEnabled(m_channel4Registers.counterConsecutiveAndInitial.counterConsecutiveSelection);
+
+    if (tickLengthCounter) {
+        m_lengthCounter.tick(false);
+    }
 
     // Handle the trigger
     if (m_channel4Registers.counterConsecutiveAndInitial.trigger) {
@@ -78,6 +92,9 @@ const gbtest::Channel4Registers& gbtest::APUChannel4::getRegisters() const
 
 void gbtest::APUChannel4::tickUnits(uint8_t unitsToTick, bool isDoubleSpeedTick)
 {
+    // Call the base class method
+    APUChannel::tickUnits(unitsToTick, isDoubleSpeedTick);
+
     // Tick the units
     m_audioNoise.tick(isDoubleSpeedTick);
 

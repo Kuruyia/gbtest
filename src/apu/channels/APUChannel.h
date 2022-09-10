@@ -16,7 +16,7 @@ public:
     APUChannel();
     ~APUChannel() override = default;
 
-    virtual void tickUnits(uint8_t unitsToTick, bool isDoubleSpeedTick) = 0;
+    virtual void tickUnits(uint8_t unitsToTick, bool isDoubleSpeedTick);
 
     [[nodiscard]] virtual float sample() const = 0;
 
@@ -27,6 +27,7 @@ public:
 
 protected:
     bool m_dacDisabledChannel;
+    uint8_t m_lastUnitsTicked;
 
 }; // class APUChannel
 
