@@ -16,6 +16,13 @@ public:
     APUChannel3();
     ~APUChannel3() override = default;
 
+    void commitNR30();
+    void commitNR31();
+    void commitNR32();
+    void commitNR33();
+    void commitNR34();
+    void commitRegisters();
+
     [[nodiscard]] Channel3Registers& getRegisters();
     [[nodiscard]] const Channel3Registers& getRegisters() const;
 

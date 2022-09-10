@@ -7,6 +7,63 @@ gbtest::APUChannel2::APUChannel2()
 
 }
 
+void gbtest::APUChannel2::commitNR21()
+{
+    // Update the generator pattern duty
+    updatePatternDuty();
+
+    // Fix the length counter value
+    uint8_t soundLength = ~m_channel2Registers.soundLengthWavePatternDuty.soundLengthData;
+    ++soundLength;
+    soundLength &= 0x3F;
+
+    // Update the length counter
+    if (soundLength != 0) {
+        m_lengthCounter.setCountdown(soundLength);
+    }
+    else {
+        m_lengthCounter.setCountdown(64);
+    }
+}
+
+void gbtest::APUChannel2::commitNR22()
+{
+    // Update the volume envelope
+    m_volumeEnvelope.setVolume(m_channel2Registers.volumeEnvelope.envelopeInitialVolume);
+    m_volumeEnvelope.setIncreasing(m_channel2Registers.volumeEnvelope.envelopeDirection);
+    m_volumeEnvelope.setPeriod(m_channel2Registers.volumeEnvelope.nbEnvelopeSweep);
+}
+
+void gbtest::APUChannel2::commitNR23()
+{
+    // Update the generator frequency
+    updateFrequency();
+}
+
+void gbtest::APUChannel2::commitNR24()
+{
+    // Update the generator frequency
+    updateFrequency();
+
+    // Update the length counter enabled state
+    m_lengthCounter.setEnabled(m_channel2Registers.frequencyHigh.counterConsecutiveSelection);
+
+    // Handle the trigger
+    if (m_channel2Registers.frequencyHigh.trigger) {
+        m_channel2Registers.frequencyHigh.trigger = 0;
+        doTrigger();
+    }
+}
+
+void gbtest::APUChannel2::commitRegisters()
+{
+    // Commit all the registers
+    commitNR21();
+    commitNR22();
+    commitNR23();
+    commitNR24();
+}
+
 gbtest::Channel2Registers& gbtest::APUChannel2::getRegisters()
 {
     return m_channel2Registers;
@@ -96,56 +153,25 @@ bool gbtest::APUChannel2::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
     switch (addr) {
     case 0xFF16: // [NR21] Channel 2 Sound Length/Wave Pattern Duty register
         m_channel2Registers.soundLengthWavePatternDuty.raw = val;
-
-        // Fix the length counter value
-        m_channel2Registers.soundLengthWavePatternDuty.soundLengthData = ~m_channel2Registers.soundLengthWavePatternDuty.soundLengthData;
-        ++m_channel2Registers.soundLengthWavePatternDuty.soundLengthData;
-
-        // Update the generator pattern duty
-        updatePatternDuty();
-
-        // Update the length counter
-        if (m_channel2Registers.soundLengthWavePatternDuty.soundLengthData != 0) {
-            m_lengthCounter.setCountdown(m_channel2Registers.soundLengthWavePatternDuty.soundLengthData);
-        }
-        else {
-            m_lengthCounter.setCountdown(64);
-        }
+        commitNR21();
 
         break;
 
     case 0xFF17: // [NR22] Channel 2 Volume Envelope
         m_channel2Registers.volumeEnvelope.raw = val;
-
-        // Update the volume envelope
-        m_volumeEnvelope.setVolume(m_channel2Registers.volumeEnvelope.envelopeInitialVolume);
-        m_volumeEnvelope.setIncreasing(m_channel2Registers.volumeEnvelope.envelopeDirection);
-        m_volumeEnvelope.setPeriod(m_channel2Registers.volumeEnvelope.nbEnvelopeSweep);
+        commitNR22();
 
         break;
 
     case 0xFF18: // [NR23] Channel 2 Frequency Low
         m_channel2Registers.frequencyLow.raw = val;
-
-        // Update the generator frequency
-        updateFrequency();
+        commitNR23();
 
         break;
 
     case 0xFF19: // [NR24] Channel 2 Frequency High
         m_channel2Registers.frequencyHigh.raw = val;
-
-        // Update the generator frequency
-        updateFrequency();
-
-        // Update the length counter enabled state
-        m_lengthCounter.setEnabled(m_channel2Registers.frequencyHigh.counterConsecutiveSelection);
-
-        // Handle the trigger
-        if (m_channel2Registers.frequencyHigh.trigger) {
-            m_channel2Registers.frequencyHigh.trigger = 0;
-            doTrigger();
-        }
+        commitNR24();
 
         break;
 

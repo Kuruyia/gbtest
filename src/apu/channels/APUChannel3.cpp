@@ -7,6 +7,64 @@ gbtest::APUChannel3::APUChannel3()
 
 }
 
+void gbtest::APUChannel3::commitNR30()
+{
+    // Update the wave unit
+    m_audioWave.setEnabled(m_channel3Registers.soundOnOff.soundOff);
+}
+
+void gbtest::APUChannel3::commitNR31()
+{
+    // Fix the length counter value
+    uint8_t soundLength = ~m_channel3Registers.soundLength.soundLengthData;
+    ++soundLength;
+
+    // Update the length counter
+    if (soundLength != 0) {
+        m_lengthCounter.setCountdown(soundLength);
+    }
+    else {
+        m_lengthCounter.setCountdown(256);
+    }
+}
+
+void gbtest::APUChannel3::commitNR32()
+{
+    // Update the wave unit
+    m_audioWave.setVolume(m_channel3Registers.selectOutputLevel.selectOutputLevel);
+}
+
+void gbtest::APUChannel3::commitNR33()
+{
+    // Update the generator frequency
+    updateFrequency();
+}
+
+void gbtest::APUChannel3::commitNR34()
+{
+    // Update the generator frequency
+    updateFrequency();
+
+    // Update the length counter enabled state
+    m_lengthCounter.setEnabled(m_channel3Registers.frequencyHigh.counterConsecutiveSelection);
+
+    // Handle the trigger
+    if (m_channel3Registers.frequencyHigh.trigger) {
+        m_channel3Registers.frequencyHigh.trigger = 0;
+        doTrigger();
+    }
+}
+
+void gbtest::APUChannel3::commitRegisters()
+{
+    // Commit all the registers
+    commitNR30();
+    commitNR31();
+    commitNR32();
+    commitNR33();
+    commitNR34();
+}
+
 gbtest::Channel3Registers& gbtest::APUChannel3::getRegisters()
 {
     return m_channel3Registers;
@@ -104,59 +162,31 @@ bool gbtest::APUChannel3::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
     switch (addr) {
     case 0xFF1A: // [NR30] Channel 3 Sound on/off
         m_channel3Registers.soundOnOff.raw = val;
-
-        // Update the wave unit
-        m_audioWave.setEnabled(m_channel3Registers.soundOnOff.soundOff);
+        commitNR30();
 
         break;
 
     case 0xFF1B: // [NR31] Channel 3 Sound Length
         m_channel3Registers.soundLength.raw = val;
-
-        // Fix the length counter value
-        m_channel3Registers.soundLength.soundLengthData = ~m_channel3Registers.soundLength.soundLengthData;
-        ++m_channel3Registers.soundLength.soundLengthData;
-
-        // Update the length counter
-        if (m_channel3Registers.soundLength.soundLengthData != 0) {
-            m_lengthCounter.setCountdown(m_channel3Registers.soundLength.soundLengthData);
-        }
-        else {
-            m_lengthCounter.setCountdown(256);
-        }
+        commitNR31();
 
         break;
 
     case 0xFF1C: // [NR32] Channel 3 Select output level
         m_channel3Registers.selectOutputLevel.raw = val;
-
-        // Update the wave unit
-        m_audioWave.setVolume(m_channel3Registers.selectOutputLevel.selectOutputLevel);
+        commitNR32();
 
         break;
 
     case 0xFF1D: // [NR33] Channel 3 Frequency Low
         m_channel3Registers.frequencyLow.raw = val;
-
-        // Update the generator frequency
-        updateFrequency();
+        commitNR33();
 
         break;
 
     case 0xFF1E: // [NR34] Channel 3 Frequency High
         m_channel3Registers.frequencyHigh.raw = val;
-
-        // Update the generator frequency
-        updateFrequency();
-
-        // Update the length counter enabled state
-        m_lengthCounter.setEnabled(m_channel3Registers.frequencyHigh.counterConsecutiveSelection);
-
-        // Handle the trigger
-        if (m_channel3Registers.frequencyHigh.trigger) {
-            m_channel3Registers.frequencyHigh.trigger = 0;
-            doTrigger();
-        }
+        commitNR34();
 
         break;
 

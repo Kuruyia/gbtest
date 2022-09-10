@@ -91,6 +91,12 @@ void gbtest::GameBoyStartupRegisters::loadAPURegisters(gbtest::APU& apu) const
     default:
         throw gbtest::UnsupportedRevisionException(m_revisionType);
     }
+
+    // Commit the registers
+    apu.getChannel1().commitRegisters();
+    apu.getChannel2().commitRegisters();
+    apu.getChannel3().commitRegisters();
+    apu.getChannel4().commitRegisters();
 }
 
 void gbtest::GameBoyStartupRegisters::loadCPURegistersDMG(gbtest::LR35902Registers& regs)

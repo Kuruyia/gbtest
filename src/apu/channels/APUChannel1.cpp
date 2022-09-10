@@ -8,6 +8,72 @@ gbtest::APUChannel1::APUChannel1()
 
 }
 
+void gbtest::APUChannel1::commitNR10()
+{
+    // Update the sweep
+    m_frequencySweep.setPeriod(m_channel1Registers.sweep.sweepTime);
+    m_frequencySweep.setDecreasing(m_channel1Registers.sweep.sweepDirection);
+    m_frequencySweep.setSweepShift(m_channel1Registers.sweep.nbSweepShift);
+}
+
+void gbtest::APUChannel1::commitNR11()
+{
+    // Update the generator pattern duty
+    updatePatternDuty();
+
+    // Fix the length counter value
+    uint8_t soundLength = ~m_channel1Registers.soundLengthWavePatternDuty.soundLengthData;
+    ++soundLength;
+    soundLength &= 0x3F;
+
+    // Update the length counter
+    if (soundLength != 0) {
+        m_lengthCounter.setCountdown(soundLength);
+    }
+    else {
+        m_lengthCounter.setCountdown(64);
+    }
+}
+
+void gbtest::APUChannel1::commitNR12()
+{
+    // Update the volume envelope
+    m_volumeEnvelope.setVolume(m_channel1Registers.volumeEnvelope.envelopeInitialVolume);
+    m_volumeEnvelope.setIncreasing(m_channel1Registers.volumeEnvelope.envelopeDirection);
+    m_volumeEnvelope.setPeriod(m_channel1Registers.volumeEnvelope.nbEnvelopeSweep);
+}
+
+void gbtest::APUChannel1::commitNR13()
+{
+    // Update the generator frequency
+    updateFrequency();
+}
+
+void gbtest::APUChannel1::commitNR14()
+{
+    // Update the generator frequency
+    updateFrequency();
+
+    // Update the length counter enabled state
+    m_lengthCounter.setEnabled(m_channel1Registers.frequencyHigh.counterConsecutiveSelection);
+
+    // Handle the trigger
+    if (m_channel1Registers.frequencyHigh.trigger) {
+        m_channel1Registers.frequencyHigh.trigger = 0;
+        doTrigger();
+    }
+}
+
+void gbtest::APUChannel1::commitRegisters()
+{
+    // Commit all the registers
+    commitNR10();
+    commitNR11();
+    commitNR12();
+    commitNR13();
+    commitNR14();
+}
+
 gbtest::Channel1Registers& gbtest::APUChannel1::getRegisters()
 {
     return m_channel1Registers;
@@ -106,66 +172,31 @@ bool gbtest::APUChannel1::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
     switch (addr) {
     case 0xFF10: // [NR10] Channel 1 Sweep register
         m_channel1Registers.sweep.raw = val;
-
-        // Update the sweep
-        m_frequencySweep.setPeriod(m_channel1Registers.sweep.sweepTime);
-        m_frequencySweep.setDecreasing(m_channel1Registers.sweep.sweepDirection);
-        m_frequencySweep.setSweepShift(m_channel1Registers.sweep.nbSweepShift);
+        commitNR10();
 
         break;
 
     case 0xFF11: // [NR11] Channel 1 Sound Length/Wave Pattern Duty register
         m_channel1Registers.soundLengthWavePatternDuty.raw = val;
-
-        // Fix the length counter value
-        m_channel1Registers.soundLengthWavePatternDuty.soundLengthData = ~m_channel1Registers.soundLengthWavePatternDuty.soundLengthData;
-        ++m_channel1Registers.soundLengthWavePatternDuty.soundLengthData;
-
-        // Update the generator pattern duty
-        updatePatternDuty();
-
-        // Update the length counter
-        if (m_channel1Registers.soundLengthWavePatternDuty.soundLengthData != 0) {
-            m_lengthCounter.setCountdown(m_channel1Registers.soundLengthWavePatternDuty.soundLengthData);
-        }
-        else {
-            m_lengthCounter.setCountdown(64);
-        }
+        commitNR11();
 
         break;
 
     case 0xFF12: // [NR12] Channel 1 Volume Envelope
         m_channel1Registers.volumeEnvelope.raw = val;
-
-        // Update the volume envelope
-        m_volumeEnvelope.setVolume(m_channel1Registers.volumeEnvelope.envelopeInitialVolume);
-        m_volumeEnvelope.setIncreasing(m_channel1Registers.volumeEnvelope.envelopeDirection);
-        m_volumeEnvelope.setPeriod(m_channel1Registers.volumeEnvelope.nbEnvelopeSweep);
+        commitNR12();
 
         break;
 
     case 0xFF13: // [NR13] Channel 1 Frequency Low
         m_channel1Registers.frequencyLow.raw = val;
-
-        // Update the generator frequency
-        updateFrequency();
+        commitNR13();
 
         break;
 
     case 0xFF14: // [NR14] Channel 1 Frequency High
         m_channel1Registers.frequencyHigh.raw = val;
-
-        // Update the generator frequency
-        updateFrequency();
-
-        // Update the length counter enabled state
-        m_lengthCounter.setEnabled(m_channel1Registers.frequencyHigh.counterConsecutiveSelection);
-
-        // Handle the trigger
-        if (m_channel1Registers.frequencyHigh.trigger) {
-            m_channel1Registers.frequencyHigh.trigger = 0;
-            doTrigger();
-        }
+        commitNR14();
 
         break;
 

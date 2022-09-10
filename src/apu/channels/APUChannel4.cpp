@@ -7,6 +7,59 @@ gbtest::APUChannel4::APUChannel4()
 
 }
 
+void gbtest::APUChannel4::commitNR41()
+{
+    // Fix the length counter value
+    uint8_t soundLength = ~m_channel4Registers.soundLength.soundLengthData;
+    ++soundLength;
+    soundLength &= 0x3F;
+
+    // Update the length counter
+    if (soundLength != 0) {
+        m_lengthCounter.setCountdown(soundLength);
+    }
+    else {
+        m_lengthCounter.setCountdown(64);
+    }
+}
+
+void gbtest::APUChannel4::commitNR42()
+{
+    // Update the volume envelope
+    m_volumeEnvelope.setVolume(m_channel4Registers.volumeEnvelope.envelopeInitialVolume);
+    m_volumeEnvelope.setIncreasing(m_channel4Registers.volumeEnvelope.envelopeDirection);
+    m_volumeEnvelope.setPeriod(m_channel4Registers.volumeEnvelope.nbEnvelopeSweep);
+}
+
+void gbtest::APUChannel4::commitNR43()
+{
+    // Update the noise generator
+    m_audioNoise.setDivideRatio(m_channel4Registers.polynomialCounter.dividingRatio);
+    m_audioNoise.setHalfWidth(m_channel4Registers.polynomialCounter.counterWidth);
+    m_audioNoise.setShiftClockFrequency(m_channel4Registers.polynomialCounter.shiftClockFrequency);
+}
+
+void gbtest::APUChannel4::commitNR44()
+{
+    // Update the length counter enabled state
+    m_lengthCounter.setEnabled(m_channel4Registers.counterConsecutiveAndInitial.counterConsecutiveSelection);
+
+    // Handle the trigger
+    if (m_channel4Registers.counterConsecutiveAndInitial.trigger) {
+        m_channel4Registers.counterConsecutiveAndInitial.trigger = 0;
+        doTrigger();
+    }
+}
+
+void gbtest::APUChannel4::commitRegisters()
+{
+    // Commit all the registers
+    commitNR41();
+    commitNR42();
+    commitNR43();
+    commitNR44();
+}
+
 gbtest::Channel4Registers& gbtest::APUChannel4::getRegisters()
 {
     return m_channel4Registers;
@@ -96,52 +149,25 @@ bool gbtest::APUChannel4::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
     switch (addr) {
     case 0xFF20: // [NR41] Channel 4 Sound Length
         m_channel4Registers.soundLength.raw = val;
-
-        // Fix the length counter value
-        m_channel4Registers.soundLength.soundLengthData = ~m_channel4Registers.soundLength.soundLengthData;
-        ++m_channel4Registers.soundLength.soundLengthData;
-
-        // Update the length counter
-        if (m_channel4Registers.soundLength.soundLengthData != 0) {
-            m_lengthCounter.setCountdown(m_channel4Registers.soundLength.soundLengthData);
-        }
-        else {
-            m_lengthCounter.setCountdown(64);
-        }
+        commitNR41();
 
         break;
 
     case 0xFF21: // [NR42] Channel 4 Volume Envelope
         m_channel4Registers.volumeEnvelope.raw = val;
-
-        // Update the volume envelope
-        m_volumeEnvelope.setVolume(m_channel4Registers.volumeEnvelope.envelopeInitialVolume);
-        m_volumeEnvelope.setIncreasing(m_channel4Registers.volumeEnvelope.envelopeDirection);
-        m_volumeEnvelope.setPeriod(m_channel4Registers.volumeEnvelope.nbEnvelopeSweep);
+        commitNR42();
 
         break;
 
     case 0xFF22: // [NR43] Channel 4 Polynomial Counter
         m_channel4Registers.polynomialCounter.raw = val;
-
-        // Update the noise generator
-        m_audioNoise.setDivideRatio(m_channel4Registers.polynomialCounter.dividingRatio);
-        m_audioNoise.setHalfWidth(m_channel4Registers.polynomialCounter.counterWidth);
-        m_audioNoise.setShiftClockFrequency(m_channel4Registers.polynomialCounter.shiftClockFrequency);
+        commitNR43();
 
         break;
 
     case 0xFF23: // [NR44] Channel 4 Counter/consecutive; Initial
         m_channel4Registers.counterConsecutiveAndInitial.raw = val;
-
-        // Update the length counter enabled state
-        m_lengthCounter.setEnabled(m_channel4Registers.counterConsecutiveAndInitial.counterConsecutiveSelection);
-
-        // Handle the trigger
-        if (m_channel4Registers.counterConsecutiveAndInitial.trigger) {
-            m_channel4Registers.counterConsecutiveAndInitial.trigger = 0;
-            doTrigger();
-        }
+        commitNR44();
 
         break;
 

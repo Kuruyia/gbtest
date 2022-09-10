@@ -17,6 +17,12 @@ public:
     APUChannel2();
     ~APUChannel2() override = default;
 
+    void commitNR21();
+    void commitNR22();
+    void commitNR23();
+    void commitNR24();
+    void commitRegisters();
+
     [[nodiscard]] Channel2Registers& getRegisters();
     [[nodiscard]] const Channel2Registers& getRegisters() const;
 
