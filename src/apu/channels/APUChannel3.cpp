@@ -75,6 +75,16 @@ const gbtest::Channel3Registers& gbtest::APUChannel3::getRegisters() const
     return m_channel3Registers;
 }
 
+gbtest::AudioWave::WavePatternData& gbtest::APUChannel3::getWavePatternData()
+{
+    return m_audioWave.getWavePatternData();
+}
+
+const gbtest::AudioWave::WavePatternData& gbtest::APUChannel3::getWavePatternData() const
+{
+    return m_audioWave.getWavePatternData();
+}
+
 void gbtest::APUChannel3::tickUnits(uint8_t unitsToTick, bool isDoubleSpeedTick)
 {
     // Tick the units

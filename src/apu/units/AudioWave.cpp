@@ -12,6 +12,16 @@ gbtest::AudioWave::AudioWave()
 
 }
 
+gbtest::AudioWave::WavePatternData& gbtest::AudioWave::getWavePatternData()
+{
+    return m_wavePatternData;
+}
+
+const gbtest::AudioWave::WavePatternData& gbtest::AudioWave::getWavePatternData() const
+{
+    return m_wavePatternData;
+}
+
 void gbtest::AudioWave::setEnabled(bool enabled)
 {
     m_enabled = enabled;

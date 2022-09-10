@@ -13,8 +13,14 @@ class AudioWave
         : public Tickable {
 
 public:
+    using WavePatternSample = uint8_t;
+    using WavePatternData = std::array<WavePatternSample, 16>;
+
     AudioWave();
     ~AudioWave() override = default;
+
+    [[nodiscard]] WavePatternData& getWavePatternData();
+    [[nodiscard]] const WavePatternData& getWavePatternData() const;
 
     void setEnabled(bool enabled);
     [[nodiscard]] bool isEnabled() const;
@@ -35,7 +41,7 @@ public:
     void tick(bool isDoubleSpeedTick) override;
 
 private:
-    std::array<uint8_t, 16> m_wavePatternData;
+    WavePatternData m_wavePatternData;
 
     uint8_t m_currentSampleIdx;
     float m_currentSample;

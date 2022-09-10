@@ -1,5 +1,9 @@
 #include "GameBoyStartupRegisters.h"
 
+#include <algorithm>
+#include <iterator>
+
+#include "../../apu/units/AudioWave.h"
 #include "../../exceptions/platform/UnsupportedRevisionException.h"
 
 gbtest::GameBoyStartupRegisters::GameBoyStartupRegisters(gbtest::GameBoyRevisionType revisionType)
@@ -185,11 +189,19 @@ void gbtest::GameBoyStartupRegisters::loadAPURegistersDMG(gbtest::APU& apu)
     channel4Registers.volumeEnvelope.raw = 0x00;
     channel4Registers.polynomialCounter.raw = 0x00;
     channel4Registers.counterConsecutiveAndInitial.raw = 0xBF;
+
+    // DMG - APU Wave RAM
+    AudioWave::WavePatternData& wavePatternData = apu.getChannel3().getWavePatternData();
+    static constexpr AudioWave::WavePatternSample startupSamples[] =
+            {0x84, 0x40, 0x43, 0xAA, 0x2D, 0x78, 0x92, 0x3C,
+             0x60, 0x59, 0x59, 0xB0, 0x34, 0xB8, 0x2E, 0xDA};
+
+    std::copy(std::begin(startupSamples), std::end(startupSamples), wavePatternData.begin());
 }
 
 void gbtest::GameBoyStartupRegisters::loadCPURegistersCGB(gbtest::LR35902Registers& regs)
 {
-    // DMG - CPU
+    // CGB - CPU
     regs.af = 0x1180;
     regs.bc = 0x0000;
     regs.de = 0xFF56;
@@ -200,13 +212,13 @@ void gbtest::GameBoyStartupRegisters::loadCPURegistersCGB(gbtest::LR35902Registe
 
 void gbtest::GameBoyStartupRegisters::loadDividerRegistersCGB(gbtest::Divider& divider)
 {
-    // DMG - Divider
+    // CGB - Divider
     divider.getRegister().value = 0xAB;
 }
 
 void gbtest::GameBoyStartupRegisters::loadTimerRegistersCGB(gbtest::Timer& timer)
 {
-    // DMG - Timer
+    // CGB - Timer
     timer.getTimerCounterRegister().raw = 0x00;
     timer.getTimerModuloRegister().raw = 0x00;
     timer.getTimerControlRegister().raw = 0xF8;
@@ -214,7 +226,7 @@ void gbtest::GameBoyStartupRegisters::loadTimerRegistersCGB(gbtest::Timer& timer
 
 void gbtest::GameBoyStartupRegisters::loadPPURegistersCGB(gbtest::PPU& ppu)
 {
-    // DMG - PPU
+    // CGB - PPU
     PPURegisters& ppuRegisters = ppu.getPpuRegisters();
 
     ppuRegisters.lcdControl.raw = 0x91;
@@ -233,14 +245,14 @@ void gbtest::GameBoyStartupRegisters::loadPPURegistersCGB(gbtest::PPU& ppu)
 
 void gbtest::GameBoyStartupRegisters::loadAPURegistersCGB(gbtest::APU& apu)
 {
-    // DMG - APU
+    // CGB - APU
     SoundControlRegisters& soundControlRegisters = apu.getSoundControlRegisters();
 
     soundControlRegisters.channelControl.raw = 0x77;
     soundControlRegisters.soundOutputTerminalSelection.raw = 0xF3;
     soundControlRegisters.soundOnOff.raw = 0xF1;
 
-    // DMG - APU Channel 1
+    // CGB - APU Channel 1
     Channel1Registers& channel1Registers = apu.getChannel1().getRegisters();
 
     channel1Registers.sweep.raw = 0x80;
@@ -249,7 +261,7 @@ void gbtest::GameBoyStartupRegisters::loadAPURegistersCGB(gbtest::APU& apu)
     channel1Registers.frequencyLow.raw = 0xFF;
     channel1Registers.frequencyHigh.raw = 0xBF;
 
-    // DMG - APU Channel 2
+    // CGB - APU Channel 2
     Channel2Registers& channel2Registers = apu.getChannel2().getRegisters();
 
     channel2Registers.soundLengthWavePatternDuty.raw = 0x3F;
@@ -257,7 +269,7 @@ void gbtest::GameBoyStartupRegisters::loadAPURegistersCGB(gbtest::APU& apu)
     channel2Registers.frequencyLow.raw = 0xFF;
     channel2Registers.frequencyHigh.raw = 0xBF;
 
-    // DMG - APU Channel 3
+    // CGB - APU Channel 3
     Channel3Registers& channel3Registers = apu.getChannel3().getRegisters();
 
     channel3Registers.soundOnOff.raw = 0x7F;
@@ -266,11 +278,19 @@ void gbtest::GameBoyStartupRegisters::loadAPURegistersCGB(gbtest::APU& apu)
     channel3Registers.frequencyLow.raw = 0xFF;
     channel3Registers.frequencyHigh.raw = 0xBF;
 
-    // DMG - APU Channel 4
+    // CGB - APU Channel 4
     Channel4Registers& channel4Registers = apu.getChannel4().getRegisters();
 
     channel4Registers.soundLength.raw = 0xFF;
     channel4Registers.volumeEnvelope.raw = 0x00;
     channel4Registers.polynomialCounter.raw = 0x00;
     channel4Registers.counterConsecutiveAndInitial.raw = 0xBF;
+
+    // CGB - APU Wave RAM
+    AudioWave::WavePatternData& wavePatternData = apu.getChannel3().getWavePatternData();
+
+    for (size_t i = 0; i < wavePatternData.size(); i += 2) {
+        wavePatternData.at(i) = 0x00;
+        wavePatternData.at(i + 1) = 0xFF;
+    }
 }
