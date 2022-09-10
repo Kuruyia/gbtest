@@ -102,6 +102,9 @@ void gbtest::APUChannel2::tickUnits(uint8_t unitsToTick, bool isDoubleSpeedTick)
     // Tick the units
     m_audioPulseWave.tick(isDoubleSpeedTick);
 
+    // Don't continue if there are no units to tick
+    if (unitsToTick & static_cast<uint8_t>(APUUnit::None)) { return; }
+
     if (unitsToTick & static_cast<uint8_t>(APUUnit::LengthCounter)) {
         m_lengthCounter.tick(isDoubleSpeedTick);
     }

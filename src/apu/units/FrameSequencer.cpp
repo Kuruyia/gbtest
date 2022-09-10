@@ -16,7 +16,7 @@ void gbtest::FrameSequencer::tick(bool isDoubleSpeedTick)
     --m_tickCountdown;
 
     // Don't tick units on this tick
-    m_unitsToTick = 0xFF;
+    m_unitsToTick = static_cast<uint8_t>(APUUnit::None);
 
     if (m_tickCountdown == 0) {
         // Reset the tick countdown

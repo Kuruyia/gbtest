@@ -9,6 +9,8 @@ gbtest::APUChannel::APUChannel()
 
 void gbtest::APUChannel::tickUnits(uint8_t unitsToTick, bool isDoubleSpeedTick)
 {
-    // Remember the ticked units
-    m_lastUnitsTicked = unitsToTick;
+    // Remember the ticked units if there are
+    if ((unitsToTick & static_cast<uint8_t>(APUUnit::None)) == 0x00) {
+        m_lastUnitsTicked = unitsToTick;
+    }
 }
