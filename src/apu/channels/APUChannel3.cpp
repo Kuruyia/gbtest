@@ -114,11 +114,16 @@ bool gbtest::APUChannel3::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
         m_channel3Registers.soundLength.raw = val;
 
         // Fix the length counter value
-        m_channel3Registers.soundLength.raw = ~m_channel3Registers.soundLength.raw;
-        ++m_channel3Registers.soundLength.raw;
+        m_channel3Registers.soundLength.soundLengthData = ~m_channel3Registers.soundLength.soundLengthData;
+        ++m_channel3Registers.soundLength.soundLengthData;
 
         // Update the length counter
-        m_lengthCounter.setCountdown(m_channel3Registers.soundLength.soundLengthData);
+        if (m_channel3Registers.soundLength.soundLengthData != 0) {
+            m_lengthCounter.setCountdown(m_channel3Registers.soundLength.soundLengthData);
+        }
+        else {
+            m_lengthCounter.setCountdown(256);
+        }
 
         break;
 

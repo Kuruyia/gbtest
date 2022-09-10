@@ -99,12 +99,12 @@ void updateWindowTitle(gbtest::GameBoy* gb)
 int main()
 {
     // Init the core emulator
-    std::unique_ptr<gbtest::GameBoy> gameboy = std::make_unique<gbtest::GameBoy>(gbtest::GameBoyRevisionType::CGB);
+    std::unique_ptr<gbtest::GameBoy> gameboy = std::make_unique<gbtest::GameBoy>(gbtest::GameBoyRevisionType::DMG);
     gameboy->init();
 
     // Load a ROM file
     auto cartridgeDataSource = std::make_unique<gbtest::InMemoryCartridgeDataSource>();
-    loadROM("cpu.bin", *(cartridgeDataSource.get()));
+    loadROM("dmgsnd_individual/02.bin", *(cartridgeDataSource.get()));
     gameboy->loadCartridgeFromDataSource(std::move(cartridgeDataSource));
 
     std::cout << "Loaded cartridge type: " << (unsigned) gameboy->getCartridge()->getMBCType() << std::endl;

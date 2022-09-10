@@ -105,7 +105,12 @@ bool gbtest::APUChannel2::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
         updatePatternDuty();
 
         // Update the length counter
-        m_lengthCounter.setCountdown(m_channel2Registers.soundLengthWavePatternDuty.soundLengthData);
+        if (m_channel2Registers.soundLengthWavePatternDuty.soundLengthData != 0) {
+            m_lengthCounter.setCountdown(m_channel2Registers.soundLengthWavePatternDuty.soundLengthData);
+        }
+        else {
+            m_lengthCounter.setCountdown(64);
+        }
 
         break;
 
