@@ -54,8 +54,9 @@ void gbtest::APUChannel3::commitNR34()
     // Check if the length counter must be ticked after enabling it
     bool tickLengthCounter = false;
 
-    if (!m_lengthCounter.isEnabled() && m_channel3Registers.frequencyHigh.counterConsecutiveSelection) {
-        // Disabled -> enabled
+    if (m_channel3Registers.frequencyHigh.counterConsecutiveSelection
+            && (!m_lengthCounter.isEnabled() || m_channel3Registers.frequencyHigh.trigger)) {
+        // Disabled -> enabled or trigger while enabled
         if (m_lastUnitsTicked & static_cast<uint8_t>(APUUnit::LengthCounter)) {
             tickLengthCounter = true;
         }
