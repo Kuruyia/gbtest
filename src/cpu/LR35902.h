@@ -37,8 +37,7 @@ public:
     [[nodiscard]] const uint8_t& getCyclesToWaste() const;
     [[nodiscard]] const unsigned& getTickCounter() const;
 
-    void tick() override;
-    void step();
+    void tick(bool isDoubleSpeedTick) override;
 
 private:
     uint8_t fetch8();
@@ -53,7 +52,7 @@ private:
 
     LR35902Registers m_registers;
 
-    uint8_t m_cyclesToWait;
+    uint16_t m_cyclesToWait;
     LR35902HaltState m_haltState;
     LR35902HaltBug m_haltBug;
 

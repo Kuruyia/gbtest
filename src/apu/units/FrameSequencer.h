@@ -15,7 +15,7 @@ public:
     FrameSequencer();
     ~FrameSequencer() override = default;
 
-    void tick() override;
+    void tick(bool isDoubleSpeedTick) override;
     [[nodiscard]] uint8_t getUnitsToTick() const;
 
 private:

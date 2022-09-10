@@ -20,9 +20,9 @@ public:
     [[nodiscard]] bool isFinished() const;
     [[nodiscard]] bool isFullyFinished() const;
 
-    virtual void executeMode() = 0;
+    virtual void executeMode(bool isDoubleSpeedTick) = 0;
 
-    void tick() override;
+    void tick(bool isDoubleSpeedTick) override;
 
 protected:
     bool m_cgbMode;

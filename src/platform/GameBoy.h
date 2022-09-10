@@ -6,6 +6,7 @@
 #include "bus/Bus.h"
 #include "revision/GameBoyRevision.h"
 #include "revision/GameBoyRevisionType.h"
+#include "CGBSpeedSwitchRegister.h"
 #include "GameBoyFrequencies.h"
 
 #include "../apu/APU.h"
@@ -75,6 +76,7 @@ private:
     std::unique_ptr<BaseCartridge> m_cartridge;
 
     GameBoyRevision m_revision;
+    CGBSpeedSwitchRegister m_speedSwitchRegister;
     bool m_running;
 
     void resetRegisters();
@@ -83,7 +85,7 @@ private:
     void registerBusProviders();
     void unregisterBusProviders();
 
-    void tickEmulator();
+    void tickEmulator(bool isDoubleSpeedTick);
 
 }; // class GameBoy
 

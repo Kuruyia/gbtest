@@ -32,7 +32,7 @@ public:
     void notifyLycRegisterChange();
     void notifyStatIntSourceChange();
 
-    void tick() override;
+    void tick(bool isDoubleSpeedTick) override;
 
 private:
     OAMSearchPPUMode m_oamSearchPpuMode;

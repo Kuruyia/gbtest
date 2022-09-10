@@ -58,7 +58,7 @@ void gbtest::AudioNoise::doTrigger()
     m_tickCountdown = (getDivisor() << m_shiftClockFrequency);
 }
 
-void gbtest::AudioNoise::tick()
+void gbtest::AudioNoise::tick(bool isDoubleSpeedTick)
 {
     // Decrease the tick countdown
     --m_tickCountdown;

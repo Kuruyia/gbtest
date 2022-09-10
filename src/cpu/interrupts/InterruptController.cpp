@@ -81,7 +81,7 @@ uint8_t gbtest::InterruptController::getPendingInterrupts() const
     return (m_interruptFlag & m_interruptEnable & 0x1F);
 }
 
-void gbtest::InterruptController::tick()
+void gbtest::InterruptController::tick(bool isDoubleSpeedTick)
 {
     // Detect which interrupt lines became high at this tick, and set the Interrupt Flag register accordingly
     uint8_t interruptLines = m_bus.getInterruptLines();

@@ -44,6 +44,8 @@ set(SOURCE_FILES
         cartridge/CartridgeMBC1.h
         cartridge/CartridgeMBC3.cpp
         cartridge/CartridgeMBC3.h
+        cartridge/CartridgeMBC5.cpp
+        cartridge/CartridgeMBC5.h
         cpu/interrupts/InterruptController.cpp
         cpu/interrupts/InterruptController.h
         cpu/interrupts/InterruptType.h
@@ -57,6 +59,8 @@ set(SOURCE_FILES
         exceptions/bus/BusNoHandlerException.h
         exceptions/cartridge/UnsupportedCartridgeTypeException.cpp
         exceptions/cartridge/UnsupportedCartridgeTypeException.h
+        exceptions/cpu/StopInstrGlitchException.cpp
+        exceptions/cpu/StopInstrGlitchException.h
         exceptions/platform/UnsupportedRevisionException.cpp
         exceptions/platform/UnsupportedRevisionException.h
         exceptions/ppu/UnknownPPUModeException.cpp
@@ -73,6 +77,8 @@ set(SOURCE_FILES
         platform/revision/GameBoyRevisionType.h
         platform/revision/GameBoyStartupRegisters.cpp
         platform/revision/GameBoyStartupRegisters.h
+        platform/CGBSpeedSwitchRegister.cpp
+        platform/CGBSpeedSwitchRegister.h
         platform/GameBoy.cpp
         platform/GameBoy.h
         platform/GameBoyFrequencies.h

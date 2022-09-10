@@ -66,7 +66,7 @@ void gbtest::AudioWave::doTrigger()
     m_tickCountdown = ((2048 - m_frequency) * 2);
 }
 
-void gbtest::AudioWave::tick()
+void gbtest::AudioWave::tick(bool isDoubleSpeedTick)
 {
     // Don't do anything if the channel is disabled
     if (!m_enabled) {

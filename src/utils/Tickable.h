@@ -8,7 +8,7 @@ class Tickable {
 public:
     virtual ~Tickable() = default;
 
-    virtual void tick() = 0;
+    virtual void tick(bool isDoubleSpeedTick) = 0;
 
 }; // class Tickable
 

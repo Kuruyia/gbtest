@@ -27,7 +27,7 @@ public:
 
     void restart() override;
 
-    void executeMode() override;
+    void executeMode(bool isDoubleSpeedTick) override;
 
 private:
     SpriteBuffer m_spriteBuffer;

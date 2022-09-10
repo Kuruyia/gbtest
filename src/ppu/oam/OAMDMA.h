@@ -19,7 +19,7 @@ public:
     void startTransfer(uint8_t sourceAddressHigh);
     [[nodiscard]] bool isTransferring() const;
 
-    void tick() override;
+    void tick(bool isDoubleSpeedTick) override;
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;

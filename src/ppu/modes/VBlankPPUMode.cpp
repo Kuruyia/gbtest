@@ -18,7 +18,7 @@ void gbtest::VBlankPPUMode::restart()
     m_blanking = true;
 }
 
-void gbtest::VBlankPPUMode::executeMode()
+void gbtest::VBlankPPUMode::executeMode(bool isDoubleSpeedTick)
 {
     if (m_blanking) {
         // Wait for a complete line worth of cycles

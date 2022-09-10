@@ -5,6 +5,7 @@
 #include "../cartridge/CartridgeNoMBC.h"
 #include "../cartridge/CartridgeMBC1.h"
 #include "../cartridge/CartridgeMBC3.h"
+#include "../cartridge/CartridgeMBC5.h"
 #include "../exceptions/cartridge/UnsupportedCartridgeTypeException.h"
 #include "revision/GameBoyStartupRegisters.h"
 
@@ -70,7 +71,11 @@ void gbtest::GameBoy::update(float secondsToEmulate)
 
     // Tick the emulator
     for (unsigned i = 0; i < ticksToEmulate; ++i) {
-        tickEmulator();
+        tickEmulator(false);
+
+        if (m_speedSwitchRegister.isDoubleSpeed()) {
+            tickEmulator(true);
+        }
     }
 }
 
@@ -82,7 +87,11 @@ void gbtest::GameBoy::tick(bool force)
     }
 
     // Tick the emulator
-    tickEmulator();
+    tickEmulator(false);
+
+    if (m_speedSwitchRegister.isDoubleSpeed()) {
+        tickEmulator(true);
+    }
 }
 
 void gbtest::GameBoy::start()
@@ -212,6 +221,16 @@ void gbtest::GameBoy::loadCartridgeFromDataSource(std::unique_ptr<gbtest::Cartri
         loadCartridge(std::make_unique<gbtest::CartridgeMBC3>(std::move(dataSource)));
         break;
 
+    case CartridgeHeaderCartridgeType::MBC5:
+    case CartridgeHeaderCartridgeType::MBC5AndRAM:
+    case CartridgeHeaderCartridgeType::MBC5AndRAMAndBattery:
+    case CartridgeHeaderCartridgeType::MBC5AndRumble:
+    case CartridgeHeaderCartridgeType::MBC5AndRumbleAndRAM:
+    case CartridgeHeaderCartridgeType::MBC5AndRumbleAndRAMAndBattery:
+        // MBC5
+        loadCartridge(std::make_unique<gbtest::CartridgeMBC5>(std::move(dataSource)));
+        break;
+
     default:
         // Unsupported cartridge type
         throw gbtest::UnsupportedCartridgeTypeException(mbcType);
@@ -244,12 +263,17 @@ void gbtest::GameBoy::resetRegisters()
     startupRegisters.loadTimerRegisters(m_timer);
     startupRegisters.loadPPURegisters(m_ppu);
     startupRegisters.loadAPURegisters(m_apu);
+
+    // Speed switch (CGB mode)
+    m_speedSwitchRegister.setPrepareSpeedSwitch(false);
+    m_speedSwitchRegister.setDoubleSpeed(false);
 }
 
 void gbtest::GameBoy::updateCGBMode()
 {
     // Update the CGB mode for the peripherals
     m_ppu.setCGBMode(m_revision.isCGB());
+    m_speedSwitchRegister.setCGBMode(m_revision.isCGB());
 }
 
 void gbtest::GameBoy::registerBusProviders()
@@ -261,6 +285,7 @@ void gbtest::GameBoy::registerBusProviders()
     m_bus.registerBusProvider(&m_apu);
     m_bus.registerBusProvider(&m_divider);
     m_bus.registerBusProvider(&m_timer);
+    m_bus.registerBusProvider(&m_speedSwitchRegister);
     m_bus.registerBusProvider(&m_wholeMemory);
 }
 
@@ -271,6 +296,7 @@ void gbtest::GameBoy::unregisterBusProviders()
     }
 
     m_bus.unregisterBusProvider(&m_wholeMemory);
+    m_bus.unregisterBusProvider(&m_speedSwitchRegister);
     m_bus.unregisterBusProvider(&m_timer);
     m_bus.unregisterBusProvider(&m_divider);
     m_bus.unregisterBusProvider(&m_apu);
@@ -279,17 +305,17 @@ void gbtest::GameBoy::unregisterBusProviders()
     m_bus.unregisterBusProvider(&(m_cpu.getInterruptController()));
 }
 
-void gbtest::GameBoy::tickEmulator()
+void gbtest::GameBoy::tickEmulator(bool isDoubleSpeedTick)
 {
     // Tick everything
-    m_timer.tick();
-    m_divider.tick();
-    m_joypad.tick();
-    m_cpu.tick();
-    m_ppu.tick();
-    m_apu.tick();
+    m_timer.tick(isDoubleSpeedTick);
+    m_divider.tick(isDoubleSpeedTick);
+    m_joypad.tick(isDoubleSpeedTick);
+    m_cpu.tick(isDoubleSpeedTick);
+    m_ppu.tick(isDoubleSpeedTick);
+    m_apu.tick(isDoubleSpeedTick);
 
     if (m_cartridge) {
-        m_cartridge->tick();
+        m_cartridge->tick(isDoubleSpeedTick);
     }
 }

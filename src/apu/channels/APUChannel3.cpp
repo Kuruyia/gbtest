@@ -17,13 +17,13 @@ const gbtest::Channel3Registers& gbtest::APUChannel3::getRegisters() const
     return m_channel3Registers;
 }
 
-void gbtest::APUChannel3::tickUnits(uint8_t unitsToTick)
+void gbtest::APUChannel3::tickUnits(uint8_t unitsToTick, bool isDoubleSpeedTick)
 {
     // Tick the units
-    m_audioWave.tick();
+    m_audioWave.tick(isDoubleSpeedTick);
 
     if (unitsToTick & static_cast<uint8_t>(APUUnit::LengthCounter)) {
-        m_lengthCounter.tick();
+        m_lengthCounter.tick(isDoubleSpeedTick);
     }
 }
 

@@ -150,10 +150,10 @@ void gbtest::SpriteFetcher::executeState()
     }
 }
 
-void gbtest::SpriteFetcher::tick()
+void gbtest::SpriteFetcher::tick(bool isDoubleSpeedTick)
 {
     // Only tick if we're fetching a sprite
     if (m_fetchingSprite) {
-        Fetcher::tick();
+        Fetcher::tick(isDoubleSpeedTick);
     }
 }

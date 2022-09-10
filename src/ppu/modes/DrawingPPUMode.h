@@ -34,7 +34,7 @@ public:
 
     void restart() override;
 
-    void executeMode() override;
+    void executeMode(bool isDoubleSpeedTick) override;
     void setCGBMode(bool cgbMode) override;
 
 private:

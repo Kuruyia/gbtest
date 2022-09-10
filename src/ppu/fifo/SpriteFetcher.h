@@ -23,7 +23,7 @@ public:
 
     void executeState() override;
 
-    void tick() override;
+    void tick(bool isDoubleSpeedTick) override;
 
 private:
     bool m_fetchingSprite;

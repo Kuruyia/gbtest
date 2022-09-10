@@ -35,7 +35,7 @@ void gbtest::OAMSearchPPUMode::restart()
     m_oamIdx = 0;
 }
 
-void gbtest::OAMSearchPPUMode::executeMode()
+void gbtest::OAMSearchPPUMode::executeMode(bool isDoubleSpeedTick)
 {
     // Check the current sprite if we still have room
     if (m_spriteBuffer.getSize() < 10) {

@@ -99,7 +99,7 @@ bool gbtest::Timer::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusRequ
     return false;
 }
 
-void gbtest::Timer::tick()
+void gbtest::Timer::tick(bool isDoubleSpeedTick)
 {
     // Disable the interrupt line
     m_bus.setInterruptLineHigh(InterruptType::Timer, false);

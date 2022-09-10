@@ -25,7 +25,7 @@ public:
 
     void doTrigger();
 
-    void tick() override;
+    void tick(bool isDoubleSpeedTick) override;
 
 private:
     const uint16_t m_countdownReloadValue;

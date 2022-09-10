@@ -313,13 +313,16 @@ bool gbtest::PPU::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusReques
     return false;
 }
 
-void gbtest::PPU::tick()
+void gbtest::PPU::tick(bool isDoubleSpeedTick)
 {
     // Tick the OAM DMA engine
-    m_oamDma.tick();
+    m_oamDma.tick(isDoubleSpeedTick);
 
     // Don't continue if the PPU is stopped
     if (m_ppuRegisters.lcdControl.lcdAndPpuEnable == 0) { return; }
 
-    m_modeManager.tick();
+    // Skip double speed ticks
+    if (isDoubleSpeedTick) { return; }
+
+    m_modeManager.tick(isDoubleSpeedTick);
 }

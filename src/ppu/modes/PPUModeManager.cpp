@@ -62,11 +62,11 @@ void gbtest::PPUModeManager::notifyStatIntSourceChange()
     updateStatInterrupt();
 }
 
-void gbtest::PPUModeManager::tick()
+void gbtest::PPUModeManager::tick(bool isDoubleSpeedTick)
 {
     // Tick the current instance
     PPUMode& currentModeInstance = getCurrentModeInstance();
-    currentModeInstance.tick();
+    currentModeInstance.tick(isDoubleSpeedTick);
 
     // Start the next mode if the current one finished
     if (currentModeInstance.isFullyFinished()) {

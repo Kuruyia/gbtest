@@ -19,7 +19,7 @@ public:
     [[nodiscard]] Channel3Registers& getRegisters();
     [[nodiscard]] const Channel3Registers& getRegisters() const;
 
-    void tickUnits(uint8_t unitsToTick) override;
+    void tickUnits(uint8_t unitsToTick, bool isDoubleSpeedTick) override;
 
     [[nodiscard]] float sample() const override;
 

@@ -32,7 +32,7 @@ public:
 
     void doTrigger();
 
-    void tick() override;
+    void tick(bool isDoubleSpeedTick) override;
 
 private:
     std::array<uint8_t, 16> m_wavePatternData;

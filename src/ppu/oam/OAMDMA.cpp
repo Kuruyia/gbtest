@@ -32,7 +32,7 @@ bool gbtest::OAMDMA::isTransferring() const
     return m_transferring;
 }
 
-void gbtest::OAMDMA::tick()
+void gbtest::OAMDMA::tick(bool isDoubleSpeedTick)
 {
     // Only proceed if a transfer is ongoing
     if (!m_transferring) { return; }

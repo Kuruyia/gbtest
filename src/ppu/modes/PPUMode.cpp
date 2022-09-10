@@ -33,11 +33,11 @@ bool gbtest::PPUMode::isFullyFinished() const
     return m_finished && m_cyclesToWait == 0;
 }
 
-void gbtest::PPUMode::tick()
+void gbtest::PPUMode::tick(bool isDoubleSpeedTick)
 {
     if (m_cyclesToWait == 0 && !m_finished) {
         // Execute a step of the mode
-        executeMode();
+        executeMode(isDoubleSpeedTick);
     }
 
     if (m_cyclesToWait > 0) {

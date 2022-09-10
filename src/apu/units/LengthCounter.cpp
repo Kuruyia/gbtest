@@ -50,7 +50,7 @@ void gbtest::LengthCounter::doTrigger()
     m_channelDisabled = false;
 }
 
-void gbtest::LengthCounter::tick()
+void gbtest::LengthCounter::tick(bool isDoubleSpeedTick)
 {
     // Decrease the countdown if necessary
     if (m_enabled && m_countdown > 0) {

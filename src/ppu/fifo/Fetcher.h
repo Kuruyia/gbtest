@@ -30,7 +30,7 @@ public:
 
     virtual void executeState() = 0;
 
-    void tick() override;
+    void tick(bool isDoubleSpeedTick) override;
 
 protected:
     static uint8_t getPixelFromTileData(uint16_t tileData, uint8_t bitNb, bool xFlipped);

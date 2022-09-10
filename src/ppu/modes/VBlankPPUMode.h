@@ -19,7 +19,7 @@ public:
 
     void restart() override;
 
-    void executeMode() override;
+    void executeMode(bool isDoubleSpeedTick) override;
 
 private:
     bool m_blanking;

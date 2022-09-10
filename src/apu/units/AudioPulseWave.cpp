@@ -41,7 +41,7 @@ void gbtest::AudioPulseWave::doTrigger()
     m_tickCountdown = ((2048 - m_frequency) * 4);
 }
 
-void gbtest::AudioPulseWave::tick()
+void gbtest::AudioPulseWave::tick(bool isDoubleSpeedTick)
 {
     // Decrease the tick countdown
     --m_tickCountdown;

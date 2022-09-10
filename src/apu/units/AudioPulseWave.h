@@ -26,7 +26,7 @@ public:
 
     void doTrigger();
 
-    void tick() override;
+    void tick(bool isDoubleSpeedTick) override;
 
 private:
     uint16_t m_frequency;

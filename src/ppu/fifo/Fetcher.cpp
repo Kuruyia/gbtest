@@ -48,7 +48,7 @@ void gbtest::Fetcher::beginFrame()
     beginScanline();
 }
 
-void gbtest::Fetcher::tick()
+void gbtest::Fetcher::tick(bool isDoubleSpeedTick)
 {
     // Don't do anything if the fetcher is paused
     if (m_paused) { return; }

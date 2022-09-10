@@ -5,6 +5,8 @@
 
 #include "LR35902.h"
 
+#include "../exceptions/cpu/StopInstrGlitchException.h"
+
 gbtest::LR35902::LR35902(Bus& bus)
         : m_bus(bus)
         , m_opcodeLookup(
@@ -122,10 +124,16 @@ const unsigned& gbtest::LR35902::getTickCounter() const
     return m_tickCounter;
 }
 
-void gbtest::LR35902::tick()
+void gbtest::LR35902::tick(bool isDoubleSpeedTick)
 {
     // Tick the interrupt controller
-    m_interruptController.tick();
+    m_interruptController.tick(isDoubleSpeedTick);
+
+    if (m_haltBug == LR35902HaltBug::SpeedSwitchBug && m_haltState == LR35902HaltState::Halted && m_cyclesToWait == 0) {
+        // Exit automatically the halted state
+        m_haltState = LR35902HaltState::Running;
+        m_haltBug = LR35902HaltBug::NoBug;
+    }
 
     if (m_cyclesToWait == 0) {
         // Handle interrupts before fetching the instruction
@@ -155,18 +163,6 @@ void gbtest::LR35902::tick()
     if (m_cyclesToWait > 0) {
         --m_cyclesToWait;
     }
-}
-
-void gbtest::LR35902::step()
-{
-    if (m_cyclesToWait > 0) {
-        // Simulate the waste of all cycles
-        m_tickCounter += m_cyclesToWait - 1;
-        m_cyclesToWait += 0;
-    }
-
-    // Execute the instruction
-    tick();
 }
 
 uint8_t gbtest::LR35902::fetch8()
@@ -384,7 +380,7 @@ void gbtest::LR35902::opcode10h()
     // Is a button being held and selected in JOYP?
     const uint8_t joyp = m_bus.read(0xFF00, BusRequestSource::CPU);
 
-    if (joyp & 0x0F) {
+    if ((~joyp) & 0x0F) {
         // Yes
         // Is an interrupt pending?
         if (pendingInterrupts != 0x00) {
@@ -396,7 +392,7 @@ void gbtest::LR35902::opcode10h()
         }
         else {
             // No
-            // STOP is a 2-byte opcode,
+            // STOP is a 2-byte opcode
             ++m_registers.pc;
 
             // HALT mode is entered
@@ -409,8 +405,8 @@ void gbtest::LR35902::opcode10h()
 
     // No
     // Was a speed switch requested via KEY1?
-    // TODO: Check that
-    bool speedSwitchRequested = false;
+    uint8_t key1Value = m_bus.read(0xFF4D, BusRequestSource::CPU);
+    bool speedSwitchRequested = ((key1Value & 0x01) == 0x01);
 
     if (!speedSwitchRequested) {
         // No
@@ -418,7 +414,7 @@ void gbtest::LR35902::opcode10h()
         if (pendingInterrupts != 0x00) {
             // Yes
             // STOP is a 1-byte opcode,
-            // STOP mode is entered,
+            // STOP mode is entered
             m_haltState = LR35902HaltState::Stopped;
 
             // DIV is reset
@@ -442,9 +438,44 @@ void gbtest::LR35902::opcode10h()
     }
 
     // Yes
-    // TODO: Do the rest
+    // Is an interrupt pending?
+    if (pendingInterrupts != 0x00) {
+        // Yes
+        // Is IME enabled?
+        if (m_interruptController.isInterruptMasterEnabled()) {
+            // Yes
+            // The CPU glitches non-deterministically
+            throw StopInstrGlitchException();
+        }
+        else {
+            // No
+            // STOP is a 1-byte opcode,
+            // Mode doesn't change,
+            // DIV is reset
+            m_bus.write(0xFF04, 0x00, BusRequestSource::CPU);
 
-    m_cyclesToWait += 4;
+            // CPU speed changes
+            m_bus.write(0xFF4D, 0x00, BusRequestSource::CPUSpeedSwitch);
+
+            return;
+        }
+    }
+
+    // No
+    // STOP is a 2-byte opcode
+    ++m_registers.pc;
+
+    // HALT mode is entered
+    m_haltState = LR35902HaltState::Halted;
+
+    // DIV is reset
+    m_bus.write(0xFF04, 0x00, BusRequestSource::CPU);
+
+    // CPU speed changes
+    m_bus.write(0xFF4D, 0x00, BusRequestSource::CPUSpeedSwitch);
+
+    m_haltBug = LR35902HaltBug::SpeedSwitchBug;
+    m_cyclesToWait = 8200;
 }
 
 // LD DE, d16

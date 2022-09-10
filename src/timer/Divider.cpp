@@ -54,7 +54,7 @@ bool gbtest::Divider::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusRe
     return false;
 }
 
-void gbtest::Divider::tick()
+void gbtest::Divider::tick(bool isDoubleSpeedTick)
 {
     // Don't do anything if the CPU is stopped
     if (m_haltState == LR35902HaltState::Stopped) {

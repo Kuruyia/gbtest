@@ -52,7 +52,7 @@ void gbtest::VolumeEnvelope::doTrigger()
     m_countdown = m_period;
 }
 
-void gbtest::VolumeEnvelope::tick()
+void gbtest::VolumeEnvelope::tick(bool isDoubleSpeedTick)
 {
     // Decrease the countdown
     --m_countdown;

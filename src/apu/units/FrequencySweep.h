@@ -30,7 +30,7 @@ public:
 
     void doTrigger();
 
-    void tick() override;
+    void tick(bool isDoubleSpeedTick) override;
 
 private:
     AudioPulseWave& m_audioPulseWave;

@@ -29,7 +29,7 @@ public:
 
     void doTrigger();
 
-    void tick() override;
+    void tick(bool isDoubleSpeedTick) override;
 
 private:
     uint8_t m_divideRatio;

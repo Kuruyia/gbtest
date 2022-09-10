@@ -17,17 +17,17 @@ const gbtest::Channel4Registers& gbtest::APUChannel4::getRegisters() const
     return m_channel4Registers;
 }
 
-void gbtest::APUChannel4::tickUnits(uint8_t unitsToTick)
+void gbtest::APUChannel4::tickUnits(uint8_t unitsToTick, bool isDoubleSpeedTick)
 {
     // Tick the units
-    m_audioNoise.tick();
+    m_audioNoise.tick(isDoubleSpeedTick);
 
     if (unitsToTick & static_cast<uint8_t>(APUUnit::LengthCounter)) {
-        m_lengthCounter.tick();
+        m_lengthCounter.tick(isDoubleSpeedTick);
     }
 
     if (unitsToTick & static_cast<uint8_t>(APUUnit::VolumeEnvelope)) {
-        m_volumeEnvelope.tick();
+        m_volumeEnvelope.tick(isDoubleSpeedTick);
     }
 }
 

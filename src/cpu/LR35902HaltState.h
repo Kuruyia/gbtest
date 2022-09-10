@@ -10,9 +10,10 @@ enum class LR35902HaltState {
 }; // enum class LR35902HaltState
 
 enum class LR35902HaltBug {
-    NoBug,      // No halt bug is happening
-    RegularBug, // The next fetch will not increment the PC register
-    EIBug       // The "halt" instruction will be executed twice
+    NoBug,          // No halt bug is happening
+    RegularBug,     // The next fetch will not increment the PC register
+    EIBug,          // The "halt" instruction will be executed twice
+    SpeedSwitchBug, // The halted state will be exited automatically after a speed switch (CGB mode)
 }; // enum class LR35902HaltBug
 
 } // namespace gbtest

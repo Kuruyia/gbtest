@@ -10,7 +10,7 @@ gbtest::FrameSequencer::FrameSequencer()
 
 }
 
-void gbtest::FrameSequencer::tick()
+void gbtest::FrameSequencer::tick(bool isDoubleSpeedTick)
 {
     // Decrease the tick countdown
     --m_tickCountdown;

@@ -145,9 +145,13 @@ bool gbtest::Joypad::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSour
         // Return direction buttons state
         val |= (m_joypadState.raw & 0x0F);
     }
-    else {
+    else if (m_selectedJoypadButtons == SelectedJoypadButtons::Joypad_Action) {
         // Return action buttons state
         val |= (m_joypadState.raw >> 4);
+    }
+    else {
+        // Return no button pressed
+        val = 0xFF;
     }
 
     return true;
@@ -169,6 +173,10 @@ bool gbtest::Joypad::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSour
         // Bit 5 == 0; Action buttons selected
         m_selectedJoypadButtons = SelectedJoypadButtons::Joypad_Action;
     }
+    else {
+        // No buttons selected
+        m_selectedJoypadButtons = SelectedJoypadButtons::Joypad_None;
+    }
 
     return true;
 }
@@ -185,7 +193,7 @@ bool gbtest::Joypad::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusReq
     return false;
 }
 
-void gbtest::Joypad::tick()
+void gbtest::Joypad::tick(bool isDoubleSpeedTick)
 {
     // Check if we have to request an interrupt
     if (m_directionButtonWasPressed) {

@@ -71,10 +71,10 @@ void gbtest::DrawingPPUMode::restart()
     m_spritePixelFifo = {};
 }
 
-void gbtest::DrawingPPUMode::executeMode()
+void gbtest::DrawingPPUMode::executeMode(bool isDoubleSpeedTick)
 {
     // Tick the fetchers
-    m_spriteFetcher.tick();
+    m_spriteFetcher.tick(isDoubleSpeedTick);
 
     // Check for window and sprite
     if (!m_spriteFetcher.isFetchingSprite()) {
@@ -90,7 +90,7 @@ void gbtest::DrawingPPUMode::executeMode()
 
     // Only do the rest if we're not suspended due to sprite fetching
     if (!m_spriteFetcher.isFetchingSprite()) {
-        m_backgroundFetcher.tick();
+        m_backgroundFetcher.tick(isDoubleSpeedTick);
 
         // Try to draw a pixel
         drawPixel();

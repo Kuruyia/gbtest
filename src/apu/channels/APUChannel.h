@@ -16,7 +16,7 @@ public:
     APUChannel() = default;
     ~APUChannel() override = default;
 
-    virtual void tickUnits(uint8_t unitsToTick) = 0;
+    virtual void tickUnits(uint8_t unitsToTick, bool isDoubleSpeedTick) = 0;
 
     [[nodiscard]] virtual float sample() const = 0;
 

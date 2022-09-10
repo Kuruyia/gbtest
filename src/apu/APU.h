@@ -53,7 +53,7 @@ public:
     [[nodiscard]] APUChannel4& getChannel4();
     [[nodiscard]] const APUChannel4& getChannel4() const;
 
-    void tick() override;
+    void tick(bool isDoubleSpeedTick) override;
 
     bool busRead(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWrite(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
