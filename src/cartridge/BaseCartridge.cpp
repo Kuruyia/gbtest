@@ -10,7 +10,7 @@ gbtest::BaseCartridge::BaseCartridge(std::unique_ptr<CartridgeDataSource> cartri
     parseHeader();
 }
 
-void gbtest::BaseCartridge::tick()
+void gbtest::BaseCartridge::tick(bool isDoubleSpeedTick)
 {
     // Don't do anything
 }

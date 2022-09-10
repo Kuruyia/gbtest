@@ -15,7 +15,7 @@ public:
     CartridgeRTCPeripheral();
     ~CartridgeRTCPeripheral() override = default;
 
-    void tick() override;
+    void tick(bool isDoubleSpeedTick) override;
 
     void latch();
 

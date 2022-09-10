@@ -14,7 +14,7 @@ gbtest::CartridgeMBC1::CartridgeMBC1(std::unique_ptr<CartridgeDataSource> cartri
 bool gbtest::CartridgeMBC1::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequestSource requestSource) const
 {
     // Cartridge (MBC1) is in memory area from 0000h to 7FFFh and A000h to BFFFh
-    if ((addr > 0x7FFF) && (addr < 0xA000 || addr > 0xBFFF)) {
+    if ((addr > 0x7FFF && addr < 0xA000) || addr > 0xBFFF) {
         return false;
     }
 
@@ -51,7 +51,7 @@ bool gbtest::CartridgeMBC1::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequ
 bool gbtest::CartridgeMBC1::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource requestSource)
 {
     // Cartridge (MBC1) is in memory area from 0000h to 7FFFh and A000h to BFFFh
-    if ((addr > 0x7FFF) && (addr < 0xA000 || addr > 0xBFFF)) {
+    if ((addr > 0x7FFF && addr < 0xA000) || addr > 0xBFFF) {
         return false;
     }
 

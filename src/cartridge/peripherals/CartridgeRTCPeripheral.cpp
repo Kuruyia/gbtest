@@ -10,7 +10,7 @@ gbtest::CartridgeRTCPeripheral::CartridgeRTCPeripheral()
 
 }
 
-void gbtest::CartridgeRTCPeripheral::tick()
+void gbtest::CartridgeRTCPeripheral::tick(bool isDoubleSpeedTick)
 {
     // Don't do anything if the RTC is halted
     if (m_registers.isHalted()) {

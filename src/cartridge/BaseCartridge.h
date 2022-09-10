@@ -18,7 +18,7 @@ public:
     explicit BaseCartridge(std::unique_ptr<CartridgeDataSource> cartridgeDataSource);
     ~BaseCartridge() override = default;
 
-    void tick() override;
+    void tick(bool isDoubleSpeedTick) override;
 
     [[nodiscard]] const CartridgeHeaderData& getHeaderData() const;
 

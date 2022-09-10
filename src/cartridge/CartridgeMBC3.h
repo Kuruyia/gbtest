@@ -23,7 +23,7 @@ public:
     bool busReadOverride(uint16_t addr, uint8_t& val, BusRequestSource requestSource) const override;
     bool busWriteOverride(uint16_t addr, uint8_t val, BusRequestSource requestSource) override;
 
-    void tick() override;
+    void tick(bool isDoubleSpeedTick) override;
 
 private:
     std::array<uint8_t, 0x8000> m_ram;

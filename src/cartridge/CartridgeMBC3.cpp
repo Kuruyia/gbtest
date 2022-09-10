@@ -62,7 +62,7 @@ bool gbtest::CartridgeMBC3::busRead(uint16_t addr, uint8_t& val, gbtest::BusRequ
 bool gbtest::CartridgeMBC3::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource requestSource)
 {
     // Cartridge (MBC3) is in memory area from 0000h to 7FFFh and A000h to BFFFh
-    if ((addr > 0x7FFF) && (addr < 0xA000 || addr > 0xBFFF)) {
+    if ((addr > 0x7FFF && addr < 0xA000) || addr > 0xBFFF) {
         return false;
     }
 
@@ -144,11 +144,11 @@ bool gbtest::CartridgeMBC3::busWriteOverride(uint16_t addr, uint8_t val, gbtest:
     return false;
 }
 
-void gbtest::CartridgeMBC3::tick()
+void gbtest::CartridgeMBC3::tick(bool isDoubleSpeedTick)
 {
     // Call the base class function
-    BaseCartridge::tick();
+    BaseCartridge::tick(isDoubleSpeedTick);
 
     // Tick the RTC
-    m_rtcPeripheral.tick();
+    m_rtcPeripheral.tick(isDoubleSpeedTick);
 }
