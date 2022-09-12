@@ -87,7 +87,7 @@ void gbtest::FrequencySweep::doTrigger()
     // Update the shadow frequency
     m_shadowFrequency = m_audioPulseWave.getFrequency();
 
-    // Reset the counter
+    // Reset the countdown with the effective period
     m_tickCountdown = m_effectivePeriod;
 
     // Reset the negate mode calculation flag
@@ -113,14 +113,14 @@ void gbtest::FrequencySweep::tick(bool isDoubleSpeedTick)
         return;
     }
 
-    // Increase and check the counter
+    // Decrease and check the countdown
     --m_tickCountdown;
 
     if (m_tickCountdown > 0) {
         return;
     }
 
-    // Reset the counter
+    // Reset the countdown with the effective period
     m_tickCountdown = m_effectivePeriod;
 
     // Don't continue if the intended period is 0

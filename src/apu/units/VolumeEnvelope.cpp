@@ -5,7 +5,8 @@ gbtest::VolumeEnvelope::VolumeEnvelope()
         , m_increasing(true)
         , m_period(0)
         , m_currentVolume(0)
-        , m_countdown(0)
+        , m_currentIncreasing(true)
+        , m_tickCountdown(0)
 {
 
 }
@@ -30,9 +31,19 @@ bool gbtest::VolumeEnvelope::isIncreasing() const
     return m_increasing;
 }
 
+bool gbtest::VolumeEnvelope::isCurrentlyIncreasing() const
+{
+    return m_currentIncreasing;
+}
+
 void gbtest::VolumeEnvelope::setPeriod(uint8_t period)
 {
     m_period = period;
+
+    // Prevent problems on next tick
+    if (m_tickCountdown == 0) {
+        ++m_tickCountdown;
+    }
 }
 
 uint8_t gbtest::VolumeEnvelope::getPeriod() const
@@ -49,26 +60,27 @@ void gbtest::VolumeEnvelope::doTrigger()
 {
     // Reload the current volume and the countdown
     m_currentVolume = m_volume;
-    m_countdown = m_period;
+    m_currentIncreasing = m_increasing;
+    m_tickCountdown = m_period;
 }
 
 void gbtest::VolumeEnvelope::tick(bool isDoubleSpeedTick)
 {
-    // Decrease the countdown
-    --m_countdown;
+    // Decrease and check the countdown
+    --m_tickCountdown;
 
-    if (m_countdown == 0) {
-        // Reset the countdown
-        m_countdown = m_period;
+    if (m_tickCountdown > 0) {
+        return;
+    }
 
-        // Update the current volume
-        if (m_currentVolume > 0 && m_currentVolume < 15) {
-            if (m_increasing) {
-                ++m_currentVolume;
-            }
-            else {
-                --m_currentVolume;
-            }
-        }
+    // Reset the countdown
+    m_tickCountdown = m_period;
+
+    // Update the current volume
+    if (m_currentIncreasing && m_currentVolume < 15) {
+        ++m_currentVolume;
+    }
+    else if (!m_currentIncreasing && m_currentVolume > 0) {
+        --m_currentVolume;
     }
 }

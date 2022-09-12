@@ -19,6 +19,7 @@ public:
 
     void setIncreasing(bool increasing);
     [[nodiscard]] bool isIncreasing() const;
+    [[nodiscard]] bool isCurrentlyIncreasing() const;
 
     void setPeriod(uint8_t period);
     [[nodiscard]] uint8_t getPeriod() const;
@@ -35,7 +36,8 @@ private:
     uint8_t m_period;
 
     uint8_t m_currentVolume;
-    uint8_t m_countdown;
+    bool m_currentIncreasing;
+    uint8_t m_tickCountdown;
 
 }; // class VolumeEnvelope
 
