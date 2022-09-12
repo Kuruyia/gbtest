@@ -63,7 +63,7 @@ void gbtest::FrequencySweep::doTrigger()
     // Update the internal enabled flag
     m_enabled = true;
 
-    if (m_sweepShift != 0) {
+    if (m_sweepShift > 0) {
         // Calculate the next frequency
         m_enabled = calculateNewFrequency();
     }
@@ -99,17 +99,12 @@ bool gbtest::FrequencySweep::calculateNewFrequency()
     int shiftedFrequency = (static_cast<int>(m_shadowFrequency) >> m_sweepShift);
 
     if (m_decreasing) {
-        shiftedFrequency = -shiftedFrequency;
+        m_shadowFrequency -= shiftedFrequency;
     }
-
-    m_shadowFrequency = (m_shadowFrequency + shiftedFrequency);
+    else {
+        m_shadowFrequency += shiftedFrequency;
+    }
 
     // Do the overflow check
-    bool channelEnabled = true;
-
-    if (m_shadowFrequency > 2047) {
-        channelEnabled = false;
-    }
-
-    return channelEnabled;
+    return (m_shadowFrequency <= 2047);
 }
