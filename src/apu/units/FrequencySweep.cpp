@@ -15,7 +15,7 @@ gbtest::FrequencySweep::FrequencySweep(gbtest::AudioPulseWave& audioPulseWave)
 
 }
 
-unsigned gbtest::FrequencySweep::getShadowFrequency() const
+uint16_t gbtest::FrequencySweep::getShadowFrequency() const
 {
     return m_shadowFrequency;
 }
@@ -99,7 +99,7 @@ void gbtest::FrequencySweep::doTrigger()
 
     if (m_sweepShift > 0) {
         // Calculate the next frequency
-        unsigned nextFrequency = calculateNextFrequency(m_shadowFrequency);
+        uint16_t nextFrequency = calculateNextFrequency(m_shadowFrequency);
 
         // Perform the overflow check
         checkOverflow(nextFrequency);
@@ -129,7 +129,7 @@ void gbtest::FrequencySweep::tick(bool isDoubleSpeedTick)
     }
 
     // Calculate the next frequency
-    unsigned nextFrequency = calculateNextFrequency(m_shadowFrequency);
+    uint16_t nextFrequency = calculateNextFrequency(m_shadowFrequency);
 
     // Perform the overflow check
     checkOverflow(nextFrequency);
@@ -150,11 +150,11 @@ void gbtest::FrequencySweep::tick(bool isDoubleSpeedTick)
     checkOverflow(nextFrequency);
 }
 
-unsigned gbtest::FrequencySweep::calculateNextFrequency(unsigned frequency)
+uint16_t gbtest::FrequencySweep::calculateNextFrequency(uint16_t frequency)
 {
     // Calculate the next frequency
-    int shiftedFrequency = (static_cast<int>(frequency) >> m_sweepShift);
-    unsigned nextFrequency = frequency;
+    uint16_t shiftedFrequency = (frequency >> m_sweepShift);
+    uint16_t nextFrequency = frequency;
 
     if (m_decreasing) {
         nextFrequency -= shiftedFrequency;
@@ -167,7 +167,7 @@ unsigned gbtest::FrequencySweep::calculateNextFrequency(unsigned frequency)
     return nextFrequency;
 }
 
-void gbtest::FrequencySweep::checkOverflow(unsigned frequency)
+void gbtest::FrequencySweep::checkOverflow(uint16_t frequency)
 {
     // Do the overflow check
     if (frequency > 2047) {

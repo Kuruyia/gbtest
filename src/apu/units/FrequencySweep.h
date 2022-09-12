@@ -15,7 +15,7 @@ public:
     explicit FrequencySweep(AudioPulseWave& audioPulseWave);
     ~FrequencySweep() override = default;
 
-    [[nodiscard]] unsigned getShadowFrequency() const;
+    [[nodiscard]] uint16_t getShadowFrequency() const;
 
     [[nodiscard]] bool isEnabled() const;
     [[nodiscard]] bool isChannelDisabled() const;
@@ -37,7 +37,7 @@ public:
 private:
     AudioPulseWave& m_audioPulseWave;
 
-    unsigned m_shadowFrequency;
+    uint16_t m_shadowFrequency;
     bool m_enabled;
     bool m_channelDisabled;
 
@@ -49,8 +49,8 @@ private:
     uint8_t m_tickCountdown;
     bool m_calculationMadeInNegateMode;
 
-    [[nodiscard]] unsigned calculateNextFrequency(unsigned frequency);
-    void checkOverflow(unsigned frequency);
+    [[nodiscard]] uint16_t calculateNextFrequency(uint16_t frequency);
+    void checkOverflow(uint16_t frequency);
 
 }; // class FrequencySweep
 
