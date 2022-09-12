@@ -71,8 +71,8 @@ void gbtest::FrequencySweep::doTrigger()
 
 void gbtest::FrequencySweep::tick(bool isDoubleSpeedTick)
 {
-    // Don't do anything if the sweep is disabled or the sweep period is zero or the sweep shift is zero
-    if (!m_enabled || m_period == 0 || m_sweepShift == 0) {
+    // Don't do anything if the sweep is disabled or the sweep period is zero
+    if (!m_enabled || m_period == 0) {
         return;
     }
 
