@@ -84,7 +84,7 @@ void gbtest::FrequencySweep::tick(bool isDoubleSpeedTick)
     }
 
     // Reload the countdown
-    m_tickCountdown = (m_period + 1);
+    m_tickCountdown = m_period;
 
     // Set the new frequency
     m_audioPulseWave.setFrequency(m_shadowFrequency);
