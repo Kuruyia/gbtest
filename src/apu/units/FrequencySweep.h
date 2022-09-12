@@ -42,7 +42,7 @@ private:
     bool m_decreasing;
     uint8_t m_sweepShift;
 
-    uint8_t m_tickCountdown;
+    uint8_t m_tickCounter;
 
     [[nodiscard]] bool calculateNewFrequency();
 

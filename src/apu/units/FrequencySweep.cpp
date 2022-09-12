@@ -7,7 +7,7 @@ gbtest::FrequencySweep::FrequencySweep(gbtest::AudioPulseWave& audioPulseWave)
         , m_period(0)
         , m_decreasing(true)
         , m_sweepShift(0)
-        , m_tickCountdown(0)
+        , m_tickCounter(0)
 {
 
 }
@@ -57,8 +57,8 @@ void gbtest::FrequencySweep::doTrigger()
     // Update the shadow frequency
     m_shadowFrequency = m_audioPulseWave.getFrequency();
 
-    // Reload the period
-    m_tickCountdown = m_period;
+    // Reset the counter
+    m_tickCounter = 0;
 
     // Update the internal enabled flag
     m_enabled = true;
@@ -76,15 +76,15 @@ void gbtest::FrequencySweep::tick(bool isDoubleSpeedTick)
         return;
     }
 
-    // Decrease and check the countdown
-    --m_tickCountdown;
+    // Increase and check the counter
+    ++m_tickCounter;
 
-    if (m_tickCountdown != 0) {
+    if (m_tickCounter < m_period) {
         return;
     }
 
-    // Reload the countdown
-    m_tickCountdown = m_period;
+    // Reset the counter
+    m_tickCounter = 0;
 
     // Set the new frequency
     m_audioPulseWave.setFrequency(m_shadowFrequency);
