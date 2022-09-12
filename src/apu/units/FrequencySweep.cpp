@@ -10,6 +10,7 @@ gbtest::FrequencySweep::FrequencySweep(gbtest::AudioPulseWave& audioPulseWave)
         , m_decreasing(true)
         , m_sweepShift(0)
         , m_tickCountdown(0)
+        , m_calculationMadeInNegateMode(false)
 {
 
 }
@@ -57,6 +58,12 @@ uint8_t gbtest::FrequencySweep::getEffectivePeriod() const
 
 void gbtest::FrequencySweep::setDecreasing(bool decreasing)
 {
+    // Disable the channel if leaving negate mode while a calculation already has been made
+    if (m_decreasing && !decreasing && m_calculationMadeInNegateMode) {
+        m_enabled = false;
+        m_channelDisabled = true;
+    }
+
     m_decreasing = decreasing;
 }
 
@@ -82,6 +89,9 @@ void gbtest::FrequencySweep::doTrigger()
 
     // Reset the counter
     m_tickCountdown = m_effectivePeriod;
+
+    // Reset the negate mode calculation flag
+    m_calculationMadeInNegateMode = false;
 
     // Update the internal enabled flag and enable the channel
     m_enabled = (m_sweepShift > 0 || m_period > 0);
@@ -140,7 +150,7 @@ void gbtest::FrequencySweep::tick(bool isDoubleSpeedTick)
     checkOverflow(nextFrequency);
 }
 
-unsigned gbtest::FrequencySweep::calculateNextFrequency(unsigned frequency) const
+unsigned gbtest::FrequencySweep::calculateNextFrequency(unsigned frequency)
 {
     // Calculate the next frequency
     int shiftedFrequency = (static_cast<int>(frequency) >> m_sweepShift);
@@ -148,6 +158,7 @@ unsigned gbtest::FrequencySweep::calculateNextFrequency(unsigned frequency) cons
 
     if (m_decreasing) {
         nextFrequency -= shiftedFrequency;
+        m_calculationMadeInNegateMode = true;
     }
     else {
         nextFrequency += shiftedFrequency;

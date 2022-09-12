@@ -47,8 +47,9 @@ private:
     uint8_t m_sweepShift;
 
     uint8_t m_tickCountdown;
+    bool m_calculationMadeInNegateMode;
 
-    [[nodiscard]] unsigned calculateNextFrequency(unsigned frequency) const;
+    [[nodiscard]] unsigned calculateNextFrequency(unsigned frequency);
     void checkOverflow(unsigned frequency);
 
 }; // class FrequencySweep
