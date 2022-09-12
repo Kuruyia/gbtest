@@ -51,7 +51,6 @@ private:
     FrequencySweep m_frequencySweep;
     VolumeEnvelope m_volumeEnvelope;
 
-    void updateFrequency();
     void updatePatternDuty();
 
     void doTrigger();

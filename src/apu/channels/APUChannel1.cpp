@@ -51,14 +51,15 @@ void gbtest::APUChannel1::commitNR12()
 
 void gbtest::APUChannel1::commitNR13()
 {
-    // Update the generator frequency
-    updateFrequency();
+    // Update the generator frequency low bits
+    m_audioPulseWave.setFrequency((m_audioPulseWave.getFrequency() & 0x700) | m_channel1Registers.frequencyLow.raw);
 }
 
 void gbtest::APUChannel1::commitNR14()
 {
-    // Update the generator frequency
-    updateFrequency();
+    // Update the generator frequency high bits
+    m_audioPulseWave.setFrequency((m_audioPulseWave.getFrequency() & 0x0FF) |
+            (m_channel1Registers.frequencyHigh.frequencyHigh << 8));
 
     // Check if the length counter must be ticked after enabling it
     bool tickLengthCounter = false;
@@ -248,12 +249,6 @@ bool gbtest::APUChannel1::busWriteOverride(uint16_t addr, uint8_t val, gbtest::B
 {
     // APU Channel 1 never overrides write requests
     return false;
-}
-
-inline void gbtest::APUChannel1::updateFrequency()
-{
-    m_audioPulseWave.setFrequency(
-            m_channel1Registers.frequencyLow.raw | (m_channel1Registers.frequencyHigh.frequencyHigh << 8));
 }
 
 inline void gbtest::APUChannel1::updatePatternDuty()

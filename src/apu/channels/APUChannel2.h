@@ -48,7 +48,6 @@ private:
     LengthCounter m_lengthCounter;
     VolumeEnvelope m_volumeEnvelope;
 
-    void updateFrequency();
     void updatePatternDuty();
 
     void doTrigger();
