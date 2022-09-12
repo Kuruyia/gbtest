@@ -4,6 +4,7 @@ gbtest::FrequencySweep::FrequencySweep(gbtest::AudioPulseWave& audioPulseWave)
         : m_audioPulseWave(audioPulseWave)
         , m_shadowFrequency(0)
         , m_enabled(false)
+        , m_channelDisabled(true)
         , m_period(0)
         , m_decreasing(true)
         , m_sweepShift(0)
@@ -20,6 +21,11 @@ unsigned gbtest::FrequencySweep::getShadowFrequency() const
 bool gbtest::FrequencySweep::isEnabled() const
 {
     return m_enabled;
+}
+
+bool gbtest::FrequencySweep::isChannelDisabled() const
+{
+    return m_channelDisabled;
 }
 
 void gbtest::FrequencySweep::setPeriod(uint8_t period)
@@ -60,12 +66,13 @@ void gbtest::FrequencySweep::doTrigger()
     // Reset the counter
     m_tickCounter = 0;
 
-    // Update the internal enabled flag
-    m_enabled = true;
+    // Update the internal enabled flag and enable the channel
+    m_enabled = (m_sweepShift > 0 || m_period > 0);
+    m_channelDisabled = false;
 
     if (m_sweepShift > 0) {
         // Calculate the next frequency
-        m_enabled = calculateNewFrequency();
+        calculateNewFrequency();
     }
 }
 
@@ -90,10 +97,10 @@ void gbtest::FrequencySweep::tick(bool isDoubleSpeedTick)
     m_audioPulseWave.setFrequency(m_shadowFrequency);
 
     // Calculate the next frequency
-    m_enabled = calculateNewFrequency();
+    calculateNewFrequency();
 }
 
-bool gbtest::FrequencySweep::calculateNewFrequency()
+void gbtest::FrequencySweep::calculateNewFrequency()
 {
     // Calculate the new frequency
     int shiftedFrequency = (static_cast<int>(m_shadowFrequency) >> m_sweepShift);
@@ -106,5 +113,9 @@ bool gbtest::FrequencySweep::calculateNewFrequency()
     }
 
     // Do the overflow check
-    return (m_shadowFrequency <= 2047);
+    if (m_shadowFrequency > 2047) {
+        m_enabled = false;
+    }
+
+    m_channelDisabled = !m_enabled;
 }

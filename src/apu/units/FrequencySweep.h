@@ -18,6 +18,7 @@ public:
     [[nodiscard]] unsigned getShadowFrequency() const;
 
     [[nodiscard]] bool isEnabled() const;
+    [[nodiscard]] bool isChannelDisabled() const;
 
     void setPeriod(uint8_t period);
     [[nodiscard]] uint8_t getPeriod() const;
@@ -37,6 +38,7 @@ private:
 
     unsigned m_shadowFrequency;
     bool m_enabled;
+    bool m_channelDisabled;
 
     uint8_t m_period;
     bool m_decreasing;
@@ -44,7 +46,7 @@ private:
 
     uint8_t m_tickCounter;
 
-    [[nodiscard]] bool calculateNewFrequency();
+    [[nodiscard]] void calculateNewFrequency();
 
 }; // class FrequencySweep
 
