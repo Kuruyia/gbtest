@@ -140,7 +140,7 @@ float gbtest::APUChannel1::sample() const
 
 bool gbtest::APUChannel1::isChannelDisabled() const
 {
-    return m_lengthCounter.isChannelDisabled() || m_dacDisabledChannel;
+    return m_lengthCounter.isChannelDisabled() || !m_frequencySweep.isEnabled() || m_dacDisabledChannel;
 }
 
 bool gbtest::APUChannel1::isDACOn() const
