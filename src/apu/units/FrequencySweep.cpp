@@ -6,9 +6,10 @@ gbtest::FrequencySweep::FrequencySweep(gbtest::AudioPulseWave& audioPulseWave)
         , m_enabled(false)
         , m_channelDisabled(true)
         , m_period(0)
+        , m_effectivePeriod(0)
         , m_decreasing(true)
         , m_sweepShift(0)
-        , m_tickCounter(0)
+        , m_tickCountdown(0)
 {
 
 }
@@ -31,11 +32,27 @@ bool gbtest::FrequencySweep::isChannelDisabled() const
 void gbtest::FrequencySweep::setPeriod(uint8_t period)
 {
     m_period = period;
+    m_effectivePeriod = period;
+
+    // Prevent problems on next tick
+    if (m_tickCountdown == 0) {
+        ++m_tickCountdown;
+    }
+
+    // Emulate sweep treating a period of 0 as 8
+    if (period == 0) {
+        m_effectivePeriod = 8;
+    }
 }
 
 uint8_t gbtest::FrequencySweep::getPeriod() const
 {
     return m_period;
+}
+
+uint8_t gbtest::FrequencySweep::getEffectivePeriod() const
+{
+    return m_effectivePeriod;
 }
 
 void gbtest::FrequencySweep::setDecreasing(bool decreasing)
@@ -64,7 +81,7 @@ void gbtest::FrequencySweep::doTrigger()
     m_shadowFrequency = m_audioPulseWave.getFrequency();
 
     // Reset the counter
-    m_tickCounter = 0;
+    m_tickCountdown = m_effectivePeriod;
 
     // Update the internal enabled flag and enable the channel
     m_enabled = (m_sweepShift > 0 || m_period > 0);
@@ -81,20 +98,25 @@ void gbtest::FrequencySweep::doTrigger()
 
 void gbtest::FrequencySweep::tick(bool isDoubleSpeedTick)
 {
-    // Don't do anything if the sweep is disabled or the sweep period is zero
-    if (!m_enabled || m_period == 0) {
+    // Don't do anything if the sweep is disabled
+    if (!m_enabled) {
         return;
     }
 
     // Increase and check the counter
-    ++m_tickCounter;
+    --m_tickCountdown;
 
-    if (m_tickCounter < m_period) {
+    if (m_tickCountdown > 0) {
         return;
     }
 
     // Reset the counter
-    m_tickCounter = 0;
+    m_tickCountdown = m_effectivePeriod;
+
+    // Don't continue if the intended period is 0
+    if (m_period == 0) {
+        return;
+    }
 
     // Calculate the next frequency
     unsigned nextFrequency = calculateNextFrequency(m_shadowFrequency);

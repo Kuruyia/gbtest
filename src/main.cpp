@@ -104,7 +104,7 @@ int main()
 
     // Load a ROM file
     auto cartridgeDataSource = std::make_unique<gbtest::InMemoryCartridgeDataSource>();
-    loadROM("dmgsnd_individual/04.bin", *(cartridgeDataSource.get()));
+    loadROM("dmgsnd_individual/05.bin", *(cartridgeDataSource.get()));
     gameboy->loadCartridgeFromDataSource(std::move(cartridgeDataSource));
 
     std::cout << "Loaded cartridge type: " << (unsigned) gameboy->getCartridge()->getMBCType() << std::endl;

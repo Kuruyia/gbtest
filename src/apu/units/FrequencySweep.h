@@ -22,6 +22,7 @@ public:
 
     void setPeriod(uint8_t period);
     [[nodiscard]] uint8_t getPeriod() const;
+    [[nodiscard]] uint8_t getEffectivePeriod() const;
 
     void setDecreasing(bool decreasing);
     [[nodiscard]] bool isDecreasing() const;
@@ -41,10 +42,11 @@ private:
     bool m_channelDisabled;
 
     uint8_t m_period;
+    uint8_t m_effectivePeriod;
     bool m_decreasing;
     uint8_t m_sweepShift;
 
-    uint8_t m_tickCounter;
+    uint8_t m_tickCountdown;
 
     [[nodiscard]] unsigned calculateNextFrequency(unsigned frequency) const;
     void checkOverflow(unsigned frequency);
