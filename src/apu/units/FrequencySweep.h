@@ -46,7 +46,8 @@ private:
 
     uint8_t m_tickCounter;
 
-    [[nodiscard]] void calculateNewFrequency();
+    [[nodiscard]] unsigned calculateNextFrequency(unsigned frequency) const;
+    void checkOverflow(unsigned frequency);
 
 }; // class FrequencySweep
 

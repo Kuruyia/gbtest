@@ -72,7 +72,10 @@ void gbtest::FrequencySweep::doTrigger()
 
     if (m_sweepShift > 0) {
         // Calculate the next frequency
-        calculateNewFrequency();
+        unsigned nextFrequency = calculateNextFrequency(m_shadowFrequency);
+
+        // Perform the overflow check
+        checkOverflow(nextFrequency);
     }
 }
 
@@ -93,27 +96,48 @@ void gbtest::FrequencySweep::tick(bool isDoubleSpeedTick)
     // Reset the counter
     m_tickCounter = 0;
 
+    // Calculate the next frequency
+    unsigned nextFrequency = calculateNextFrequency(m_shadowFrequency);
+
+    // Perform the overflow check
+    checkOverflow(nextFrequency);
+
+    // Only continue if the new frequency is <= 2047 and the sweep shift is not 0
+    if (nextFrequency > 2047 || m_sweepShift == 0) {
+        return;
+    }
+
+    // Update the shadow frequency register
+    m_shadowFrequency = nextFrequency;
+
     // Set the new frequency
     m_audioPulseWave.setFrequency(m_shadowFrequency);
 
-    // Calculate the next frequency
-    calculateNewFrequency();
+    // Calculate the next frequency and do the overflow check again, without updating the shadow frequency register
+    nextFrequency = calculateNextFrequency(m_shadowFrequency);
+    checkOverflow(nextFrequency);
 }
 
-void gbtest::FrequencySweep::calculateNewFrequency()
+unsigned gbtest::FrequencySweep::calculateNextFrequency(unsigned frequency) const
 {
-    // Calculate the new frequency
-    int shiftedFrequency = (static_cast<int>(m_shadowFrequency) >> m_sweepShift);
+    // Calculate the next frequency
+    int shiftedFrequency = (static_cast<int>(frequency) >> m_sweepShift);
+    unsigned nextFrequency = frequency;
 
     if (m_decreasing) {
-        m_shadowFrequency -= shiftedFrequency;
+        nextFrequency -= shiftedFrequency;
     }
     else {
-        m_shadowFrequency += shiftedFrequency;
+        nextFrequency += shiftedFrequency;
     }
 
+    return nextFrequency;
+}
+
+void gbtest::FrequencySweep::checkOverflow(unsigned frequency)
+{
     // Do the overflow check
-    if (m_shadowFrequency > 2047) {
+    if (frequency > 2047) {
         m_enabled = false;
     }
 
