@@ -19,6 +19,8 @@ public:
     void tick(bool isDoubleSpeedTick) override;
     [[nodiscard]] uint8_t getUnitsToTick() const;
 
+    void reset();
+
 private:
     static constexpr unsigned TICK_COUNT = GAMEBOY_FREQUENCY / 512;
 

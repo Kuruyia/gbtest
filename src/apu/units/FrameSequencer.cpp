@@ -52,3 +52,9 @@ uint8_t gbtest::FrameSequencer::getUnitsToTick() const
 {
     return m_unitsToTick;
 }
+
+void gbtest::FrameSequencer::reset()
+{
+    m_tickCounter = 0;
+    m_step = 0;
+}

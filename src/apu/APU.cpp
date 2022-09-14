@@ -241,6 +241,12 @@ bool gbtest::APU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource 
             break;
 
         case 0xFF26: // [NR52] Sound on/off
+            if (!m_soundControlRegisters.soundOnOff.globalOn && (val & 0x80)) {
+                // APU is turning on, reset the frame sequencer
+                m_frameSequencer.reset();
+            }
+
+            // Store the value
             m_soundControlRegisters.soundOnOff.raw = (val & 0xF0);
 
             // Reset all the channels and registers if the APU is turning off
