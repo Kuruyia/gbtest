@@ -287,6 +287,10 @@ bool gbtest::APU::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusReques
     // Only prevent writes to APU registers (except NR52)
     if (addr < 0xFF10 || addr > 0xFF25) { return false; }
 
+    // Always allow access to the NRx1 registers in non-CGB mode
+    // TODO: Prevent that on CGB
+    if (addr == 0xFF11 || addr == 0xFF16 || addr == 0xFF1B || addr == 0xFF20) { return false; }
+
     // Disable access when the APU is disabled
     return m_soundControlRegisters.soundOnOff.globalOn == 0;
 }

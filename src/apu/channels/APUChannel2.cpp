@@ -187,6 +187,13 @@ bool gbtest::APUChannel2::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
     switch (addr) {
     case 0xFF16: // [NR21] Channel 2 Sound Length/Wave Pattern Duty register
+        // If the APU is turned off in non-CGB mode, only allow updating sound length
+        // TODO: Fix that on CGB mode
+        if (!m_globalOn) {
+            val &= 0x3F;
+            val |= (m_channel2Registers.soundLengthWavePatternDuty.raw & 0xC0);
+        }
+
         m_channel2Registers.soundLengthWavePatternDuty.raw = val;
         commitNR21();
 
