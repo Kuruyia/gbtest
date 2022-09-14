@@ -162,7 +162,7 @@ bool gbtest::APUChannel3::busRead(uint16_t addr, uint8_t& val, gbtest::BusReques
 
     // Check if the read request is for the wave pattern data
     if (addr >= 0xFF30 && addr <= 0xFF3F) {
-        val = m_audioWave.readWavePatternData(addr - 0xFF30);
+        val = m_audioWave.readWavePatternData(addr - 0xFF30, isChannelDisabled());
         return true;
     }
 
@@ -199,7 +199,7 @@ bool gbtest::APUChannel3::busWrite(uint16_t addr, uint8_t val, gbtest::BusReques
 
     // Check if the write request is for the wave pattern data
     if (addr >= 0xFF30 && addr <= 0xFF3F) {
-        m_audioWave.writeWavePatternData(addr - 0xFF30, val);
+        m_audioWave.writeWavePatternData(addr - 0xFF30, val, isChannelDisabled());
         return true;
     }
 

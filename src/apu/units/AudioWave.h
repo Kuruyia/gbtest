@@ -31,8 +31,8 @@ public:
     void setVolume(uint8_t volume);
     [[nodiscard]] uint8_t getVolume() const;
 
-    void writeWavePatternData(size_t idx, uint8_t val);
-    [[nodiscard]] uint8_t readWavePatternData(size_t idx) const;
+    void writeWavePatternData(size_t idx, uint8_t val, bool channelDisabled = true);
+    [[nodiscard]] uint8_t readWavePatternData(size_t idx, bool channelDisabled = true) const;
 
     [[nodiscard]] float getSample() const;
 

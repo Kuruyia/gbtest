@@ -52,13 +52,22 @@ uint8_t gbtest::AudioWave::getVolume() const
     return m_volume;
 }
 
-void gbtest::AudioWave::writeWavePatternData(size_t idx, uint8_t val)
+void gbtest::AudioWave::writeWavePatternData(size_t idx, uint8_t val, bool channelDisabled)
 {
+    if (!channelDisabled) {
+        m_wavePatternData[m_currentSampleIdx >> 1] = val;
+        return;
+    }
+
     m_wavePatternData[idx] = val;
 }
 
-uint8_t gbtest::AudioWave::readWavePatternData(size_t idx) const
+uint8_t gbtest::AudioWave::readWavePatternData(size_t idx, bool channelDisabled) const
 {
+    if (!channelDisabled) {
+        return m_wavePatternData[m_currentSampleIdx >> 1];
+    }
+
     return m_wavePatternData[idx];
 }
 
