@@ -4,7 +4,7 @@ gbtest::AudioPulseWave::AudioPulseWave()
         : m_frequency(0)
         , m_pulseWavePatternDuty()
         , m_currentSample(0.f)
-        , m_tickCountdown((2048 - m_frequency) * 4)
+        , m_tickCountdown((2048 - m_frequency) * 2)
         , m_currentStep(0)
 {
 
@@ -38,7 +38,7 @@ float gbtest::AudioPulseWave::getSample() const
 void gbtest::AudioPulseWave::doTrigger()
 {
     // Reset the timer
-    m_tickCountdown = ((2048 - m_frequency) * 4);
+    m_tickCountdown = ((2048 - m_frequency) * 2);
 }
 
 void gbtest::AudioPulseWave::tick(bool isDoubleSpeedTick)
@@ -49,7 +49,7 @@ void gbtest::AudioPulseWave::tick(bool isDoubleSpeedTick)
     // Check if we have to update the sample
     if (m_tickCountdown == 0) {
         // Reset the tick countdown
-        m_tickCountdown = ((2048 - m_frequency) * 4);
+        m_tickCountdown = ((2048 - m_frequency) * 2);
 
         // Increase the step
         ++m_currentStep;

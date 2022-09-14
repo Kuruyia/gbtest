@@ -22,7 +22,7 @@ public:
     void reset();
 
 private:
-    static constexpr unsigned TICK_COUNT = GAMEBOY_FREQUENCY / 512;
+    static constexpr unsigned TICK_COUNT = GAMEBOY_FREQUENCY / 1024;
 
     unsigned m_tickCounter;
     uint8_t m_step;

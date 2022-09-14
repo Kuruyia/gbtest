@@ -7,6 +7,7 @@ gbtest::APU::APU()
         , m_framebuffer()
         , m_sampleCount(0)
         , m_sampleCountdown(SAMPLE_EVERY_X_TICK)
+        , m_tickDivider(false)
 {
 
 }
@@ -149,6 +150,10 @@ void gbtest::APU::tick(bool isDoubleSpeedTick)
 {
     // Skip double speed ticks
     if (isDoubleSpeedTick) { return; }
+
+    // APU frequency is half the frequency of the platform
+    m_tickDivider = !m_tickDivider;
+    if (m_tickDivider) { return; }
 
     if (m_soundControlRegisters.soundOnOff.globalOn) {
         tickEnabled();

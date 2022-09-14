@@ -7,7 +7,7 @@ gbtest::AudioWave::AudioWave()
         , m_enabled(false)
         , m_frequency(0)
         , m_volume(0)
-        , m_tickCountdown((2048 - m_frequency) * 2)
+        , m_tickCountdown(2048 - m_frequency)
 {
 
 }
@@ -73,7 +73,7 @@ void gbtest::AudioWave::doTrigger()
     m_currentSampleIdx = 0;
 
     // Reset the timer
-    m_tickCountdown = ((2048 - m_frequency) * 2);
+    m_tickCountdown = (2048 - m_frequency);
 }
 
 void gbtest::AudioWave::tick(bool isDoubleSpeedTick)
@@ -89,7 +89,7 @@ void gbtest::AudioWave::tick(bool isDoubleSpeedTick)
     // Check if we have to update the sample
     if (m_tickCountdown == 0) {
         // Reset the tick countdown
-        m_tickCountdown = ((2048 - m_frequency) * 2);
+        m_tickCountdown = (2048 - m_frequency);
 
         // Increase the current sample index
         ++m_currentSampleIdx;

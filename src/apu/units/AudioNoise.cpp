@@ -77,10 +77,10 @@ uint8_t gbtest::AudioNoise::getDivisor() const
 {
     // Return the correct divisor depending on the stored divide ratio
     if (m_divideRatio == 0) {
-        return 8;
+        return 4;
     }
 
-    return 16 * m_divideRatio;
+    return 8 * m_divideRatio;
 }
 
 void gbtest::AudioNoise::updateSample()

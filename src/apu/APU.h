@@ -24,7 +24,7 @@ public:
     static constexpr unsigned SAMPLE_RATE = 44100;
     static constexpr unsigned CHANNELS = 2;
     static constexpr unsigned MAX_FRAME_COUNT = 1024 * CHANNELS;
-    static constexpr unsigned SAMPLE_EVERY_X_TICK = GAMEBOY_FREQUENCY / SAMPLE_RATE;
+    static constexpr unsigned SAMPLE_EVERY_X_TICK = GAMEBOY_FREQUENCY / (SAMPLE_RATE * 2);
 
     using AudioFramebuffer = std::array<float, MAX_FRAME_COUNT>;
 
@@ -73,6 +73,8 @@ private:
     AudioFramebuffer m_framebuffer;
     size_t m_sampleCount;
     unsigned m_sampleCountdown;
+
+    bool m_tickDivider;
 
     void tickEnabled();
     void tickDisabled();
