@@ -23,11 +23,14 @@ public:
     [[nodiscard]] virtual bool isChannelDisabled() const = 0;
     [[nodiscard]] virtual bool isDACOn() const = 0;
 
-    virtual void reset() = 0;
+    virtual void setGlobalOn(bool globalOn);
+
+    virtual void reset();
 
 protected:
     bool m_dacDisabledChannel;
     uint8_t m_lastUnitsTicked;
+    bool m_globalOn;
 
 }; // class APUChannel
 

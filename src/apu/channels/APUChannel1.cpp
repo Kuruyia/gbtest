@@ -151,6 +151,9 @@ bool gbtest::APUChannel1::isDACOn() const
 
 void gbtest::APUChannel1::reset()
 {
+    // Call the base class method
+    APUChannel::reset();
+
     // Reset the registers
     for (uint16_t addr = 0xFF10; addr <= 0xFF14; ++addr) {
         busWrite(addr, 0x00, BusRequestSource::APUChannel);

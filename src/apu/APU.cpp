@@ -260,6 +260,12 @@ bool gbtest::APU::busWrite(uint16_t addr, uint8_t val, gbtest::BusRequestSource 
             // Store the value
             m_soundControlRegisters.soundOnOff.raw = (val & 0xF0);
 
+            // Set the global enabled state to the channel
+            m_apuChannel1.setGlobalOn(m_soundControlRegisters.soundOnOff.globalOn);
+            m_apuChannel2.setGlobalOn(m_soundControlRegisters.soundOnOff.globalOn);
+            m_apuChannel3.setGlobalOn(m_soundControlRegisters.soundOnOff.globalOn);
+            m_apuChannel4.setGlobalOn(m_soundControlRegisters.soundOnOff.globalOn);
+
             break;
 
         default:
