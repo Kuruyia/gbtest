@@ -74,6 +74,9 @@ private:
     size_t m_sampleCount;
     unsigned m_sampleCountdown;
 
+    void tickEnabled();
+    void tickDisabled();
+
 }; // class APU
 
 } // namespace gbtest

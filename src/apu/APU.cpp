@@ -150,24 +150,11 @@ void gbtest::APU::tick(bool isDoubleSpeedTick)
     // Skip double speed ticks
     if (isDoubleSpeedTick) { return; }
 
-    // Tick the frame sequencer
-    m_frameSequencer.tick(isDoubleSpeedTick);
-    const uint8_t unitsToTick = m_frameSequencer.getUnitsToTick();
-
-    // Tick the channels
-    m_apuChannel1.tickUnits(unitsToTick, isDoubleSpeedTick);
-    m_apuChannel2.tickUnits(unitsToTick, isDoubleSpeedTick);
-    m_apuChannel3.tickUnits(unitsToTick, isDoubleSpeedTick);
-    m_apuChannel4.tickUnits(unitsToTick, isDoubleSpeedTick);
-
-    // Check if we have to sample
-    if (m_sampleCount < m_framebuffer.size() && --m_sampleCountdown == 0) {
-        // Take a sample
-        sample(m_framebuffer[m_sampleCount], m_framebuffer[m_sampleCount + 1]);
-        m_sampleCount += 2;
-
-        // Reset the countdown
-        m_sampleCountdown = SAMPLE_EVERY_X_TICK;
+    if (m_soundControlRegisters.soundOnOff.globalOn) {
+        tickEnabled();
+    }
+    else {
+        tickDisabled();
     }
 }
 
@@ -290,4 +277,42 @@ bool gbtest::APU::busWriteOverride(uint16_t addr, uint8_t val, gbtest::BusReques
 
     // Disable access when the APU is disabled
     return m_soundControlRegisters.soundOnOff.globalOn == 0;
+}
+
+void gbtest::APU::tickEnabled()
+{
+    // Tick the frame sequencer
+    m_frameSequencer.tick(false);
+    const uint8_t unitsToTick = m_frameSequencer.getUnitsToTick();
+
+    // Tick the channels
+    m_apuChannel1.tickUnits(unitsToTick, false);
+    m_apuChannel2.tickUnits(unitsToTick, false);
+    m_apuChannel3.tickUnits(unitsToTick, false);
+    m_apuChannel4.tickUnits(unitsToTick, false);
+
+    // Check if we have to sample
+    if (m_sampleCount < m_framebuffer.size() && --m_sampleCountdown == 0) {
+        // Take a sample
+        sample(m_framebuffer[m_sampleCount], m_framebuffer[m_sampleCount + 1]);
+        m_sampleCount += 2;
+
+        // Reset the countdown
+        m_sampleCountdown = SAMPLE_EVERY_X_TICK;
+    }
+}
+
+void gbtest::APU::tickDisabled()
+{
+    // Check if we have to sample
+    if (m_sampleCount < m_framebuffer.size() && --m_sampleCountdown == 0) {
+        // APU is disabled, sample is silent
+        m_framebuffer[m_sampleCount] = 0.f;
+        m_framebuffer[m_sampleCount + 1] = 0.f;
+
+        m_sampleCount += 2;
+
+        // Reset the countdown
+        m_sampleCountdown = SAMPLE_EVERY_X_TICK;
+    }
 }
