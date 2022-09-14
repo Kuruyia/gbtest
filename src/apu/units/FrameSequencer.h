@@ -3,8 +3,9 @@
 
 #include <cstdint>
 
-#include "APUUnit.h"
+#include "../../platform/GameBoyFrequencies.h"
 #include "../../utils/Tickable.h"
+#include "APUUnit.h"
 
 namespace gbtest {
 
@@ -19,7 +20,9 @@ public:
     [[nodiscard]] uint8_t getUnitsToTick() const;
 
 private:
-    unsigned m_tickCountdown;
+    static constexpr unsigned TICK_COUNT = GAMEBOY_FREQUENCY / 512;
+
+    unsigned m_tickCounter;
     uint8_t m_step;
 
     uint8_t m_unitsToTick;
